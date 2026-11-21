@@ -2175,7 +2175,7 @@ bool DaidalusParameters::setCorrectiveRegion(BandsRegion::Region val) {
  */
 int DaidalusParameters::correctiveAlertLevel(int alerter_idx) {
   if (1 <= alerter_idx && alerter_idx <= static_cast<int>(alerters_.size())) {
-    Alerter alerter = alerters_[alerter_idx-1];
+    const Alerter& alerter = alerters_[alerter_idx-1];
     return alerter.alertLevelForRegion(corrective_region_);
   } else {
     error.addError("correctiveAlertLevel: alerter_idx ("+Fmi(alerter_idx)+") is out of range");
