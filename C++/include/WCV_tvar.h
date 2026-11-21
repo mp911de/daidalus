@@ -21,20 +21,22 @@ namespace larcfm {
 class WCV_tvar : public Detection3D {
 
 private:
-  std::string id_;
   std::unique_ptr<WCV_Vertical> wcv_vertical_;
+  std::string id_;
   WCVTable table_;
 
 public:
 
   explicit WCV_tvar(WCV_Vertical* wcv_vertical) : 
-          id_(""),
           wcv_vertical_(wcv_vertical) {}
 
   WCV_tvar(const std::string& id, WCV_Vertical* wcv_vertical, const WCVTable& table) : 
-          id_(id),
           wcv_vertical_(wcv_vertical),
+          id_(id),
           table_(table) {}
+
+  WCV_tvar(const WCV_tvar& other) :
+          wcv_vertical_(other.wcv_vertical_->copy()), id_(other.id_), table_(other.table_) {}
 
   void copyFrom(const WCV_tvar& core);
 

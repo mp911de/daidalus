@@ -7,6 +7,7 @@
 
 #include "Real.h"
 #include "Alerter.h"
+#include <stdexcept>
 #include "ParameterData.h"
 #include "Detection3DParameterReader.h"
 #include "Detection3DParameterWriter.h"
@@ -496,35 +497,31 @@ void Alerter::updateParameterData(ParameterData& p) const {
 void Alerter::setParameters(const ParameterData& p) {
   Detection3DParameterReader::registerDefaults();
   // read in all detector information
-  std::vector<Detection3D*> dlist = Detection3DParameterReader::readCoreDetection(p).first;
+  auto detectors = Detection3DParameterReader::readOwnedDetectors(p);
   // put in map for easy lookup
-  std::map<std::string, Detection3D*> dmap;
-  for (int i = 0; i < static_cast<int>(dlist.size()); i ++) {
-    std::string id = dlist[i]->getIdentifier();
-    dmap[id] = dlist[i];
+  std::map<std::string, const Detection3D*> dmap;
+  for (const auto& detector : detectors.first) {
+    dmap[detector->getIdentifier()] = detector.get();
   }
   // extract parameters for each alertlevel:
   int counter = 1;
   std::string prefix = "alert_"+Fmi(counter)+"_";
   ParameterData pdsub = p.extractPrefix(prefix);
-  if (pdsub.size() > 0) {
-    levels_.clear();
-  }
+  if (pdsub.size() == 0) return;
+  Alerter updated;
   while (pdsub.size() > 0) {
     // build the alertlevel
-    AlertThresholds al(dmap[pdsub.getString("detector")]);
+    auto detector = dmap.find(pdsub.getString("detector"));
+    if (detector == dmap.end()) throw std::invalid_argument("Unknown detector for " + prefix);
+    AlertThresholds al(detector->second->copy());
     al.setParameters(pdsub);
-    // modify or add the alertlevel (this cannot remove levels)
-    if (counter <= static_cast<int>(levels_.size())) {
-      setLevel(counter,al);
-    } else {
-      addLevel(al);
-    }
+    updated.addLevel(al);
     // next set
     counter++;
     prefix = "alert_"+Fmi(counter)+"_";
     pdsub = p.extractPrefix(prefix);
   }
+  levels_.swap(updated.levels_);
 }
 
 std::string Alerter::toString() const {

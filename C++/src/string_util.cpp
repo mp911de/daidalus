@@ -23,6 +23,7 @@
 #include <regex>
 #else
 #include <regex.h>
+#include <memory>
 #endif
 
 
@@ -138,7 +139,9 @@ bool matches(const string& s, const string& rgx_str) {
 		reti = regcomp(&rgx, rgx_str.c_str(), REG_EXTENDED);
 		if (reti != 0) {
 			fdln("Could not compile regex\n");
+			return elems;
 		}
+		std::unique_ptr<regex_t, decltype(&regfree)> compiled(&rgx, &regfree);
 
 		/* Execute regular expression */
 		char between[100];
@@ -186,7 +189,6 @@ bool matches(const string& s, const string& rgx_str) {
 		}
 
 		//fpln("split_regex done!");
-		regfree(&rgx);
 		return elems;
 
 	}
@@ -197,12 +199,13 @@ bool matches(const string& s, const string& rgx_str) {
 		reti = regcomp(&rgx, rgx_str.c_str(), REG_EXTENDED);
 		if (reti != 0) {
 			fdln("Could not compile regex\n");
+			return false;
 		}
+		std::unique_ptr<regex_t, decltype(&regfree)> compiled(&rgx, &regfree);
 		/* Execute regular expression */
 		regmatch_t matchptr[1];
 		const char* cstr = s.c_str();
 		reti = regexec(&rgx, cstr, 1, matchptr, 0);
-		regfree(&rgx);
 		return (reti != REG_NOMATCH);
 	}
 #endif

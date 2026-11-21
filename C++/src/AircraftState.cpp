@@ -70,36 +70,23 @@ AircraftState::AircraftState(const AircraftState& orig) : error("AircraftState")
 	}
 }
 
-AircraftState::~AircraftState() {
-	//fpln("@@ AircraftState Destructor "+id);
-	if (s_list) delete [] s_list;
-	if (v_list) delete [] v_list;
-	if (t_list) delete [] t_list;
-	if (projS2) delete [] projS2;
-	if (projH) delete [] projH;
-	if (projV2) delete [] projV2;
-	if (projVZ) delete [] projVZ;
-	if (projT) delete [] projT;
+AircraftState::~AircraftState() = default;
+
+void AircraftState::resizeBuffers(int size) {
+	s_list.resize(size);
+	v_list.resize(size);
+	t_list.resize(size);
+	projS2.resize(size);
+	projH.resize(size);
+	projV2.resize(size);
+	projVZ.resize(size);
+	projT.resize(size);
+	bufferSize = size;
 }
 
 void AircraftState::init(const string& name, int buffer_size) {
 	sz = 0;
-	bufferSize = buffer_size < 1 ? DEFAULT_BUFFER_SIZE : buffer_size;
-	s_list = new Position[bufferSize];
-	v_list = new Velocity[bufferSize];
-	t_list = new real[bufferSize];
-	projS2 = new Vect2[bufferSize];
-	projH = new real[bufferSize];
-	projV2 = new Vect2[bufferSize];
-	projVZ = new real[bufferSize];
-	projT = new real[bufferSize];
-	// initialize arrays
-	for (int i = 0; i < bufferSize; i++){
-		t_list[i] = real(0.0);
-		projH[i] = real(0.0);
-		projVZ[i] = real(0.0);
-		projT[i] = real(0.0);
-	}
+	resizeBuffers(buffer_size < 1 ? DEFAULT_BUFFER_SIZE : buffer_size);
 	sp = Projection::createProjection(0,0,0);
 	oldest = 0;
 	id = name;
@@ -112,44 +99,11 @@ void AircraftState::init(const string& name, int buffer_size) {
 }
 
 AircraftState& AircraftState::operator=(const AircraftState& rhs) {
-	// clear old arrays (size may have changed)
 	if (this == &rhs) return *this;
-	bool bufferchange = (bufferSize != rhs.bufferSize);
-	bufferSize = rhs.bufferSize;
 	id = rhs.id;
-	error = rhs.error; // this might be a problem -- if so, remove
-
-	if (s_list && bufferchange) {
-		delete [] s_list;
-		s_list = new Position[bufferSize];
-	}
-	if (v_list && bufferchange) {
-		delete [] v_list;
-		v_list = new Velocity[bufferSize];
-	}
-	if (t_list && bufferchange) {
-		delete [] t_list;
-		t_list = new real[bufferSize];
-	}
-	if (projS2 && bufferchange) {
-		delete [] projS2;
-		projS2 = new Vect2[bufferSize];
-	}
-	if (projH && bufferchange) {
-		delete [] projH;
-		projH = new real[bufferSize];
-	}
-	if (projV2 && bufferchange) {
-		delete [] projV2;
-		projV2 = new Vect2[bufferSize];
-	}
-	if (projVZ && bufferchange) {
-		delete [] projVZ;
-		projVZ = new real[bufferSize];
-	}
-	if (projT && bufferchange) {
-		delete [] projT;
-		projT = new real[bufferSize];
+	error = rhs.error;
+	if (bufferSize != rhs.bufferSize) {
+		resizeBuffers(rhs.bufferSize);
 	}
 
 	for (int i = 0; i < bufferSize; i++) {
@@ -546,7 +500,7 @@ Velocity AircraftState::predV(real t) const {
 
 StateVector AircraftState::pred(real t) {
 	updateProjection();
-	calc(projV2, projVZ, projT, sz);
+	calc(projV2.data(), projVZ.data(), projT.data(), sz);
 	return StateVector(predS(t), predV(t),t);
 }
 

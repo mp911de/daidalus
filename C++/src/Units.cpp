@@ -22,6 +22,7 @@
 #include <regex>
 #else
 #include <regex.h>
+#include <memory>
 #endif
 #include <cstdio>
 #include <sstream>
@@ -781,7 +782,9 @@ real Units::parse(const string& defaultUnitsFrom, const std::string& s, real def
 	if (reti != 0) {
 		fdln("Could not compile regex in Units::parse\n");
 		//		DebugSupport::halt();
+		return ret;
 	}
+	std::unique_ptr<regex_t, decltype(&regfree)> compiled(&regex, &regfree);
 
 	/* Execute regular expression */
 	regmatch_t matchptr[4];
@@ -843,8 +846,6 @@ real Units::parse(const string& defaultUnitsFrom, const std::string& s, real def
 		fdln("Regex match failed: "+m1);
 	}
 
-	/* Free compiled regular expression if you want to use the regex_t again */
-	regfree(&regex);
 	return ret;
 }
 
@@ -860,7 +861,9 @@ std::string Units::parseUnits(const std::string& s) {
 	if (reti != 0) {
 		fdln("$$$ERROR$$$: Could not compile regex in Units::parseUnits\n");
 //		DebugSupport::halt();
+		return ret;
 	}
+	std::unique_ptr<regex_t, decltype(&regfree)> compiled(&regex, &regfree);
 
 	/* Execute regular expression */
 	regmatch_t matchptr[4];
@@ -886,8 +889,6 @@ std::string Units::parseUnits(const std::string& s) {
 //		DebugSupport::halt();
 	}
 
-	/* Free compiled regular expression if you want to use the regex_t again */
-	regfree(&regex);
 	return ret;
 }
 #endif

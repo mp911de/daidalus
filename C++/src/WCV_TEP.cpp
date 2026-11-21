@@ -25,7 +25,7 @@ namespace larcfm {
 /** Constructor that uses the default TCAS tables. */
 WCV_TEP::WCV_TEP() : WCV_tvar(new WCV_TCOA()) {}
 
-WCV_TEP::WCV_TEP(const WCV_TEP& wcv) :  WCV_tvar(wcv.getIdentifier(),wcv.getWCVVertical().copy(),wcv.getWCVTable()) {}
+WCV_TEP::WCV_TEP(const WCV_TEP& wcv) :  WCV_tvar(wcv) {}
 
 /**
  * @return one static WCV_TEP

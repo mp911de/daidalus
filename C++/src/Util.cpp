@@ -26,6 +26,7 @@
 #include <regex>
 #else
 #include <regex.h>
+#include <memory>
 #endif
 //#include <dirent.h>
 
@@ -473,11 +474,12 @@ bool Util::is_double(const string& str) {
 	reti = regcomp(&regex, "^-?[0-9]*(\\.[0-9]*)?$", REG_EXTENDED);
 	if (reti != 0) {
 		fdln("Could not compile regex\n");
+		return false;
 	}
+	std::unique_ptr<regex_t, decltype(&regfree)> compiled(&regex, &regfree);
 
 	/* Execute regular expression */
 	reti = regexec(&regex, sb.c_str(), 0, NULL, 0);
-	regfree(&regex);
 	return !reti;
 }
 #endif

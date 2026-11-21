@@ -19,6 +19,7 @@
 #include "WCV_HZ.h"
 #include "format.h"
 #include <vector>
+#include <mutex>
 #include <string>
 
 using std::string;
@@ -26,11 +27,11 @@ using std::vector;
 
 namespace larcfm {
 
-std::map<std::string, Detection3D*> Detection3DParameterReader::registeredDetection3DClasses;
-bool Detection3DParameterReader::registered = false;
+std::map<std::string, std::unique_ptr<Detection3D>> Detection3DParameterReader::registeredDetection3DClasses;
+static std::mutex registry_mutex;
 
 void Detection3DParameterReader::registerDefaults() {
-  if (!registered) {
+  static const bool registered = [] {
     CDCylinder cd3d;
     registerDetection3D(&cd3d);
     registerDetection3D(&cd3d, "gov.nasa.larcfm.ACCoRD.CDCylinder"); // java name
@@ -59,8 +60,9 @@ void Detection3DParameterReader::registerDefaults() {
     registerDetection3D(&wcv_hz);
     registerDetection3D(&wcv_hz, "gov.nasa.larcfm.ACCoRD.WCV_HZ"); // java name
 
-    registered = true;
-  }
+    return true;
+  }();
+  (void)registered;
 }
 
 void Detection3DParameterReader::registerDetection3D(const Detection3D* cd) {
@@ -68,8 +70,14 @@ void Detection3DParameterReader::registerDetection3D(const Detection3D* cd) {
 }
 
 void Detection3DParameterReader::registerDetection3D(const Detection3D* cd, const string& name) {
-  if (registeredDetection3DClasses.find(name) == registeredDetection3DClasses.end()) {
-    registeredDetection3DClasses[name] = cd->make();
+  {
+    std::lock_guard<std::mutex> lock(registry_mutex);
+    if (registeredDetection3DClasses.count(name)) return;
+  }
+  std::unique_ptr<Detection3D> prototype(cd->make());
+  std::lock_guard<std::mutex> lock(registry_mutex);
+  if (!registeredDetection3DClasses.count(name)) {
+    registeredDetection3DClasses.emplace(name, std::move(prototype));
   }
 }
 
@@ -78,17 +86,33 @@ Triple<vector<Detection3D*>,Detection3D*,Detection3D*> Detection3DParameterReade
 }
 
 Triple<vector<Detection3D*>,Detection3D*,Detection3D*> Detection3DParameterReader::readCoreDetection(const ParameterData& params, bool verbose){
-  vector<Detection3D*> cdlist;
-  Detection3D* chosenD = NULL;
-  Detection3D* chosenR = NULL;
+  auto owned = readOwnedDetectors(params, verbose);
+  Triple<vector<Detection3D*>,Detection3D*,Detection3D*> result;
+  result.first.reserve(owned.first.size());
+  for (auto& detector : owned.first) {
+    result.first.push_back(detector.release());
+  }
+  result.second = owned.second;
+  result.third = owned.third;
+  return result;
+}
+
+Detection3DParameterReader::OwnedDetectors Detection3DParameterReader::readOwnedDetectors(const ParameterData& params, bool verbose) {
+  OwnedDetectors result;
   vector<string> mlist = params.matchList("load_core_detection_");
   std::sort(mlist.begin(), mlist.end());
   for (int i = 0; i < (int) mlist.size(); i++) {
     string pname = mlist[i];
     string instanceName = pname.substr(20);
     string dname = params.getString(pname);
-    if (registeredDetection3DClasses.find(dname) != registeredDetection3DClasses.end()) {
-      Detection3D* d = registeredDetection3DClasses[dname]->make();
+    const Detection3D* prototype = nullptr;
+    {
+      std::lock_guard<std::mutex> lock(registry_mutex);
+      auto entry = registeredDetection3DClasses.find(dname);
+      if (entry != registeredDetection3DClasses.end()) prototype = entry->second.get();
+    }
+    if (prototype) {
+      std::unique_ptr<Detection3D> d(prototype->make());
       if (verbose) std::cout << ">>>>> Core detection "+dname+" ("<<instanceName<<") loaded <<<<<"<<std::endl;
       ParameterData instpd = params.extractPrefix(instanceName+"_");
       if (instpd.size() > 0) {
@@ -99,26 +123,26 @@ Triple<vector<Detection3D*>,Detection3D*,Detection3D*> Detection3DParameterReade
         d->setIdentifier(instanceName);
       }
       if (params.contains("set_det_core_detection") && equalsIgnoreCase(params.getString("set_det_core_detection"),instanceName)) {
-        chosenD = d;
+        result.second = d.get();
         //        std::cout << ">>>>> Core detection det set to "<<instanceName<<" <<<<<"<<std::endl;
 
       }
       if (params.contains("set_res_core_detection") && equalsIgnoreCase(params.getString("set_res_core_detection"),instanceName)) {
-        chosenR = d;
+        result.third = d.get();
         //        std::cout << ">>>>> Core detection res set to "<<instanceName<<" <<<<<"<<std::endl;
       }
-      cdlist.push_back(d);
+      result.first.push_back(std::move(d));
     } else {
       std::cout << "Error loading core detection: Class "<<dname<<" not registered"<<std::endl;
     }
   }
-  if (params.contains("set_det_core_detection")  && chosenD == NULL) {
+  if (params.contains("set_det_core_detection")  && !result.second) {
     if (verbose) std::cout << ">>>>> Core detection "<<params.getString("set_det_core_detection")<<" does not appear to be loaded, det cannot be set <<<<<"<<std::endl;
   }
-  if (params.contains("set_res_core_detection")  && chosenR == NULL) {
+  if (params.contains("set_res_core_detection")  && !result.third) {
     if (verbose) std::cout << ">>>>> Core detection "<<params.getString("set_res_core_detection")<<" does not appear to be loaded, res cannot be set <<<<<"<<std::endl;
   }
-  return Triple<vector<Detection3D*>,Detection3D*,Detection3D*>(cdlist,chosenD,chosenR);
+  return result;
 }
 
 

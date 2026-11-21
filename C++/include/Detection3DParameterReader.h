@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <map>
+#include <memory>
 #include "Detection3D.h"
 #include "ParameterData.h"
 #include "Triple.h"
@@ -20,8 +21,8 @@ namespace larcfm {
  */
 class Detection3DParameterReader {
 private:
-  static std::map<std::string, Detection3D*> registeredDetection3DClasses;
-  static bool registered;
+  static std::map<std::string, std::unique_ptr<Detection3D>> registeredDetection3DClasses;
+
 public:
 
   /**
@@ -36,6 +37,9 @@ public:
   static void registerDetection3D(const Detection3D* cd);
   static void registerDetection3D(const Detection3D* cd, const std::string& aternate_name);
 
+
+  using OwnedDetectors = Triple<std::vector<std::unique_ptr<Detection3D>>, Detection3D*, Detection3D*>;
+  static OwnedDetectors readOwnedDetectors(const ParameterData& params, bool verbose = false);
 
   /**
    * The user is responsible for deleting the entries in the list (which will contain the second and third tuple elements).

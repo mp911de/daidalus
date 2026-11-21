@@ -20,6 +20,7 @@
 #include "ErrorLog.h"
 #include "StateVector.h"
 #include <string>
+#include <vector>
 
 namespace larcfm {
 
@@ -65,17 +66,17 @@ class AircraftState : public ErrorReporter {
     std::string id;         // Store Aircraft id (name)
 	
     // internal data structure, users use s(), v()
-    Position* s_list;
-    Velocity* v_list;
-    real* t_list;
+    std::vector<Position> s_list;
+    std::vector<Velocity> v_list;
+    std::vector<real> t_list;
     
     // Euclidean positions and velocities created by a projection function  
     EuclideanProjection sp;
-    Vect2* projS2;
-    real* projH;
-    Vect2* projV2;
-    real* projVZ;
-    real* projT;
+    std::vector<Vect2> projS2;
+    std::vector<real> projH;
+    std::vector<Vect2> projV2;
+    std::vector<real> projVZ;
+    std::vector<real> projT;
     bool projection_initialized;
     bool projection_done;
     bool regression_done;
@@ -92,6 +93,7 @@ class AircraftState : public ErrorReporter {
 	real lastZeroTrackRateThreshold;
 
 
+    void resizeBuffers(int size);
     void init(const std::string& name, int buffer_size);
 
   // This inserts the given data at point i--no questions asked.  Everything

@@ -93,10 +93,7 @@ TCAS3D* TCAS3D::make() const {
 
 // pointer to deep copy of current object
 TCAS3D* TCAS3D::copy() const {
-  TCAS3D* cd = new TCAS3D();
-  cd->table_ = table_;
-  cd->id = id;
-  return cd;
+  return new TCAS3D(*this);
 }
 
 bool TCAS3D::vertical_RA(real sz, real vz, real ZTHR, real TCOA) {

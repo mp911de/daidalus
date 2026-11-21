@@ -26,7 +26,7 @@ WCV_TAUMOD::WCV_TAUMOD() : WCV_tvar(new WCV_TCOA()) {}
 
 WCV_TAUMOD::WCV_TAUMOD(const std::string& id, const WCVTable& table) : WCV_tvar(id,new WCV_TCOA(),table) {}
 
-WCV_TAUMOD::WCV_TAUMOD(const WCV_TAUMOD& wcv) : WCV_tvar(wcv.getIdentifier(),wcv.getWCVVertical().copy(),wcv.getWCVTable()) {}
+WCV_TAUMOD::WCV_TAUMOD(const WCV_TAUMOD& wcv) : WCV_tvar(wcv) {}
 
 WCV_TAUMOD::WCV_TAUMOD(WCV_Vertical* wcv_vertical) : WCV_tvar(wcv_vertical) {}
 
