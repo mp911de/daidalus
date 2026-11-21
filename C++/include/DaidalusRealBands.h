@@ -174,7 +174,7 @@ public:
   /**
    * Refresh cached values
    */
-  void refresh(DaidalusCore& core);
+  virtual void refresh(DaidalusCore& core);
 
   /**
    *  Force computation of kinematic bands

@@ -21,12 +21,16 @@
 namespace larcfm {
 
 class DaidalusAltBands : public DaidalusRealBands {
+  friend class DaidalusCore;
+  DaidalusCore* level_out_core_ = nullptr;
 
 
 public:
   DaidalusAltBands();
 
   DaidalusAltBands(const DaidalusAltBands& b);
+
+  virtual void refresh(DaidalusCore& core);
 
   virtual bool do_recovery(const DaidalusParameters& parameters) const;
 

@@ -68,19 +68,17 @@ real DaidalusAltBands::time_step(const DaidalusParameters& parameters, const Tra
 
 namespace {
 
+using LevelOutTimes = Tuple5<real,real,real,real,real>;
+
 class LevelOutTrajectory : public DaidalusIntegerBands {
   real target_alt_;
   real end_time_;
 
 public:
-  const Tuple5<real,real,real,real,real> times;
+  const LevelOutTimes times;
 
-  LevelOutTrajectory(const DaidalusParameters& parameters, const TrafficState& ownship, real target_alt, real time_step)
-    : target_alt_(target_alt),
-      times(Kinematics::vsLevelOutTimes(ownship.positionXYZ().alt(),ownship.velocityXYZ().vs(),
-          parameters.getVerticalRate(),target_alt,parameters.getVerticalAcceleration(),-parameters.getVerticalAcceleration(),true)) {
-    end_time_ = (times.first < 0 ? real(-1) : times.third)+time_step;
-  }
+  LevelOutTrajectory(real target_alt, real time_step, const LevelOutTimes& phases)
+    : target_alt_(target_alt), end_time_((phases.first < 0 ? real(-1) : phases.third)+time_step), times(phases) {}
 
   std::pair<Vect3,Vect3> trajectory(const DaidalusParameters&, const TrafficState& ownship, real time, bool, int, bool) const override {
     const Position& position = ownship.positionXYZ();
@@ -97,13 +95,25 @@ public:
 
 }
 
+void DaidalusAltBands::refresh(DaidalusCore& core) {
+  if (isFresh()) return;
+  core.prepare_level_out_times();
+  struct RestoreCore {
+    DaidalusCore*& slot;
+    DaidalusCore* previous;
+    ~RestoreCore() { slot = previous; }
+  } restore{level_out_core_,level_out_core_};
+  level_out_core_ = &core;
+  DaidalusRealBands::refresh(core);
+}
+
 std::pair<Vect3, Vect3> DaidalusAltBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, real time, bool dir, int target_step, bool instantaneous) const {
   real target_alt = get_min_val_()+target_step*get_step(parameters);
   if (instantaneous) {
     Position position = ownship.positionXYZ().mkZ(target_alt);
     return std::make_pair(ownship.pos_to_s(position),ownship.vel_to_v(position,ownship.velocityXYZ().mkVs(0)));
   }
-  LevelOutTrajectory level_out(parameters,ownship,target_alt,time_step(parameters,ownship));
+  LevelOutTrajectory level_out(target_alt,time_step(parameters,ownship),DaidalusCore::calculate_level_out_times(parameters,ownship,target_alt));
   return level_out.trajectory(parameters,ownship,time,dir,target_step,instantaneous);
 }
 
@@ -116,7 +126,9 @@ bool DaidalusAltBands::conflict_free_traj_step(const Detection3D& conflict_det, 
   } else {
     real tstep = time_step(parameters,ownship);
     real target_alt = get_min_val_()+target_step*get_step(parameters);
-    const LevelOutTrajectory level_out(parameters,ownship,target_alt,tstep);
+    const auto times = level_out_core_ && &level_out_core_->ownship == &ownship && &level_out_core_->parameters == &parameters
+        ? level_out_core_->level_out_times(target_alt) : DaidalusCore::calculate_level_out_times(parameters,ownship,target_alt);
+    const LevelOutTrajectory level_out(target_alt,tstep,times);
     real tsqj1 = level_out.times.first;
     real tsqj2 = level_out.times.second;
     real tsqj3 = level_out.times.third+tstep;

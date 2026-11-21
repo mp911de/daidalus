@@ -18,12 +18,41 @@
 #include "TCASTable.h"
 #include "Alerter.h"
 #include "NoneUrgencyStrategy.h"
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <cmath>
 #include "TrafficState.h"
 
 namespace larcfm {
+
+DaidalusCore::LevelOutTimes DaidalusCore::calculate_level_out_times(const DaidalusParameters& parameters, const TrafficState& ownship, real target_alt) {
+  real acceleration = parameters.getVerticalAcceleration();
+  return Kinematics::vsLevelOutTimes(ownship.positionXYZ().alt(),ownship.velocityXYZ().vs(),
+      parameters.getVerticalRate(),target_alt,acceleration,-acceleration,true);
+}
+
+void DaidalusCore::prepare_level_out_times() {
+  const std::array<real,4> inputs = {{ownship.positionXYZ().alt(),ownship.velocityXYZ().vs(),
+      parameters.getVerticalRate(),parameters.getVerticalAcceleration()}};
+  if (inputs != level_out_inputs_) {
+    level_out_times_.clear();
+    level_out_inputs_ = inputs;
+  }
+}
+
+DaidalusCore::LevelOutTimes DaidalusCore::level_out_times(real target_alt) {
+  auto it = std::lower_bound(level_out_times_.begin(),level_out_times_.end(),target_alt,
+      [](const std::pair<real,LevelOutTimes>& entry, real altitude) { return entry.first < altitude; });
+  if (it != level_out_times_.end() && it->first == target_alt) {
+    return it->second;
+  }
+  auto times = calculate_level_out_times(parameters,ownship,target_alt);
+  if (std::isfinite(target_alt)) {
+    level_out_times_.emplace(it,target_alt,times);
+  }
+  return times;
+}
 
 DaidalusCore::DaidalusCore()
 : ownship()
@@ -146,6 +175,7 @@ void DaidalusCore::clear_hysteresis() {
  * If hysteresis is true, it also clears hysteresis variables
  */
 void DaidalusCore::stale() {
+  level_out_times_.clear();
   if (cache_ >= 0) {
     cache_ = -1;
     most_urgent_ac_ = TrafficState::INVALID();
@@ -724,6 +754,8 @@ bool DaidalusCore::check_alerting_thresholds(const Alerter& alerter, int alert_l
       }
       if (athr.getAltitudeSpread() > 0) {
         DaidalusAltBands alt_band;
+        prepare_level_out_times();
+        alt_band.level_out_core_ = this;
         alt_band.set_min_max_rel(climbing <= 0 ? athr.getAltitudeSpread() : 0,
             climbing >= 0 ? athr.getAltitudeSpread() : 0);
         if (alt_band.kinematic_conflict(parameters,ownship,intruder,detector,epsh,epsv,alerting_time,getSpecialBandFlags())) {

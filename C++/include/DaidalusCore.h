@@ -19,6 +19,8 @@
 #include "TrafficState.h"
 #include "DaidalusParameters.h"
 #include "SpecialBandFlags.h"
+#include "Tuple5.h"
+#include <array>
 #include <map>
 #include <vector>
 #include <string>
@@ -47,6 +49,14 @@ public:
   std::unique_ptr<UrgencyStrategy> urgency_strategy;
 
   private:
+  friend class DaidalusAltBands;
+  using LevelOutTimes = Tuple5<real,real,real,real,real>;
+  std::vector<std::pair<real,LevelOutTimes>> level_out_times_;
+  std::array<real,4> level_out_inputs_{};
+  static LevelOutTimes calculate_level_out_times(const DaidalusParameters& parameters, const TrafficState& ownship, real target_alt);
+  void prepare_level_out_times();
+  LevelOutTimes level_out_times(real target_alt);
+
   /**** CACHED VARIABLES ****/
 
   /* Variable to control re-computation of cached values */
