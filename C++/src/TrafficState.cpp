@@ -88,10 +88,10 @@ void TrafficState::setPosition(const Position& new_pos) {
  */
 void TrafficState::applyEuclideanProjection() {
   if (pos_.isLatLon()) {
-    sxyz_ = eprj_.project(pos_);
-    Velocity v = eprj_.projectVelocity(pos_, avel_);
+    const auto projected = eprj_.project(pos_,avel_);
+    sxyz_ = projected.first;
     posxyz_ = Position(sxyz_);
-    velxyz_ = v;
+    velxyz_ = projected.second;
   } else {
     posxyz_ = pos_;
     sxyz_ = pos_.vect3();

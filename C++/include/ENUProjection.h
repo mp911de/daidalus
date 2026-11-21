@@ -39,7 +39,8 @@ namespace larcfm {
   class ENUProjection {
   private:
     real projAlt;
-    Vect3 ref;
+    struct Axis { real x, y, z; };
+    Axis radial, east, south;
     LatLonAlt llaRef;
  
   public:
@@ -123,7 +124,7 @@ namespace larcfm {
     std::pair<Position,Velocity> inverse(const Vect3& p, const Velocity& v, bool toLatLon) const;
     
     /** String representation */    
-    std::string toString() const { return "ENUProjection "+ to_string(projAlt)+" "+ref.toString(); }
+    std::string toString() const;
   };
 }
 

@@ -33,6 +33,16 @@ PROGRAMS =
 else ifneq ($(DAIDALUS_FILE_IO),1)
 $(error DAIDALUS_FILE_IO must be 0 or 1)
 endif
+DAIDALUS_BATCH_FLOAT ?= 0
+ifeq ($(DAIDALUS_BATCH_FLOAT),1)
+ifneq ($(PRECISION),float)
+$(error DAIDALUS_BATCH_FLOAT requires PRECISION=float)
+endif
+OBJDIR := $(OBJDIR)/batched
+LIBDIR := $(LIBDIR)/batched
+BINDIR := $(BINDIR)/batched
+PRECISION_FLAGS += -DDAIDALUS_BATCH_FLOAT=1
+endif
 ARCHIVE = $(LIBDIR)/$(RELEASE).a
 INCLUDEFLAGS = -Iinclude
 CXXFLAGS = -Wall -O
@@ -55,6 +65,7 @@ $(OBJDIR)/%.o: src/%.cpp
 examples: $(addprefix $(BINDIR)/,$(PROGRAMS))
 
 $(addprefix $(BINDIR)/,$(PROGRAMS)): $(BINDIR)/%: examples/%.cpp $(ARCHIVE)
+	@mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(INCLUDEFLAGS) $(CXXFLAGS) $(PRECISION_FLAGS) $(LDFLAGS) $< $(ARCHIVE) $(LDLIBS) -o $@
 
 -include $(OBJS:.o=.d)

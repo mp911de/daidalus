@@ -95,6 +95,43 @@ bool DaidalusIntegerBands::LOS_at_coast(const Detection3D& det, bool trajdir, re
 // In PVS: int_bands@first_los_step
 int DaidalusIntegerBands::kinematic_first_los_step(const Detection3D& det, real tstep, bool trajdir,
     int min, int max,const DaidalusParameters& parameters,  const TrafficState& ownship, const TrafficState& traffic) const {
+#if defined(DAIDALUS_SINGLE_PRECISION) && DAIDALUS_BATCH_FLOAT
+  constexpr int width = 4;
+  struct Coordinates {
+    alignas(16) real position[width];
+    alignas(16) real velocity[width];
+  };
+  const real lookahead = parameters.getLookaheadTime();
+  while (max >= min && max - min >= width-1 && (min+width-1)*tstep < lookahead && tstep > 0) {
+    Coordinates x, y, z;
+    alignas(16) real time[width];
+    for (int lane = 0; lane < width; ++lane) {
+      time[lane] = (min+lane)*tstep;
+      const auto sample = trajectory(parameters,ownship,time[lane],trajdir,0,false);
+      x.position[lane] = sample.first.x();
+      y.position[lane] = sample.first.y();
+      z.position[lane] = sample.first.z();
+      x.velocity[lane] = sample.second.x();
+      y.velocity[lane] = sample.second.y();
+      z.velocity[lane] = sample.second.z();
+    }
+    auto extrapolate = [&](Coordinates& axis) {
+      for (int lane = 0; lane < width; ++lane) {
+        axis.position[lane] = -time[lane]*axis.velocity[lane] + axis.position[lane];
+      }
+    };
+    extrapolate(x);
+    extrapolate(y);
+    extrapolate(z);
+    TrafficState own = ownship;
+    for (int lane = 0; lane < width; ++lane) {
+      own.setPosition(Position::make(Vect3(x.position[lane],y.position[lane],z.position[lane])));
+      own.setAirVelocity(Velocity::make(Vect3(x.velocity[lane],y.velocity[lane],z.velocity[lane])));
+      if (det.conflictWithTrafficState(own,traffic,time[lane],time[lane]+tstep)) return min+lane;
+    }
+    min += width;
+  }
+#endif
   for (int k=min; k<=max; ++k) {
     if (LOS_at_coast(det,trajdir,k*tstep,tstep,parameters,ownship,traffic,0,false)) {
       return k;

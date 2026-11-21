@@ -66,28 +66,6 @@ namespace larcfm {
     }
   }
   
-  static Vect3 equator_map(const Vect3& ref, const Vect3& p) {
-    Vect3 xmult = ref.Hat();
-    Vect3 ymult = vect3_orthog_toy(ref).Hat();
-    Vect3 zmult = ref.cross(vect3_orthog_toy(ref)).Hat();
-    return Vect3(xmult.dot(p), ymult.dot(p), zmult.dot(p));
-  }
-  
-  static Vect3 equator_map_inv(const Vect3& ref, const Vect3& p) {
-    Vect3 xmult = ref.Hat();
-    Vect3 ymult = vect3_orthog_toy(ref).Hat();
-    Vect3 zmult = ref.cross(vect3_orthog_toy(ref)).Hat();
-    Vect3 xmultInv = Vect3(xmult.x(), ymult.x(), zmult.x());
-    Vect3 ymultInv = Vect3(xmult.y(), ymult.y(), zmult.y());
-    Vect3 zmultInv = Vect3(xmult.z(), ymult.z(), zmult.z());
-    return  Vect3(xmultInv.dot(p), ymultInv.dot(p), zmultInv.dot(p));
-  }
-  
-  static Vect2 sphere_to_plane(const Vect3& ref, const Vect3& p) {
-    Vect3 v = equator_map(ref,p);
-    return Vect2(v.y(), -v.z());
-  }
-  
   static Vect3 plane_to_sphere(const Vect2& v) {
     real r = GreatCircle::spherical_earth_radius;
     real x = std::sqrt(r*r - v.x*v.x - v.y*v.y);
@@ -97,30 +75,31 @@ namespace larcfm {
   
     // ENUProjection
     
-    ENUProjection::ENUProjection() : 
-    	ref(Vect3()),
-    	llaRef(LatLonAlt::ZERO()) {
-      projAlt = 0;
-      //ref = Vect3();
-      //llaRef = LatLonAlt::ZERO();
-    }
-    
+    ENUProjection::ENUProjection() :
+      projAlt(0), radial{0,0,0}, east{1,0,0}, south{0,0,0}, llaRef(LatLonAlt::ZERO()) {}
+
     ENUProjection::ENUProjection(const LatLonAlt& lla) :
-    	ref(spherical2xyz(lla.lat(),lla.lon())),
-    	llaRef(lla) {
-        projAlt = lla.alt();
-        //ref = spherical2xyz(lla.lat(),lla.lon());
-        //llaRef = lla;
+      projAlt(lla.alt()), llaRef(lla) {
+      const Vect3 ref = spherical2xyz(lla.lat(),lla.lon());
+      const Vect3 orthogonal = vect3_orthog_toy(ref);
+      auto axis = [](const Vect3& v) {
+        const Vect3 unit = v.Hat();
+        return Axis{unit.x(),unit.y(),unit.z()};
+      };
+      radial = axis(ref);
+      east = axis(orthogonal);
+      south = axis(ref.cross(orthogonal));
     }
-    
+
     ENUProjection::ENUProjection(real lat, real lon, real alt) :
-    	ref(spherical2xyz(lat,lon)),
-    	llaRef(LatLonAlt::mk(lat, lon, alt)) {
-        projAlt = alt;
-        //ref = spherical2xyz(lat,lon);
-        //llaRef = LatLonAlt::mk(lat, lon, alt);
+      ENUProjection(LatLonAlt::mk(lat,lon,alt)) {}
+
+    std::string ENUProjection::toString() const {
+      const Vect3 ref = radial.x == 0 && radial.y == 0 && radial.z == 0 ?
+          Vect3() : spherical2xyz(llaRef.lat(),llaRef.lon());
+      return "ENUProjection "+to_string(projAlt)+" "+ref.toString();
     }
-    
+
     ENUProjection ENUProjection::makeNew(const LatLonAlt& lla) const {
       return ENUProjection(lla);
     }
@@ -151,7 +130,8 @@ namespace larcfm {
 	}
 
     Vect2 ENUProjection::project2(const LatLonAlt& lla) const {
-      return sphere_to_plane(ref, spherical2xyz(lla.lat(),lla.lon()));
+      const Vect3 p = spherical2xyz(lla.lat(),lla.lon());
+      return Vect2(p.dot(east.x,east.y,east.z), -p.dot(south.x,south.y,south.z));
     }
 
     Vect3 ENUProjection::project(const LatLonAlt& lla) const {
@@ -173,7 +153,10 @@ namespace larcfm {
     }
 
     LatLonAlt ENUProjection::inverse(const Vect2& xy, real alt) const {
-      return xyz2spherical(equator_map_inv(ref, plane_to_sphere(xy)), alt + projAlt);
+      const Vect3 p = plane_to_sphere(xy);
+      return xyz2spherical(Vect3(p.dot(radial.x,east.x,south.x),
+                                 p.dot(radial.y,east.y,south.y),
+                                 p.dot(radial.z,east.z,south.z)),alt + projAlt);
     }
 
     LatLonAlt ENUProjection::inverse(const Vect3& xyz) const {  
@@ -181,12 +164,7 @@ namespace larcfm {
     }
     
   Velocity ENUProjection::projectVelocity(const LatLonAlt& lla, const Velocity& v) const {
-    real timeStep = real(10.0);
-    LatLonAlt ll2 = GreatCircle::linear_initial(lla,v,timeStep);
-    Vect3 se = project(lla);
-    Vect3 s2 = project(ll2);
-    Vect3 vn = s2.Sub(se).Scal(1/timeStep);
-    return Velocity::make(vn);
+    return project(lla,v).second;
   }
   
   Velocity ENUProjection::projectVelocity(const Position& ss, const Velocity& v) const {
@@ -199,29 +177,26 @@ namespace larcfm {
 
   // The user needs to keep track of whether to translate back (i.e. whether original was LatLon())
   Velocity ENUProjection::inverseVelocity(const Vect3& s, const Velocity& v, bool toLatLon) const {
-    if (toLatLon) {
-      real timeStep = real(10.0);
-      Vect3 s2 = s.linear(v.vect3(),timeStep);
-      LatLonAlt lla1 = inverse(s);
-      LatLonAlt lla2 = inverse(s2);
-      Velocity nv = GreatCircle::velocity_initial(lla1,lla2,timeStep);
-      return nv;
-    } else {
-      return v;
-    }
+    return toLatLon ? inverse(s,v,true).second : v;
   }
 
   std::pair<Vect3,Velocity> ENUProjection::project(const Position& p, const Velocity& v) const {
-   	return std::pair<Vect3,Velocity>(project(p),projectVelocity(p,v));
+    return p.isLatLon() ? project(p.lla(),v) : std::make_pair(p.vect3(),v);
    }
 
   std::pair<Vect3,Velocity> ENUProjection::project(const LatLonAlt& p, const Velocity& v) const {
-   	return std::pair<Vect3,Velocity>(project(p),projectVelocity(p,v));
+    const real timeStep = 10;
+    const Vect3 start = project(p);
+    const Vect3 end = project(GreatCircle::linear_initial(p,v,timeStep));
+    return std::make_pair(start,Velocity::make(end.Sub(start).Scal(1/timeStep)));
    }
 
   std::pair<Position,Velocity> ENUProjection::inverse(const Vect3& p, const Velocity& v, bool toLatLon) const {
     if (toLatLon) {
-      return std::pair<Position,Velocity>(Position(inverse(p)),inverseVelocity(p,v,true));
+      const real timeStep = 10;
+      const LatLonAlt start = inverse(p);
+      const LatLonAlt end = inverse(p.linear(v.vect3(),timeStep));
+      return std::make_pair(Position(start),GreatCircle::velocity_initial(start,end,timeStep));
     } else {
       return std::pair<Position,Velocity>(Position(p),v);
     }
