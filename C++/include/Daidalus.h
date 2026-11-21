@@ -7,6 +7,7 @@
 
 #ifndef DAIDALUS_H_
 #define DAIDALUS_H_
+#include "DaidalusFeatures.h"
 #include "Real.h"
 
 #include "DaidalusCore.h"
@@ -1934,6 +1935,7 @@ public:
    */
   void disableHysteresis();
 
+#if DAIDALUS_FILE_IO
   /**
    *  Load parameters from file.
    */
@@ -1943,6 +1945,7 @@ public:
    *  Write parameters to file.
    */
   bool saveToFile(const std::string& file);
+#endif
 
   /**
    * Set bands parameters

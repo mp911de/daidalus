@@ -52,6 +52,7 @@ $ make
 ```
 
 For single precision, run `make PRECISION=float` and compile callers with `-DDAIDALUS_SINGLE_PRECISION`.
+To omit file I/O, run `make DAIDALUS_FILE_IO=0` and compile callers with `-DDAIDALUS_FILE_IO=0`.
 
 Running example applications
 -------------------------

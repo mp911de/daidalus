@@ -21,6 +21,18 @@ endif
 SRC = $(wildcard src/*.cpp)
 OBJS = $(patsubst src/%.cpp,$(OBJDIR)/%.o,$(SRC))
 PROGRAMS = DaidalusExample DaidalusAlerting DaidalusBatch DAAEcho
+DAIDALUS_FILE_IO ?= 1
+ifeq ($(DAIDALUS_FILE_IO),0)
+OBJDIR = build/$(PRECISION)/no-io/obj
+LIBDIR = build/$(PRECISION)/no-io/lib
+FILE_IO_FLAGS = -DDAIDALUS_FILE_IO=0
+SRC := $(filter-out src/DAABatchProcessor.cpp src/DaidalusFileIO.cpp src/DaidalusFileWalker.cpp \
+	src/DaidalusParametersFileIO.cpp src/SeparatedInput.cpp src/SeparatedOutput.cpp \
+	src/SequenceReader.cpp src/StateReader.cpp,$(SRC))
+PROGRAMS =
+else ifneq ($(DAIDALUS_FILE_IO),1)
+$(error DAIDALUS_FILE_IO must be 0 or 1)
+endif
 ARCHIVE = $(LIBDIR)/$(RELEASE).a
 INCLUDEFLAGS = -Iinclude
 CXXFLAGS = -Wall -O
@@ -38,7 +50,7 @@ $(ARCHIVE): $(OBJS)
 
 $(OBJDIR)/%.o: src/%.cpp
 	@mkdir -p $(OBJDIR)
-	$(CXX) $(CPPFLAGS) $(INCLUDEFLAGS) $(CXXFLAGS) $(PRECISION_FLAGS) $(PRECISION_WARNINGS) -MMD -MP -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(INCLUDEFLAGS) $(CXXFLAGS) $(FILE_IO_FLAGS) $(PRECISION_FLAGS) $(PRECISION_WARNINGS) -MMD -MP -c $< -o $@
 
 examples: $(addprefix $(BINDIR)/,$(PROGRAMS))
 

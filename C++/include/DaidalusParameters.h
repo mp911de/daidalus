@@ -6,6 +6,7 @@
  */
 #ifndef DAIDALUSPARAMETERS_H_
 #define DAIDALUSPARAMETERS_H_
+#include "DaidalusFeatures.h"
 #include "Real.h"
 
 #include "ParameterData.h"
@@ -1086,6 +1087,7 @@ public:
 
   void disableHysteresis();
 
+#if DAIDALUS_FILE_IO
   /**
    *  Load parameters from file.
    */
@@ -1095,6 +1097,7 @@ public:
    *  Write parameters to file.
    */
   bool saveToFile(const std::string& file);
+#endif
 
   std::string toString() const;
 
