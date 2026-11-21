@@ -30,6 +30,12 @@ private:
 	 * -1; Kinematic horizontal direction bands computed assumming airspeed_thr
 	 */
 	int below_as_thr_;
+  real turn_speed_ = -1;
+  real turn_rate_ = 0;
+  real bank_angle_ = 0;
+  real turn_radius_ = 0;
+
+  virtual void prepare_trajectory(const DaidalusParameters& parameters, const TrafficState& ownship);
 
   Velocity ownship_vel(const DaidalusParameters& parameters, const TrafficState& ownship) const;
 

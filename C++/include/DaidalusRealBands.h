@@ -133,6 +133,8 @@ public:
   void set_min_max_rel(real min_rel, real max_rel);
 
 private:
+  virtual void prepare_trajectory(const DaidalusParameters&, const TrafficState&) {}
+
   real min_rel(const DaidalusParameters& parameters) const;
 
   real max_rel(const DaidalusParameters& parameters) const;

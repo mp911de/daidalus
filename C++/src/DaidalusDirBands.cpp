@@ -87,6 +87,23 @@ Velocity DaidalusDirBands::ownship_vel(const DaidalusParameters& parameters, con
  	return ownship.velocityXYZ().mkGs(ownship_gs(parameters,ownship));
 }
 
+static real turn_radius(real speed, real rate, real bank) {
+  if (rate != real(0.0)) {
+    bank = std::abs(Kinematics::bankAngle(speed,rate));
+  }
+  return Kinematics::turnRadius(speed,bank);
+}
+
+void DaidalusDirBands::prepare_trajectory(const DaidalusParameters& parameters, const TrafficState& ownship) {
+  if (instantaneous_bands(parameters)) {
+    return;
+  }
+  turn_speed_ = ownship_vel(parameters,ownship).gs();
+  turn_rate_ = parameters.getTurnRate();
+  bank_angle_ = parameters.getBankAngle();
+  turn_radius_ = turn_radius(turn_speed_,turn_rate_,bank_angle_);
+}
+
 std::pair<Vect3, Vect3> DaidalusDirBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, real time, bool dir, int target_step, bool instantaneous) const {
   std::pair<Position,Velocity> posvel;
   Velocity ownship_velocityXYZ = ownship_vel(parameters,ownship);
@@ -97,8 +114,10 @@ std::pair<Vect3, Vect3> DaidalusDirBands::trajectory(const DaidalusParameters& p
     posvel = std::pair<Position, Velocity>(ownship.positionXYZ(),ownship_velocityXYZ.mkTrk(trk));
   } else {
     real gso = ownship_velocityXYZ.gs();
-    real bank = parameters.getTurnRate() == real(0.0) ? parameters.getBankAngle() : std::abs(Kinematics::bankAngle(gso,parameters.getTurnRate()));
-    real R = Kinematics::turnRadius(gso,bank);
+    real rate = parameters.getTurnRate();
+    real bank = parameters.getBankAngle();
+    real R = gso == turn_speed_ && rate == turn_rate_ && bank == bank_angle_
+        ? turn_radius_ : turn_radius(gso,rate,bank);
     posvel = ProjectedKinematics::turn(ownship.positionXYZ(),ownship_velocityXYZ,time,R,dir);
   }
   return std::pair<Vect3, Vect3>(ownship.pos_to_s(posvel.first),ownship.vel_to_v(posvel.first,posvel.second));

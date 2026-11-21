@@ -153,6 +153,7 @@ bool DaidalusRealBands::set_input(const DaidalusParameters& parameters, const Tr
           (mod_ > 0 && (circular_ ||
               (0 <= val && val <= max_val_) || (min_val_ <= val && val <= mod_)))) {
         checked_     = 1;
+        prepare_trajectory(parameters,ownship);
       }
     }
   }
