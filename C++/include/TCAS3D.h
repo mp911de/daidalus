@@ -22,6 +22,12 @@ private:
   TCASTable table_;
   std::string id;
 
+  Triple<real,real,real> RA3D_interval(int sl, const Vect2& so2, real soz, const Vect2& vo2, real voz,
+      const Vect2& si2, real siz, const Vect2& vi2, real viz, real B, real T, bool severity) const;
+  LossData RA3D_times(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T, real* critical_time) const;
+protected:
+  virtual LossData conflictInterval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const;
+  virtual LossData conflictIntervalWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const;
 public:
 
   /** Constructor that uses the default TCAS tables. */

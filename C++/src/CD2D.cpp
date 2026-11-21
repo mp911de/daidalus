@@ -57,8 +57,9 @@ LossData CD2D::detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
     } else {
       Vect2 v = vo - vi;
       if (Horizontal::Delta(s,v,D) > 0) {
-        real tin  = Horizontal::Theta_D(s,v,larcfm::Entry,D);
-        real tout = Horizontal::Theta_D(s,v,larcfm::Exit,D);
+        const auto times = Horizontal::Theta_D_times(s,v,D);
+        real tin = times.first;
+        real tout = times.second;
         t_in  = Util::min(Util::max(tin,B),T);
         t_out = Util::max(Util::min(tout,T),B);
       } 

@@ -102,6 +102,21 @@ real Horizontal::Theta_D(const Vect2& s, const Vect2& v,
   return root2b(a,b,c,eps);
 }
 
+std::pair<real,real> Horizontal::Theta_D_times(const Vect2& s, const Vect2& v, real D) {
+  real a = v.sqv();
+  real b = s*v;
+  real c = s.sqv()-sq(D);
+  if (a == 0) {
+    real t = root2b(a,b,c,1);
+    return std::make_pair(t,t);
+  }
+  real bb = sq(b);
+  real ac = a*c;
+  if (!(Util::almost_equals(bb,ac) || bb > ac)) return std::make_pair(NaN,NaN);
+  real root = sqrt_safe(bb-ac);
+  return std::make_pair((-b-root)/a,(-b+root)/a);
+}
+
 real Horizontal::Delta(const Vect2& s, const Vect2& v, const real D) {
   return sq(D)*v.sqv() - sq(s.det(v));
 }

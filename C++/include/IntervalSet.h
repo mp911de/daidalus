@@ -230,7 +230,12 @@ private:
 	void remove(int i, int len);
 
 	static const Interval empty;
-	Interval r[max_intervals];
+	union Slot {
+		Interval value;
+		Slot() {}
+	};
+	Slot r[max_intervals];
+	void append_sorted(const Interval& interval);
 	int length;
 };
 

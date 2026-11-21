@@ -54,8 +54,9 @@ LossData CD3D::detection(const Vect3& s, const Vect3& vo, const Vect3& vi,
     } else {
       Vect2 v2 = vo2 - vi2;
       if (Horizontal::Delta(s2,v2,D) > real(0.0)) {
-        real td1 = Horizontal::Theta_D(s2,v2,larcfm::Entry,D);
-        real td2 = Horizontal::Theta_D(s2,v2,larcfm::Exit,D);
+        const auto times = Horizontal::Theta_D_times(s2,v2,D);
+        real td1 = times.first;
+        real td2 = times.second;
         if (!Util::almost_equals(vo.z(),vi.z())) {
           real tin  = Util::max(td1,Vertical::Theta_H(s.z(),vz,larcfm::Entry,H));
           real tout = Util::min(td2,Vertical::Theta_H(s.z(),vz,larcfm::Exit,H));
@@ -90,8 +91,9 @@ LossData CD3D::detectionActual(const Vect3& s, const Vect3& vo, const Vect3& vi,
   } else {
     Vect2 v2 = vo2 - vi2;
     if (Horizontal::Delta(s2,v2,D) > real(0.0)) {
-      real td1 = Horizontal::Theta_D(s2,v2,larcfm::Entry,D);
-      real td2 = Horizontal::Theta_D(s2,v2,larcfm::Exit,D);
+      const auto times = Horizontal::Theta_D_times(s2,v2,D);
+      real td1 = times.first;
+      real td2 = times.second;
       if (!Util::almost_equals(vo.z(),vi.z())) {
         t_in  = Util::max(td1,Vertical::Theta_H(s.z(),vz,larcfm::Entry,H));
         t_out = Util::min(td2,Vertical::Theta_H(s.z(),vz,larcfm::Exit,H));

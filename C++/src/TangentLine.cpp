@@ -24,62 +24,39 @@ TangentLine::TangentLine() : Vect2(real(0.0),real(0.0)) {
   //x = y = 0.0;
 }
 
+static Vect2 tangent_point(const Vect2& s, real alpha, real beta, int eps) {
+  return Vect2(alpha*s.x+eps*beta*s.y,alpha*s.y-eps*beta*s.x);
+}
+
 Vect2 TangentLine::Q(const Vect2& s, const real D, const int eps) {
   real sq_s = s.sqv();
   real sq_D = sq(D);
-  real delta = sq_s -sq_D;
-  if (delta >= 0) { 
-    real alpha = sq_D/sq_s;
-    real beta  = D*sqrt_safe(delta)/sq_s;
-    return Vect2(alpha*s.x+eps*beta*s.y,
-		 alpha*s.y-eps*beta*s.x);   
-    }
-    return Vect2();
+  real delta = sq_s-sq_D;
+  if (!(delta >= 0)) return Vect2();
+  return tangent_point(s,sq_D/sq_s,D*sqrt_safe(delta)/sq_s,eps);
 }
 
-real InitTangentLineX (const Vect2& s, const real D, const int eps) {
-  real x;
-//  double y;
-  real sq_s  = s.sqv();
-  real sq_D  = sq(D);
-  if (Util::almost_equals(sq_s,sq_D))  {
-    x = eps*s.y;
-//    y = -eps*s.x;
-  } else {
-    Vect2 q = TangentLine::Q(s,D,eps);
-    x = q.x;
-//    y = q.y;
-    if (!q.isZero()) {
-      x -= s.x;
-//      y -= s.y;
-    }
+static Vect2 tangent_direction(const Vect2& s, const Vect2& q) {
+  return q.isZero() ? q : q.Sub(s);
+}
+
+std::pair<Vect2,Vect2> TangentLine::directions(const Vect2& s, real D) {
+  real sq_s = s.sqv();
+  real sq_D = sq(D);
+  if (Util::almost_equals(sq_s,sq_D)) {
+    return std::make_pair(Vect2(-s.y,s.x),Vect2(s.y,-s.x));
   }
-  return x;
+  real delta = sq_s-sq_D;
+  if (!(delta >= 0)) return std::make_pair(Vect2(),Vect2());
+  real alpha = sq_D/sq_s;
+  real beta = D*sqrt_safe(delta)/sq_s;
+  return std::make_pair(tangent_direction(s,tangent_point(s,alpha,beta,-1)),
+      tangent_direction(s,tangent_point(s,alpha,beta,1)));
 }
 
-real InitTangentLineY (const Vect2& s, const real D, const int eps) {
-//  double x;
-  real y;
-  real sq_s  = s.sqv();
-  real sq_D  = sq(D);
-  if (Util::almost_equals(sq_s,sq_D))  {
-//    x = eps*s.y;
-    y = -eps*s.x;
-  } else {
-    Vect2 q = TangentLine::Q(s,D,eps);
-//    x = q.x;
-    y = q.y;
-    if (!q.isZero()) {
-//      x -= s.x;
-      y -= s.y;
-    }
-  }
-  return y;
-}
-
-TangentLine::TangentLine(const Vect2& s, const real D, const int eps) : Vect2(InitTangentLineX(s, D, eps), InitTangentLineY(s, D, eps) ) {
-  this->eps = eps;
-}
+TangentLine::TangentLine(const Vect2& s, const real D, const int eps)
+  : Vect2(Util::almost_equals(s.sqv(),sq(D)) ? Vect2(eps*s.y,-eps*s.x) :
+      tangent_direction(s,Q(s,D,eps))), eps(eps) {}
 
 bool TangentLine::horizontal_criterion(const Vect2& v) const {
   return eps*det(v) >= 0;    

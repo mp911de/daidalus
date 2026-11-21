@@ -23,6 +23,8 @@
 #include "NoDetector.h"
 
 #include <cmath>
+#include <array>
+#include <algorithm>
 #include <vector>
 #include <string>
 
@@ -30,6 +32,47 @@
 #include "TrafficState.h"
 
 namespace larcfm {
+
+namespace {
+
+class TrajectorySamples : public DaidalusIntegerBands {
+  const DaidalusIntegerBands& bands_;
+  const DaidalusParameters& parameters_;
+  const TrafficState& ownship_;
+  using Key = std::pair<int,real>;
+  using Sample = std::pair<Key,std::array<real,6>>;
+  mutable std::vector<Sample> samples_[2][2];
+
+public:
+  TrajectorySamples(const DaidalusIntegerBands& bands, const DaidalusParameters& parameters, const TrafficState& ownship)
+    : bands_(bands), parameters_(parameters), ownship_(ownship) {}
+
+  std::pair<Vect3,Vect3> trajectory(const DaidalusParameters& parameters, const TrafficState& ownship,
+      real time, bool dir, int target_step, bool instantaneous) const override {
+    if (&ownship != &ownship_ || &parameters != &parameters_ || !std::isfinite(time)) {
+      return bands_.trajectory(parameters,ownship,time,dir,target_step,instantaneous);
+    }
+    auto& samples = samples_[dir][instantaneous];
+    Key key(target_step,time);
+    auto it = std::lower_bound(samples.begin(),samples.end(),key,
+        [](const Sample& sample, const Key& value) { return sample.first < value; });
+    if (it != samples.end() && it->first == key) {
+      const auto& v = it->second;
+      return std::make_pair(Vect3(v[0],v[1],v[2]),Vect3(v[3],v[4],v[5]));
+    }
+    auto sample = bands_.trajectory(parameters,ownship,time,dir,target_step,instantaneous);
+    const Vect3& s = sample.first;
+    const Vect3& v = sample.second;
+    samples.emplace(it,key,std::array<real,6>{{s.x(),s.y(),s.z(),v.x(),v.y(),v.z()}});
+    return sample;
+  }
+};
+
+}
+
+const DaidalusIntegerBands& DaidalusRealBands::integer_bands() const {
+  return run_.samples ? *run_.samples : *this;
+}
 
 DaidalusRealBands::DaidalusRealBands(real mod) {
   // Private variables are initialized
@@ -245,6 +288,13 @@ bool DaidalusRealBands::isFresh() const {
 void DaidalusRealBands::refresh(DaidalusCore& core) {
   if (outdated_) {
     if (set_input(core.parameters,core.ownship,core.getSpecialBandFlags())) {
+      TrajectorySamples samples(*this,core.parameters,core.ownship);
+      struct RestoreSamples {
+        const DaidalusIntegerBands*& slot;
+        const DaidalusIntegerBands* previous;
+        ~RestoreSamples() { slot = previous; }
+      } restore{run_.samples,run_.samples};
+      run_.samples = &samples;
       for (int conflict_region=0; conflict_region < BandsRegion::NUMBER_OF_CONFLICT_BANDS; ++conflict_region) {
         acs_bands_[conflict_region] = core.acs_conflict_bands(conflict_region);
         if (core.bands_for(conflict_region)) {
@@ -375,7 +425,7 @@ void DaidalusRealBands::saturateNoneIntervalSet(IntervalSet& noneset) const {
  */
 void DaidalusRealBands::compute_none_bands(IntervalSet& none_set_region, const std::vector<IndexLevelT>& ilts,
     const Detection3D& det, const Detection3D& recovery,
-    bool recovery_case, real B, DaidalusCore& core) {
+    bool recovery_case, real B, DaidalusCore& core, bool probe) {
   saturateNoneIntervalSet(none_set_region);
   // Compute bands for given region
   std::vector<IndexLevelT>::const_iterator ilt_ptr;
@@ -387,6 +437,12 @@ void DaidalusRealBands::compute_none_bands(IntervalSet& none_set_region, const s
       const Detection3D& detector = (!det.isValid() ? alerter.getLevel(ilt_ptr->level).getCoreDetection() : det);
       IntervalSet noneset2 = IntervalSet();
       real T = ilt_ptr->time_horizon;
+      struct RestoreCandidates {
+        const IntervalSet*& slot;
+        const IntervalSet* previous;
+        ~RestoreCandidates() { slot = previous; }
+      } restore{run_.candidates,run_.candidates};
+      run_.candidates = probe && ilt_ptr+1 == ilts.end() ? &none_set_region : nullptr;
       if (B > T) {
         // This case corresponds to recovery bands, where B is a recovery time.
         // If recovery time is greater than lookahead time for aircraft, then only
@@ -445,7 +501,7 @@ bool DaidalusRealBands::compute_recovery_bands(IntervalSet& none_set_region, con
         real pivot_green = T+1;
         real pivot = pivot_green-1;
         while ((pivot_green-pivot_red) > real(0.5)) {
-          compute_none_bands(none_set_region,ilts,NoDetector::A_NoDetector(),cd3d,true,pivot,core);
+          compute_none_bands(none_set_region,ilts,NoDetector::A_NoDetector(),cd3d,true,pivot,core,true);
           solidred = none_set_region.isEmpty();
           if (solidred) {
             pivot_red = pivot;
@@ -733,14 +789,33 @@ void DaidalusRealBands::toIntervalSet(IntervalSet& noneset, const std::vector<In
  * The output parameter noneset has a list of non-conflict ranges orderd within [min,max]
  * values (or [0,mod] in the case of circular bands, i.e., when mod == 0).
  */
+bool DaidalusRealBands::RecoveryTest::accepts(bool dir, int first, int last) const {
+  real lb = step_*(dir ? first : -last)+origin_;
+  real ub = step_*(dir ? last : -first)+origin_;
+  real mod = bands_.mod_;
+  if (mod > 0 && Util::almost_equals(Util::safe_modulo(lb,mod),Util::safe_modulo(ub,mod),DaidalusParameters::ALMOST_)) return false;
+  witness_.clear();
+  bands_.add_noneset(witness_,lb,ub);
+  const IntervalSet& candidates = *bands_.run_.candidates;
+  for (int i = 0; i < witness_.size(); ++i) {
+    const Interval& a = witness_.getInterval(i);
+    for (int j = 0; j < candidates.size(); ++j) {
+      const Interval& b = candidates.getInterval(j);
+      if (Util::almost_less(Util::max(a.low,b.low),Util::min(a.up,b.up),DaidalusParameters::ALMOST_)) return true;
+    }
+  }
+  return false;
+}
+
 void DaidalusRealBands::none_bands(IntervalSet& noneset, const Detection3D& conflict_det, const Detection3D& recovery_det,
     int epsh, int epsv, real B, real T, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic) const {
   std::vector<Integerval> bands_int;
   int mino = maxdown(parameters,ownship);
   int maxo = maxup(parameters,ownship);
   real tstep = instantaneous_bands(parameters) ?  real(0.0) : time_step(parameters,ownship);
-  integer_bands_combine(bands_int,conflict_det,recovery_det,tstep,
-      B,T,mino,maxo,parameters,ownship,traffic,epsh,epsv);
+  RecoveryTest test(*this,noneset,get_step(parameters),own_val(ownship));
+  if (integer_bands().integer_bands_until(bands_int,conflict_det,recovery_det,tstep,
+      B,T,mino,maxo,parameters,ownship,traffic,epsh,epsv,test.active())) return;
   toIntervalSet(noneset,bands_int,get_step(parameters),own_val(ownship));
 }
 
@@ -749,7 +824,7 @@ bool DaidalusRealBands::any_red(const Detection3D& conflict_det, const Detection
   int mino = maxdown(parameters,ownship);
   int maxo = maxup(parameters,ownship);
   real tstep = instantaneous_bands(parameters) ?  real(0.0) : time_step(parameters,ownship);
-  return any_integer_red(conflict_det,recovery_det,tstep,
+  return integer_bands().any_integer_red(conflict_det,recovery_det,tstep,
       B,T,mino,maxo,parameters,ownship,traffic,epsh,epsv,0);
 }
 
@@ -758,7 +833,7 @@ bool DaidalusRealBands::all_red(const Detection3D& conflict_det, const Detection
   int mino = maxdown(parameters,ownship);
   int maxo = maxup(parameters,ownship);
   real tstep = instantaneous_bands(parameters) ?  real(0.0) : time_step(parameters,ownship);
-  return all_integer_red(conflict_det,recovery_det,tstep,
+  return integer_bands().all_integer_red(conflict_det,recovery_det,tstep,
       B,T,mino,maxo,parameters,ownship,traffic,epsh,epsv,0);
 }
 

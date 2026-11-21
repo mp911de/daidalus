@@ -16,6 +16,10 @@ namespace larcfm {
 class WCV_TAUMOD_SUM : public WCV_TAUMOD {
 
 
+protected:
+  virtual LossData conflictIntervalWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const;
+private:
+  bool uncertainInterval(const TrafficState& ownship, const TrafficState& intruder, real B, real T, LossData& interval) const;
 public:
 
   /** Constructor that a default instance of the WCV tables. */

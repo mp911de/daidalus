@@ -37,6 +37,30 @@ class DaidalusRealBands : public DaidalusIntegerBands {
 
 private:
 
+  struct RunContext {
+    const DaidalusIntegerBands* samples = nullptr;
+    const IntervalSet* candidates = nullptr;
+    RunContext() = default;
+    RunContext(const RunContext&) {}
+    RunContext& operator=(const RunContext&) { return *this; }
+  } run_;
+
+protected:
+  class RecoveryTest : public BandTest {
+    const DaidalusRealBands& bands_;
+    IntervalSet& witness_;
+    real step_;
+    real origin_;
+  public:
+    RecoveryTest(const DaidalusRealBands& bands, IntervalSet& witness, real step, real origin)
+      : bands_(bands), witness_(witness), step_(step), origin_(origin) {}
+    const BandTest* active() const { return bands_.run_.candidates ? this : nullptr; }
+    bool accepts(bool dir, int first, int last) const override;
+  };
+
+private:
+  const DaidalusIntegerBands& integer_bands() const;
+
   /*** PRIVATE VARIABLES */
 
   real mod_;  // If mod_ > 0, bands are circular modulo this value
@@ -229,7 +253,7 @@ private:
    */
   void compute_none_bands(IntervalSet& none_set_region, const std::vector<IndexLevelT>& ilts,
       const Detection3D& det, const Detection3D& recovery,
-      bool recovery_case, real B, DaidalusCore& core);
+      bool recovery_case, real B, DaidalusCore& core, bool probe = false);
 
   /**
    * Compute recovery bands. Class variables recovery_time_, recovery_horizontal_distance_,

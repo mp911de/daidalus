@@ -177,16 +177,9 @@ std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_pair(const Vect2& v1, const Vect2
 }
 
 std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_wcv_pair_comp_init(const Vect2& s, const Vect2& v, real s_err, real v_err) const {
-  Vect2 v1 = TangentLine(s,s_err,-1);
-  v1 = v1.Hat();
-  Vect2 v2 = TangentLine(s,s_err,1);
-  v2 = v2.Hat();
-  Vect2 w = v.Neg();
-  Vect2 w1 = TangentLine(w,v_err,-1);
-  w1 = w1.Hat();
-  Vect2 w2 = TangentLine(w,v_err,1);
-  w2 = w2.Hat();
-  std::pair<Vect2,Vect2> op = optimal_pair(v1,v2,w1,w2);
+  const auto position = TangentLine::directions(s,s_err);
+  const auto velocity = TangentLine::directions(v.Neg(),v_err);
+  const auto op = optimal_pair(position.first.Hat(),position.second.Hat(),velocity.first.Hat(),velocity.second.Hat());
   return std::pair<Vect2,Vect2>(op.first.Neg(),op.second);
 }
 
@@ -376,20 +369,14 @@ bool WCV_TAUMOD_SUM::WCV_taumod_uncertain_detection(real B, real T, const Vect3&
  * @param T   end of detection time (if T < 0 then use an "infinite" lookahead time)
  * @return a ConflictData object detailing the conflict
  */
-ConflictData WCV_TAUMOD_SUM::conflictDetectionWithTrafficState(const TrafficState& ownship, const TrafficState& intruder,
-    real B, real T) const {
+bool WCV_TAUMOD_SUM::uncertainInterval(const TrafficState& ownship, const TrafficState& intruder, real B, real T, LossData& interval) const {
   real s_err = relativeHorizontalPositionError(ownship,intruder);
   real sz_err = relativeVerticalPositionError(ownship,intruder);
   real v_err = relativeHorizontalSpeedError(ownship,intruder,s_err);
   real vz_err = relativeVerticalSpeedError(ownship,intruder);
 
-  Vect3 so = ownship.get_s();
-  Vect3 vo = ownship.get_v();
-  Vect3 si = intruder.get_s();
-  Vect3 vi = intruder.get_v();
-
   if (s_err == real(0.0) && sz_err == real(0.0) && v_err == real(0.0) && vz_err == real(0.0)) {
-    return conflictDetection(so,vo,si,vi,B,T);
+    return false;
   }
 
   s_err = Util::max(s_err, MinError);
@@ -397,9 +384,25 @@ ConflictData WCV_TAUMOD_SUM::conflictDetectionWithTrafficState(const TrafficStat
   v_err = Util::max(v_err, MinError);
   vz_err = Util::max(vz_err, MinError);
 
-  Vect3 s = so.Sub(si);
-  Vect3 v = vo.Sub(vi);
-  LossData ld = WCV_taumod_uncertain_interval(B,T,s,v,s_err,sz_err,v_err,vz_err);
+  Vect3 s = ownship.get_s().Sub(intruder.get_s());
+  Vect3 v = ownship.get_v().Sub(intruder.get_v());
+  interval = WCV_taumod_uncertain_interval(B,T,s,v,s_err,sz_err,v_err,vz_err);
+  return true;
+}
+
+LossData WCV_TAUMOD_SUM::conflictIntervalWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const {
+  LossData interval;
+  if (uncertainInterval(ownship,intruder,B,T,interval)) return interval;
+  return WCV_tvar::conflictIntervalWithTrafficState(ownship,intruder,B,T);
+}
+
+ConflictData WCV_TAUMOD_SUM::conflictDetectionWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const {
+  LossData ld;
+  if (!uncertainInterval(ownship,intruder,B,T,ld)) {
+    return conflictDetection(ownship.get_s(),ownship.get_v(),intruder.get_s(),intruder.get_v(),B,T);
+  }
+  Vect3 s = ownship.get_s().Sub(intruder.get_s());
+  Vect3 v = ownship.get_v().Sub(intruder.get_v());
   real t_tca = (ld.getTimeIn() + ld.getTimeOut())/real(2.0);
   real dist_tca = s.linear(v, t_tca).cyl_norm(getDTHR(),getZTHR());
   return ConflictData(ld,t_tca,dist_tca,s,v);

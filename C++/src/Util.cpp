@@ -240,6 +240,18 @@ real Util::root(const real a, const real b, const real c, const int eps) {
 	}
 }
 
+std::pair<real,real> Util::roots(real a, real b, real c) {
+	if (a == 0) {
+		real t = root(a,b,c,1);
+		return std::make_pair(t,t);
+	}
+	real sqb = sq(b);
+	real ac = 4*a*c;
+	if (!(almost_equals(sqb,ac) || sqb > ac)) return std::make_pair(NaN,NaN);
+	real offset = sqrt_safe(sqb-ac);
+	return std::make_pair((-b-offset)/(2*a),(-b+offset)/(2*a));
+}
+
 real Util::root2b(const real a, const real b, const real c, const int eps) {
 	if (a == real(0.0) && b == real(0.0))
 		return NaN;

@@ -16,6 +16,8 @@
 #include "format.h"
 #include "ErrorLog.h"
 #include <algorithm>
+#include <new>
+#include <type_traits>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -24,6 +26,7 @@ using namespace std;
 using namespace larcfm;
 
 IntervalSet::IntervalSet() {
+	static_assert(std::is_trivially_destructible<Interval>::value,"Interval storage requires a trivial destructor");
 	length = 0;
 }
 
@@ -45,7 +48,7 @@ IntervalSet::IntervalSet(const std::vector<Interval>& v) {//: error("IntervalSet
 	}
 	length = static_cast<int>(v.size());
 	for (int i = 0; i < length; ++i) {
-		r[i] = v[i];
+		new (&r[i].value) Interval(v[i]);
 	}
 }
 
@@ -53,7 +56,7 @@ std::vector<Interval> IntervalSet::toVector() const {
 	std::vector<Interval> v = std::vector<Interval>();
 	v.reserve(length); // note: reserve() is appropriate because we exclusively use push_back to populate the vector
 	for (int i = 0; i < length; i++) {
-		v.push_back(r[i]);
+		v.push_back(r[i].value);
 	}
 	return v;
 }
@@ -67,7 +70,7 @@ const Interval& IntervalSet::getInterval(int i) const {
 		return Interval::EMPTY;
 	}
 
-	return r[i];
+	return r[i].value;
 }
 
 int IntervalSet::size() const {
@@ -80,6 +83,22 @@ bool IntervalSet::isEmpty() const {
 
 bool IntervalSet::in(real x) const {
 	return order(x) >= 0;
+}
+
+void IntervalSet::append_sorted(const Interval& interval) {
+	if (interval.isEmpty()) return;
+	if (length > 0) {
+		Interval& last = r[length-1].value;
+		if (interval.low < last.low) {
+			unions(interval);
+			return;
+		}
+		if (interval.low <= last.up) {
+			last.up = Util::max(last.up,interval.up);
+			return;
+		}
+	}
+	insert(length,interval);
 }
 
 void IntervalSet::unions(const Interval& rn) {
@@ -97,7 +116,7 @@ void IntervalSet::unions(const Interval& rn) {
 		low = rn.low;
 		start = -(iLow+1);
 	} else {
-		low = r[iLow].low;
+		low = r[iLow].value.low;
 		start = iLow;
 	}
 
@@ -105,7 +124,7 @@ void IntervalSet::unions(const Interval& rn) {
 		high = rn.up;
 		end = -(iHigh+1)-1;
 	} else {
-		high = r[iHigh].up;
+		high = r[iHigh].value.up;
 		end = iHigh;
 	}
 
@@ -116,7 +135,7 @@ void IntervalSet::unions(const Interval& rn) {
 void IntervalSet::unions(const IntervalSet& n) {
 	IntervalSet result(*this);
 	for (int i = 0; i < n.length; i++) {
-		result.unions(n.r[i]);
+		result.unions(n.r[i].value);
 	}
 	*this = result;
 }
@@ -156,21 +175,21 @@ void IntervalSet::almost_add(real l, real u, INT64FM maxUlps) {
 		for (int i=0; i < size(); ++i) {
 			Interval ii = getInterval(i);
 			if (go) {
-				result.unions(ii);
+				result.append_sorted(ii);
 			} else if ((Util::almost_leq(ii.low,l,maxUlps) && Util::almost_leq(l,ii.up,maxUlps)) ||
 					(Util::almost_leq(l,ii.low,maxUlps) && Util::almost_leq(ii.low,u,maxUlps))) {
 				l = Util::min(ii.low,l);
 				u = Util::max(ii.up,u);
 			} else if (Util::almost_less(u,ii.low,maxUlps)) {
-				result.unions(Interval(l,u));
-				result.unions(ii);
+				result.append_sorted(Interval(l,u));
+				result.append_sorted(ii);
 				go = true;
 			} else {
-				result.unions(ii);
+				result.append_sorted(ii);
 			}
 		}
 		if (!go) {
-			result.unions(Interval(l,u));
+			result.append_sorted(Interval(l,u));
 		}
 		*this = result;
 	}
@@ -199,19 +218,19 @@ void IntervalSet::almost_intersect(const IntervalSet& n, INT64FM maxUlps) {
 			if (Util::almost_leq(jj.low,ii.low,maxUlps) &&
 					Util::almost_less(ii.low,jj.up,maxUlps)) {
 				if (Util::almost_leq(ii.up,jj.up,maxUlps)) {
-					result.unions(ii);
+					result.append_sorted(ii);
 					++i;
 				} else {
-					result.unions(Interval(ii.low,jj.up));
+					result.append_sorted(Interval(ii.low,jj.up));
 					++j;
 				}
 			} else if (Util::almost_leq(ii.low,jj.low,maxUlps) &&
 					Util::almost_less(jj.low,ii.up,maxUlps)) {
 				if (Util::almost_leq(jj.up,ii.up,maxUlps)) {
-					result.unions(jj);
+					result.append_sorted(jj);
 					++j;
 				} else {
-					result.unions(Interval(jj.low,ii.up));
+					result.append_sorted(Interval(jj.low,ii.up));
 					++i;
 				}
 			} else if (Util::almost_leq(ii.up,jj.low,maxUlps)){
@@ -240,8 +259,8 @@ void IntervalSet::diff(const Interval& rn) {
 		if (length >= max_intervals) {
 			throw std::length_error("IntervalSet capacity exceeded");
 		}
-		real r_iHigh_up = r[iHigh].up;
-		r[iLow] = Interval(r[iLow].low, rn.low);
+		real r_iHigh_up = r[iHigh].value.up;
+		r[iLow].value = Interval(r[iLow].value.low, rn.low);
 		insert(iLow+1, Interval(rn.up, r_iHigh_up));
 
 		return;
@@ -252,14 +271,14 @@ void IntervalSet::diff(const Interval& rn) {
 	if (iLow < 0) {
 		start = -(iLow+1);
 	} else {
-		r[iLow] = Interval(r[iLow].low, rn.low);
+		r[iLow].value = Interval(r[iLow].value.low, rn.low);
 		start = iLow+1;
 	}
 
 	if (iHigh < 0) {
 		end = -(iHigh+1)-1;
 	} else {
-		r[iHigh] = Interval(rn.up, r[iHigh].up);
+		r[iHigh].value = Interval(rn.up, r[iHigh].value.up);
 		end = iHigh-1;
 	}
 
@@ -269,14 +288,14 @@ void IntervalSet::diff(const Interval& rn) {
 void IntervalSet::diff(const IntervalSet& n) {
 	IntervalSet result(*this);
 	for (int i = 0; i < n.length; i++) {
-		result.diff(n.r[i]);
+		result.diff(n.r[i].value);
 	}
 	*this = result;
 }
 
 void IntervalSet::removeSingle(real x, real width) {
 	int i = order(x);
-	if (i >= 0 && r[i].isSingle(width)) {
+	if (i >= 0 && r[i].value.isSingle(width)) {
 		remove(i);
 	}
 }
@@ -288,7 +307,7 @@ void IntervalSet::removeSingle(real x) {
 void IntervalSet::sweepSingle(real width) {
 	int i = 0;
 	while (i < length) {
-		if (r[i].isSingle(width)) {
+		if (r[i].value.isSingle(width)) {
 			remove(i);
 		} else {
 			i++;
@@ -303,8 +322,8 @@ void IntervalSet::sweepSingle() {
 void IntervalSet::sweepBreaks(real width) {
 	int i = 0;
 	while (i < length-1) {
-		if (r[i].up+width > r[i+1].low) {
-			unions(Interval(r[i].low, r[i+1].up));
+		if (r[i].value.up+width > r[i+1].value.low) {
+			unions(Interval(r[i].value.low, r[i+1].value.up));
 		} else {
 			i++;
 		}
@@ -336,7 +355,7 @@ void IntervalSet::insert(int i, const Interval& region) {
 	for (int c = length; c > i; --c) {
 		r[c] = r[c-1];
 	}
-	r[i] = region;
+	new (&r[i].value) Interval(region);
 	++length;
 } // insert
 
@@ -349,7 +368,6 @@ void IntervalSet::remove(int i) {
 		//return Interval();
 	}
 
-	//	Interval t = r[i];
 
 	while (i + 1 < length) {
 		r[i] = r[i+1];
@@ -365,9 +383,10 @@ void IntervalSet::remove(int i) {
  * Remove the len number of intervals starting at i.
  */
 void IntervalSet::remove(int i, int len) {
-	for( int j = 0; j < len; j++) {
-		remove(i);
-	}
+	if (i < 0 || i >= length || len <= 0) return;
+	len = std::min(len,length-i);
+	std::move(r+i+len,r+length,r+i);
+	length -= len;
 }
 
 /* 
@@ -379,10 +398,10 @@ void IntervalSet::remove(int i, int len) {
  */
 int IntervalSet::order(real x) const {
 	for (int i = 0; i < length; i++) {
-		if (r[i].in(x)) {
+		if (r[i].value.in(x)) {
 			return i;
 		}
-		if (x < r[i].low) {
+		if (x < r[i].value.low) {
 			return -i-1;
 		}
 
@@ -399,7 +418,7 @@ std::string  IntervalSet::toString() const {
 			s += ", ";
 		}
 		s += "Interval ["+Fm0(i)+"]: ";
-		s += r[i].toString();
+		s += r[i].value.toString();
 	}
 	return s;
 }
@@ -413,7 +432,7 @@ std::string IntervalSet::toString(const std::string& unit) const {
 			s += ", ";
 		}
 		s += "Interval ["+Fm0(i)+"]: ";
-		s += r[i].toStringUnits(unit);
+		s += r[i].value.toStringUnits(unit);
 	}
 	return s;
 }

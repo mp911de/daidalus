@@ -64,9 +64,9 @@ private:
       const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, int target_step, bool instantaneous) const ;
 
   // In PVS: alt_bands@alt_bands_generic
-  void alt_bands_generic(std::vector<Integerval>& l,
+  bool alt_bands_generic(std::vector<Integerval>& l,
       const Detection3D& conflict_det, const Detection3D& recovery_det, real B, real T,
-      int maxup, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool instantaneous) const;
+      int maxup, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool instantaneous, const BandTest* test) const;
 
   int first_nat(int mini, int maxi, bool dir, const Detection3D& conflict_det, const Detection3D& recovery_det,
       real B, real T,  const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool green, bool instantaneous) const;

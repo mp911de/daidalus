@@ -79,16 +79,20 @@ void TCAS2D::RA2D_interval(real DMOD, real Tau, real B, real T, Vect2 s, Vect2 v
   }
   real b = 2*sdotv+Tau*sqv;
   real c = sqs+Tau*sdotv-sqD;
-  if (sdotv >= 0 || Util::discr(sqv,b,c) < 0) {
+  real discriminant = Util::discr(sqv,b,c);
+  if (sdotv >= 0 || discriminant < 0) {
     t_in = T+1;
     t_out = 0;
     return;
   }
-  t_in = Util::root(sqv,b,c,-1);
-  if (Horizontal::Delta(s,v,DMOD) >= 0)
-    t_out = Horizontal::Theta_D(s,v,1,DMOD);
-  else
-    t_out = Util::root(sqv,b,c,1);
+  if (Horizontal::Delta(s,v,DMOD) >= 0) {
+    t_in = Util::root(sqv,b,c,-1);
+    t_out = Util::root2b(sqv,sdotv,sqs-sqD,1);
+  } else {
+    const auto times = Util::roots(sqv,b,c);
+    t_in = times.first;
+    t_out = times.second;
+  }
 }
 
 }

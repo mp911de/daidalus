@@ -19,6 +19,7 @@
 #include "Real.h"
 
 #include "Vect2.h"
+#include <utility>
 
 namespace larcfm {
 
@@ -37,6 +38,8 @@ public:
   int  get_eps() const;
 
   /** Q function (relative tangent line) */
+  static std::pair<Vect2,Vect2> directions(const Vect2& s, real D);
+
   static Vect2 Q(const Vect2& s, const real D, const int eps);
 
 private:

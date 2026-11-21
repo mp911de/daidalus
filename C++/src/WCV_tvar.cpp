@@ -113,6 +113,14 @@ bool WCV_tvar::horizontal_WCV(const Vect2& s, const Vect2& v) const {
   return false;
 }
 
+LossData WCV_tvar::conflictInterval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
+  return WCV3D(so,vo,si,vi,B,T);
+}
+
+LossData WCV_tvar::conflictIntervalWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const {
+  return conflictInterval(ownship.get_s(),ownship.get_v(),intruder.get_s(),intruder.get_v(),B,T);
+}
+
 ConflictData WCV_tvar::conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
   LossData ret = WCV3D(so,vo,si,vi,B,T);
   real t_tca = (ret.getTimeIn() + ret.getTimeOut())/2;

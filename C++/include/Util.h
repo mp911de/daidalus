@@ -14,6 +14,7 @@
 #ifndef UTIL_H_
 #define UTIL_H_
 #include "Real.h"
+#include <utility>
 
 #include <iostream>
 #include <sstream>
@@ -312,6 +313,7 @@ public:
 	 * @param eps -1 or +1 (to indicate which solution you want)
 	 * @return root of quadratic
 	 */
+	static std::pair<real,real> roots(real a, real b, real c);
 	static real root2b(const real a, const real b, const real c, const int eps);
 
 	/** Assumes {@code c < 0}, {@code b > 0}

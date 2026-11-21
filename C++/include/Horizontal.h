@@ -15,6 +15,7 @@
 #ifndef HORIZONTAL_H_
 #define HORIZONTAL_H_
 #include "Real.h"
+#include <utility>
 
 #include "TangentLine.h"
 #include "Vect3.h"
@@ -88,6 +89,8 @@ public:
    * intersects the circle of radius <code>D</code>. If <code>eps == -1</code> the returned time is 
    * the entry time; if <code>eps == 1</code> the  returned time is the exit time.
    */
+  static std::pair<real,real> Theta_D_times(const Vect2& s, const Vect2& v, real D);
+
   static real Theta_D(const Vect2& s, const Vect2& v,
       const int eps, const real D);
   /**

@@ -27,6 +27,32 @@ namespace larcfm {
 
 class DaidalusIntegerBands {
 
+public:
+  class BandTest {
+  public:
+    virtual bool accepts(bool dir, int first, int last) const = 0;
+  protected:
+    ~BandTest() = default;
+  };
+
+protected:
+  template <typename Green>
+  static bool collect_runs(std::vector<Integerval>& runs, int max, bool dir, bool keep_last_single,
+      const Green& green, const BandTest* test) {
+    int first = -1;
+    for (int k = 0; k <= max; ++k) {
+      if (green(k)) {
+        if (first < 0) first = k;
+        else if (test && test->accepts(dir,k-1,k)) return true;
+      } else if (first >= 0) {
+        runs.emplace_back(first,k-1);
+        first = -1;
+      }
+    }
+    if (first >= 0 && (keep_last_single || first != max)) runs.emplace_back(first,max);
+    return false;
+  }
+
   // This class computes NONE bands
 
 public:
@@ -61,6 +87,8 @@ public:
       const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, int target_step, bool instantaneous) const;
 
 private:
+  TrafficState projected_ownship(const DaidalusParameters& parameters, const TrafficState& ownship, real tsk, bool trajdir, int target_step, bool instantaneous) const;
+
   bool LOS_at_coast(const Detection3D& det, bool trajdir, real tsk, real tcoast,
       const DaidalusParameters& parameters, const TrafficState& ownship, 
       const TrafficState& traffic, int target_step, bool instantaneous) const;	
@@ -81,23 +109,21 @@ private:
       int epsh, int epsv) const;
 
   // In PVS: int_bands@traj_conflict_only_band, int_bands@nat_bands, and int_bands@nat_bands_rec
-  void kinematic_traj_conflict_only_bands(std::vector<Integerval>& l,
+  bool kinematic_traj_conflict_only_bands(std::vector<Integerval>& l,
       const Detection3D& conflict_det, const Detection3D& recovery_det, real tstep, real B, real T,
-      bool trajdir, int max, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic)  const;
+      bool trajdir, int max, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, const BandTest* test) const;
 
   // In PVS: kinematic_bands@kinematic_bands
-  void kinematic_bands(std::vector<Integerval>& l, const Detection3D& conflict_det, const Detection3D& recovery_det, real tstep,
+  bool kinematic_bands(std::vector<Integerval>& l, const Detection3D& conflict_det, const Detection3D& recovery_det, real tstep,
       real B, real T,
       bool trajdir, int max, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic,
-      int epsh, int epsv) const;
+      int epsh, int epsv, const BandTest* test) const;
 
   // In PVS: kinematic_bands_exist@first_green
   int first_kinematic_green(const Detection3D& conflict_det, const Detection3D& recovery_det, real tstep,
       real B, real T,
       bool trajdir, int max, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic,
       int epsh, int epsv) const;
-
-  Vect3 kinematic_linvel(const DaidalusParameters& parameters, const TrafficState& ownship, real tstep, bool trajdir, int k) const;
 
   // In PVS: int_bands@repulsive_at
   bool kinematic_repulsive_at(real tstep, bool trajdir, int k, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, int epsh) const;
@@ -132,27 +158,14 @@ private:
       int epsh, int epsv, int target_step) const;
 
   //In PVS: int_bands@nat_bands, int_bands@nat_bands_rec
-  void instantaneous_bands(std::vector<Integerval>& l,
+  bool instantaneous_bands(std::vector<Integerval>& l,
       const Detection3D& conflict_det, const Detection3D& recovery_det, real B, real T,
       bool trajdir, int max, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic,
-      int epsh, int epsv) const;
+      int epsh, int epsv, const BandTest* test) const;
 
   bool instantaneous_red_band_exist(const Detection3D& conflict_det, const Detection3D& recovery_det,
       real B, real T,
       bool trajdir, int max, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic,
-      int epsh, int epsv) const;
-
-  // In PVS: combine_bands@kinematic_bands_combine
-  void kinematic_bands_combine(std::vector<Integerval>& l, const Detection3D& conflict_det, const Detection3D& recovery_det, real tstep,
-      real B, real T,
-      int maxl, int maxr, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic,
-      int epsh, int epsv) const;
-
-
-  // In PVS: inst_bands@instant_track_bands, inst_bands@instant_gs_bands, inst_bands@instant_vs_bands
-  void instantaneous_bands_combine(std::vector<Integerval>& l, const Detection3D& conflict_det, const Detection3D& recovery_det,
-      real B, real T,
-      int maxl, int maxr, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic,
       int epsh, int epsv) const;
 
   bool all_kinematic_red(const Detection3D& conflict_det, const Detection3D& recovery_det, real tstep,
@@ -187,6 +200,11 @@ public:
       real B, real T,
       int maxl, int maxr, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic,
       int epsh, int epsv) const;
+
+  bool integer_bands_until(std::vector<Integerval>& l, const Detection3D& conflict_det, const Detection3D& recovery_det, real tstep,
+      real B, real T,
+      int maxl, int maxr, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic,
+      int epsh, int epsv, const BandTest* test) const;
 
   bool all_integer_red(const Detection3D& conflict_det, const Detection3D& recovery_det, real tstep,
       real B, real T,

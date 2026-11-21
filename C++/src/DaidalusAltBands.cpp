@@ -163,30 +163,21 @@ bool DaidalusAltBands::conflict_free_traj_step(const Detection3D& conflict_det, 
 }
 
 // In PVS: alt_bands@alt_bands_generic
-void DaidalusAltBands::alt_bands_generic(std::vector<Integerval>& l,
+bool DaidalusAltBands::alt_bands_generic(std::vector<Integerval>& l,
     const Detection3D& conflict_det, const Detection3D& recovery_det, real B, real T,
-    int maxup, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool instantaneous) const {
-  int d = -1; // Set to the first index with no conflict
-  for (int k = 0; k <= maxup; ++k) {
-    if (d >=0 && conflict_free_traj_step(conflict_det,recovery_det,B,T,parameters,ownship,traffic,k,instantaneous)) {
-      continue;
-    } else if (d >=0) {
-      l.push_back(Integerval(d,k-1));
-      d = -1;
-    } else if (conflict_free_traj_step(conflict_det,recovery_det,B,T,parameters,ownship,traffic,k,instantaneous)) {
-      d = k;
-    }
-  }
-  if (d >= 0) {
-    l.push_back(Integerval(d,maxup));
-  }
+    int maxup, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool instantaneous, const BandTest* test) const {
+  return collect_runs(l,maxup,true,true,[&](int k) {
+    return conflict_free_traj_step(conflict_det,recovery_det,B,T,parameters,ownship,traffic,k,instantaneous);
+  },test);
 }
 
 void DaidalusAltBands::none_bands(IntervalSet& noneset, const Detection3D& conflict_det, const Detection3D& recovery_det,
     int epsh, int epsv, real B, real T, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic) const {
   int maxup = (int)std::floor((get_max_val_()-get_min_val_())/get_step(parameters))+1;
   std::vector<Integerval> altint;
-  alt_bands_generic(altint,conflict_det,recovery_det,B,T,maxup,parameters,ownship,traffic,instantaneous_bands(parameters));
+  RecoveryTest test(*this,noneset,get_step(parameters),get_min_val_());
+  if (alt_bands_generic(altint,conflict_det,recovery_det,B,T,maxup,parameters,ownship,traffic,instantaneous_bands(parameters),
+      test.active())) return;
   toIntervalSet(noneset,altint,get_step(parameters),get_min_val_());
 }
 

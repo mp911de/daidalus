@@ -65,11 +65,12 @@ LossData WCV_TEP::horizontal_WCV_interval(real T, const Vect2& s, const Vect2& v
   }
   if (sdotv > 0 || Horizontal::Delta(s,v,getDTHR()) < 0)
     return LossData(time_in,time_out);
-  real tep = Horizontal::Theta_D(s,v,-1,getDTHR());
+  const auto times = Horizontal::Theta_D_times(s,v,getDTHR());
+  real tep = times.first;
   if (tep-getTTHR() > T)
     return LossData(time_in,time_out);
   time_in = Util::max(real(0.0),tep-getTTHR());
-  time_out = Util::min(T,Horizontal::Theta_D(s,v,1,getDTHR()));
+  time_out = Util::min(T,times.second);
   return LossData(time_in,time_out);
 }
 

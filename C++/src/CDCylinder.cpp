@@ -144,6 +144,14 @@ ConflictData CDCylinder::conflict_detection(const Vect3& so, const Vect3& vo, co
   return ConflictData(ld,t_tca,dist_tca,s,v);
 }
 
+LossData CDCylinder::conflictInterval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
+  return CD3D::detection(so.Sub(si),vo,vi,D_,H_,B,T);
+}
+
+LossData CDCylinder::conflictIntervalWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const {
+  return conflictInterval(ownship.get_s(),ownship.get_v(),intruder.get_s(),intruder.get_v(),B,T);
+}
+
 ConflictData CDCylinder::conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
   return conflict_detection(so,vo,si,vi,D_,H_,B,T);
 }

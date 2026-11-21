@@ -19,6 +19,14 @@ namespace larcfm {
  * @param vi  intruder velocity
  * @return    true if there is a violation
  */
+LossData Detection3D::conflictInterval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
+  return conflictDetection(so,vo,si,vi,B,T);
+}
+
+LossData Detection3D::conflictIntervalWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const {
+  return conflictDetectionWithTrafficState(ownship,intruder,B,T);
+}
+
 bool Detection3D::violation(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi) const {
   return conflict(so,vo,si,vi,real(0.0),real(0.0));
 }
@@ -35,13 +43,13 @@ bool Detection3D::violation(const Vect3& so, const Vect3& vo, const Vect3& si, c
  */
 bool Detection3D::conflict(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
   if (Util::almost_equals(B,T)) {
-    LossData interval = conflictDetection(so,vo,si,vi,B,B+1);
+    LossData interval = conflictInterval(so,vo,si,vi,B,B+1);
     return interval.conflict() && Util::almost_equals(interval.getTimeIn(),B);
   }
   if (B>T) {
     return false;
   }
-  return conflictDetection(so,vo,si,vi,B,T).conflict();
+  return conflictInterval(so,vo,si,vi,B,T).conflict();
 }
 
 /**
@@ -65,13 +73,13 @@ bool Detection3D::violationAtWithTrafficState(const TrafficState& ownship, const
  */
 bool Detection3D::conflictWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const {
   if (Util::almost_equals(B,T)) {
-    LossData interval = conflictDetectionWithTrafficState(ownship,intruder,B,B+1);
+    LossData interval = conflictIntervalWithTrafficState(ownship,intruder,B,B+1);
     return interval.conflict() && Util::almost_equals(interval.getTimeIn(),B);
   }
   if (B > T) {
     return false;
   }
-  return conflictDetectionWithTrafficState(ownship,intruder,B,T).conflict();
+  return conflictIntervalWithTrafficState(ownship,intruder,B,T).conflict();
 }
 
 /**

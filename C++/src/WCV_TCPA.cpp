@@ -74,11 +74,12 @@ LossData WCV_TCPA::horizontal_WCV_interval(real T, const Vect2& s, const Vect2& 
     time_out = Util::min(T,tcpa);
     return LossData(time_in,time_out);
   }
-  real tmin = Util::min(Horizontal::Theta_D(s,v,-1,getDTHR()),tcpa-getTTHR());
+  const auto times = Horizontal::Theta_D_times(s,v,getDTHR());
+  real tmin = Util::min(times.first,tcpa-getTTHR());
   if (tmin > T)
     return LossData(time_in,time_out);
   time_in = Util::max(real(0.0),tmin);
-  time_out = Util::min(T,Horizontal::Theta_D(s,v,1,getDTHR()));
+  time_out = Util::min(T,times.second);
   return LossData(time_in,time_out);
 }
 

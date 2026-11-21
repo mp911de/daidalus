@@ -108,7 +108,7 @@ LossData WCV_TAUMOD::horizontal_WCV_interval(real T, const Vect2& s, const Vect2
   real sdotv = s.dot(v);
   real sqD = Util::sq(getDTHR());
   real a = v.sqv();
-  real b = 2*sdotv+getTTHR()*v.sqv();
+  real b = 2*sdotv+getTTHR()*a;
   real c = sqs+getTTHR()*sdotv-sqD;
   if (Util::almost_equals(a,0) && sqs <= sqD) { // [CAM] Changed from == to almost_equals to mitigate numerical problems
     time_in = 0;
@@ -121,10 +121,10 @@ LossData WCV_TAUMOD::horizontal_WCV_interval(real T, const Vect2& s, const Vect2
     return LossData(time_in,time_out);
   }
   real discr = Util::sq(b)-4*a*c;
-  if (sdotv >= 0 || discr < 0)
+  if (sdotv >= 0 || discr < 0 || !(Horizontal::Delta(s,v,getDTHR()) >= 0))
     return LossData(time_in,time_out);
   real t = (-b - std::sqrt(discr))/(2*a);
-  if (Horizontal::Delta(s, v,getDTHR()) >= 0 && t <= T) {
+  if (t <= T) {
     time_in = Util::max(real(0.0),t);
     time_out = Util::min(T, Horizontal::Theta_D(s,v,1,getDTHR()));
   }

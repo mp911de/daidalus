@@ -68,6 +68,9 @@ private:
   std::map<std::string,std::string> units_;
   std::string id;
 
+protected:
+  virtual LossData conflictInterval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const;
+  virtual LossData conflictIntervalWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const;
 public:
 
   /**
