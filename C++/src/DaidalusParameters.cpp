@@ -230,6 +230,7 @@ DaidalusParameters::DaidalusParameters() : error("DaidalusParameters") {
   units_["dta_latitude"] = "deg";
   dta_longitude_ = real(0.0);
   units_["dta_longitude"] = "deg";
+  updateDTAPosition();
   dta_radius_ = real(0.0);
   units_["dta_radius"] = "nmi";
   dta_height_ = real(0.0);
@@ -1943,24 +1944,19 @@ void DaidalusParameters::setDTALogic(int dta_logic) {
  * Get DAA Terminal Area (DTA) position (lat/lon)
  */
 const Position& DaidalusParameters::getDTAPosition() const {
-  static Position dta_position;
-  if (dta_latitude_ != dta_position.lat() ||
-      dta_longitude_ != dta_position.lon()) {
-    std::string ulat = getUnitsOf("dta_latitude");
-    std::string ulon = getUnitsOf("dta_longitude");
-    if (Units::isCompatible(ulat,ulon)) {
-      if (Units::isCompatible("m",ulat)) {
-        dta_position = Position::mkXYZ(dta_longitude_,dta_latitude_,real(0.0));
-      } else if (Units::isCompatible("deg",ulat)) {
-        dta_position = Position::mkLatLonAlt(dta_latitude_,dta_longitude_,real(0.0));
-      } else {
-        dta_position = Position::INVALID();
-      }
-    } else {
-      dta_position = Position::INVALID();
-    }
+  return dta_position_;
+}
+
+void DaidalusParameters::updateDTAPosition() {
+  const std::string& lat_unit = units_.at("dta_latitude");
+  const std::string& lon_unit = units_.at("dta_longitude");
+  if (Units::isCompatible(lat_unit,lon_unit) && Units::isCompatible("m",lat_unit)) {
+    dta_position_ = Position::mkXYZ(dta_longitude_,dta_latitude_,0);
+  } else if (Units::isCompatible(lat_unit,lon_unit) && Units::isCompatible("deg",lat_unit)) {
+    dta_position_ = Position::mkLatLonAlt(dta_latitude_,dta_longitude_,0);
+  } else {
+    dta_position_ = Position::INVALID();
   }
-  return dta_position;
 }
 
 /**
@@ -1968,6 +1964,7 @@ const Position& DaidalusParameters::getDTAPosition() const {
  */
 bool DaidalusParameters::setDTALatitude(real lat) {
   dta_latitude_ = lat;
+  updateDTAPosition();
   return true;
 }
 
@@ -1984,6 +1981,7 @@ bool DaidalusParameters::setDTALatitude(real lat, const std::string& ulat) {
  */
 bool DaidalusParameters::setDTALongitude(real lon) {
   dta_longitude_ = lon;
+  updateDTAPosition();
   return true;
 }
 
@@ -2832,13 +2830,13 @@ bool DaidalusParameters::setParameterData(const ParameterData& p) {
     setit = true;
   }
   if (contains(p,"dta_latitude")) {
-    setDTALatitude(getValue(p,"dta_latitude"));
     units_["dta_latitude"] = getUnit(p,"dta_latitude");
+    setDTALatitude(getValue(p,"dta_latitude"));
     setit = true;
   }
   if (contains(p,"dta_longitude")) {
-    setDTALongitude(getValue(p,"dta_longitude"));
     units_["dta_longitude"] = getUnit(p,"dta_longitude");
+    setDTALongitude(getValue(p,"dta_longitude"));
     setit = true;
   }
   if (contains(p,"dta_radius")) {
@@ -2967,19 +2965,17 @@ std::string DaidalusParameters::getUnitsOf(const std::string& keystr) const {
 bool DaidalusParameters::setUnitsOf(const std::string& keystr, const std::string& units) {
   std::string key = cannonical_key(keystr);
   std::string u = getUnitsOf(key);
-  if (u != "unspecified") {
-    if (units == "internal") {
-      std::string internalu = Units::getCompatibleInternalUnit(u);
-      if (!internalu.empty()) {
-        units_[key] = internalu;
-        return true;
-      }
-    } else if (Units::isCompatible(units,u)) {
-      units_[key] = units;
-      return true;
-    }
+  if (u == "unspecified") return false;
+  if (units == "internal") {
+    std::string internalu = Units::getCompatibleInternalUnit(u);
+    if (internalu.empty()) return false;
+    units_[key] = internalu;
+  } else {
+    if (!Units::isCompatible(units,u)) return false;
+    units_[key] = units;
   }
-  return false;
+  if (key == "dta_latitude" || key == "dta_longitude") updateDTAPosition();
+  return true;
 }
 
 bool DaidalusParameters::hasError() const {

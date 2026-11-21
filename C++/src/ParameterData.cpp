@@ -74,7 +74,7 @@ ParameterData ParameterData::removeKeysWithPrefix(const std::string& prefix) con
 	for (paramtype::const_iterator pos = parameters.begin(); pos != parameters.end(); ++pos) {
 		std::string key = pos->first;
 		std::string keylc = toLowerCase(key);
-		if (startsWith(keylc,prefixlc)) {
+		if (!startsWith(keylc,prefixlc)) {
 			p.parameters[key] = pos->second;
 		}
 	}

@@ -1383,7 +1383,7 @@ int Daidalus::getAlertingParameterM() const {
  * @return Alerting parameter n of "M of N" strategy
  */
 int Daidalus::getAlertingParameterN() const {
-  return core_.parameters.getAlertingParameterM();
+  return core_.parameters.getAlertingParameterN();
 }
 
 /**
@@ -1637,7 +1637,7 @@ bool Daidalus::setAboveRelativeHorizontalSpeed(real val, const std::string& u) {
  * computation of relative bands
  */
 bool Daidalus::setBelowRelativeVerticalSpeed(real val) {
-  return reset_or_false(core_.parameters.setBelowRelativeHorizontalSpeed(val));
+  return reset_or_false(core_.parameters.setBelowRelativeVerticalSpeed(val));
 }
 
 /**

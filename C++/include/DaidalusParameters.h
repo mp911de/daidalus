@@ -137,6 +137,7 @@ private:
   int dta_logic_;
   real dta_latitude_;
   real dta_longitude_;
+  Position dta_position_;
   real dta_radius_;
   real dta_height_;
   int dta_alerter_;
@@ -176,6 +177,7 @@ private:
   /** This method is needed because WCV_TAUMOD_SUM doesn't require the
    *  user to initialize SUM parameters, which may be specified globally.
    */
+  void updateDTAPosition();
   void set_alerters_with_SUM_parameters();
 
   std::string units_of_daa_key(const std::string& key) const;
