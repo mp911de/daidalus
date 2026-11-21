@@ -66,22 +66,45 @@ real DaidalusAltBands::time_step(const DaidalusParameters& parameters, const Tra
   return 1;
 }
 
+namespace {
+
+class LevelOutTrajectory : public DaidalusIntegerBands {
+  real target_alt_;
+  real end_time_;
+
+public:
+  const Tuple5<real,real,real,real,real> times;
+
+  LevelOutTrajectory(const DaidalusParameters& parameters, const TrafficState& ownship, real target_alt, real time_step)
+    : target_alt_(target_alt),
+      times(Kinematics::vsLevelOutTimes(ownship.positionXYZ().alt(),ownship.velocityXYZ().vs(),
+          parameters.getVerticalRate(),target_alt,parameters.getVerticalAcceleration(),-parameters.getVerticalAcceleration(),true)) {
+    end_time_ = (times.first < 0 ? real(-1) : times.third)+time_step;
+  }
+
+  std::pair<Vect3,Vect3> trajectory(const DaidalusParameters&, const TrafficState& ownship, real time, bool, int, bool) const override {
+    const Position& position = ownship.positionXYZ();
+    const Velocity& velocity = ownship.velocityXYZ();
+    if (time <= end_time_) {
+      const auto vertical = Kinematics::vsLevelOutCalc(position.alt(),velocity.vs(),target_alt_,
+          times.fourth,times.fifth,times.first,times.second,times.third,time);
+      return std::make_pair(position.vect3().linear(velocity.vect3(),time).mkZ(vertical.first),
+          velocity.mkVs(vertical.second).vect3());
+    }
+    return std::make_pair(position.linear(velocity,time).mkZ(target_alt_).vect3(),velocity.mkVs(0).vect3());
+  }
+};
+
+}
+
 std::pair<Vect3, Vect3> DaidalusAltBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, real time, bool dir, int target_step, bool instantaneous) const {
   real target_alt = get_min_val_()+target_step*get_step(parameters);
-  std::pair<Position,Velocity> posvel;
   if (instantaneous) {
-    posvel = std::pair<Position, Velocity>(ownship.positionXYZ().mkZ(target_alt),ownship.velocityXYZ().mkVs(0));
-  } else {
-    real tsqj = ProjectedKinematics::vsLevelOutTime(ownship.positionXYZ(),ownship.velocityXYZ(),parameters.getVerticalRate(),
-        target_alt,parameters.getVerticalAcceleration())+time_step(parameters,ownship);
-    if (time <= tsqj) {
-      posvel = ProjectedKinematics::vsLevelOut(ownship.positionXYZ(), ownship.velocityXYZ(), time, parameters.getVerticalRate(), target_alt, parameters.getVerticalAcceleration());
-    } else {
-      Position npo = ownship.positionXYZ().linear(ownship.velocityXYZ(),time);
-      posvel = std::pair<Position, Velocity>(npo.mkZ(target_alt),ownship.velocityXYZ().mkVs(0));
-    }
+    Position position = ownship.positionXYZ().mkZ(target_alt);
+    return std::make_pair(ownship.pos_to_s(position),ownship.vel_to_v(position,ownship.velocityXYZ().mkVs(0)));
   }
-  return std::pair<Vect3, Vect3>(ownship.pos_to_s(posvel.first),ownship.vel_to_v(posvel.first,posvel.second));
+  LevelOutTrajectory level_out(parameters,ownship,target_alt,time_step(parameters,ownship));
+  return level_out.trajectory(parameters,ownship,time,dir,target_step,instantaneous);
 }
 
 // In PVS: alt_bands@conflict_free_traj_step
@@ -93,38 +116,37 @@ bool DaidalusAltBands::conflict_free_traj_step(const Detection3D& conflict_det, 
   } else {
     real tstep = time_step(parameters,ownship);
     real target_alt = get_min_val_()+target_step*get_step(parameters);
-    Tuple5<real,real,real,real,real> tsqj = Kinematics::vsLevelOutTimes(ownship.positionXYZ().alt(),ownship.velocityXYZ().vs(),
-        parameters.getVerticalRate(),target_alt,parameters.getVerticalAcceleration(),-parameters.getVerticalAcceleration(),true);
-    real tsqj1 = tsqj.first;
-    real tsqj2 = tsqj.second;
-    real tsqj3 = tsqj.third+tstep;
+    const LevelOutTrajectory level_out(parameters,ownship,target_alt,tstep);
+    real tsqj1 = level_out.times.first;
+    real tsqj2 = level_out.times.second;
+    real tsqj3 = level_out.times.third+tstep;
     for (int i=0; i<=std::floor(tsqj1/tstep);++i) {
       real tsi = i*tstep;
-      if ((B <= tsi && LOS_at(conflict_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous)) ||
+      if ((B <= tsi && level_out.LOS_at(conflict_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous)) ||
           (recovery_det.isValid() && 0 <= tsi && tsi <= B &&
-              LOS_at(recovery_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous))) {
+              level_out.LOS_at(recovery_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous))) {
         return false;
       }
     }
     real tsk1 = Util::max(tsqj1,real(0.0));
     real time_horizon_1 = parameters.isEnabledBandsAddTimeToManeuver() ? T : T+tsk1;
     if ((tsqj2 >= B &&
-        CD_future_traj(conflict_det,B,std::min(time_horizon_1,tsqj2),trajdir,tsk1,parameters,ownship,traffic,target_step,instantaneous)) ||
+        level_out.CD_future_traj(conflict_det,B,std::min(time_horizon_1,tsqj2),trajdir,tsk1,parameters,ownship,traffic,target_step,instantaneous)) ||
         (recovery_det.isValid() && tsqj2 >= 0 &&
-            CD_future_traj(recovery_det,0,Util::min(B,tsqj2),trajdir,tsk1,parameters,ownship,traffic,target_step,instantaneous))) {
+            level_out.CD_future_traj(recovery_det,0,Util::min(B,tsqj2),trajdir,tsk1,parameters,ownship,traffic,target_step,instantaneous))) {
       return false;
     }
     for (int i=(int)std::ceil(tsqj2/tstep); i<=std::floor(tsqj3/tstep);++i) {
       real tsi = i*tstep;
-      if ((B <= tsi && LOS_at(conflict_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous)) ||
+      if ((B <= tsi && level_out.LOS_at(conflict_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous)) ||
           (recovery_det.isValid() && 0 <= tsi && tsi <= B &&
-              LOS_at(recovery_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous))) {
+              level_out.LOS_at(recovery_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous))) {
         return false;
       }
     }
     real tsk3 = Util::max(tsqj3,real(0.0));
     real time_horizon_3 = parameters.isEnabledBandsAddTimeToManeuver() ? T : T+tsk3;
-    return no_CD_future_traj(conflict_det,recovery_det,B,time_horizon_3,trajdir,tsk3,parameters,ownship,traffic,target_step,instantaneous);
+    return level_out.no_CD_future_traj(conflict_det,recovery_det,B,time_horizon_3,trajdir,tsk3,parameters,ownship,traffic,target_step,instantaneous);
   }
 }
 
