@@ -50,7 +50,10 @@ namespace larcfm {
  * }
  * </code></pre><p>
  *
- * The current implementation does not allocate any dynamic (heap) memory.
+ * Capacity exhaustion throws std::length_error without changing this set.
+ * A failed enclosing Daidalus computation must be discarded and its instance rebuilt.
+ *
+ * The interval storage does not allocate dynamic (heap) memory.
  */
 class IntervalSet {// : ErrorReporter {
 

@@ -39,8 +39,8 @@ public:
 	explicit ErrorLog(const std::string& name);
 
 	/**
-	 * If fail fast is true, then when an error is added, the program will terminate.
-	 * @param ff true indicates that the program should terminate when an error is added.
+	 * If fail fast is true, addError records the error then throws std::runtime_error.
+	 * @param ff true enables exceptions when an error is added.
 	 */
 	void setFailFast(bool ff);
 

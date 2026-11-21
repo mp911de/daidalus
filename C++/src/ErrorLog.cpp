@@ -14,7 +14,7 @@
 #include "DaidalusParameters.h"
 #include "format.h"
 #include <iostream>
-#include <cstdlib>
+#include <stdexcept>
 
 namespace larcfm {
 
@@ -55,10 +55,6 @@ void ErrorLog::addError(const string& msg) {
 	message += ": ";
 	message += msg;
 	message += "\n";
-	if (fail_fast) {
-		cout << message;
-		exit(1);
-	}
 	if (console_out) {
 		cout << "ERROR in " << name << ": " << msg << endl;
 	}
@@ -68,6 +64,10 @@ void ErrorLog::addError(const string& msg) {
 		message.erase(0, idx);
 		message.insert(0,"[...] ");
 		size--;
+	}
+
+	if (fail_fast) {
+		throw std::runtime_error("ERROR in " + name + ": " + msg);
 	}
 
 }
