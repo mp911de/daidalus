@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Detection3D.h"
 #include "ConflictData.h"
 
@@ -19,7 +20,7 @@ namespace larcfm {
  * @return    true if there is a violation
  */
 bool Detection3D::violation(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi) const {
-  return conflict(so,vo,si,vi,0.0,0.0);
+  return conflict(so,vo,si,vi,real(0.0),real(0.0));
 }
 
 /**
@@ -32,7 +33,7 @@ bool Detection3D::violation(const Vect3& so, const Vect3& vo, const Vect3& si, c
  * @param T   end of detection time (if T < 0 then use an "infinite" lookahead time)
  * @return true if there is a conflict within times B to T
  */
-bool Detection3D::conflict(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const {
+bool Detection3D::conflict(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
   if (Util::almost_equals(B,T)) {
     LossData interval = conflictDetection(so,vo,si,vi,B,B+1);
     return interval.conflict() && Util::almost_equals(interval.getTimeIn(),B);
@@ -50,7 +51,7 @@ bool Detection3D::conflict(const Vect3& so, const Vect3& vo, const Vect3& si, co
  * @param t      time in seconds
  * @return    true if there is a violation at time t
  */
-bool Detection3D::violationAtWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, double t) const {
+bool Detection3D::violationAtWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real t) const {
   return conflictWithTrafficState(ownship,intruder,t,t);
 }
 
@@ -62,7 +63,7 @@ bool Detection3D::violationAtWithTrafficState(const TrafficState& ownship, const
  * @param T   end of detection time (if T < 0 then use an "infinite" lookahead time)
  * @return true if there is a conflict within times B to T
  */
-bool Detection3D::conflictWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, double B, double T) const {
+bool Detection3D::conflictWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const {
   if (Util::almost_equals(B,T)) {
     LossData interval = conflictDetectionWithTrafficState(ownship,intruder,B,B+1);
     return interval.conflict() && Util::almost_equals(interval.getTimeIn(),B);
@@ -83,7 +84,7 @@ bool Detection3D::conflictWithTrafficState(const TrafficState& ownship, const Tr
  * @param T   end of detection time (if T < 0 then use an "infinite" lookahead time)
  * @return a ConflictData object detailing the conflict
  */
-ConflictData Detection3D::conflictDetectionWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, double B, double T) const {
+ConflictData Detection3D::conflictDetectionWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const {
   return conflictDetection(ownship.get_s(),ownship.get_v(),intruder.get_s(),intruder.get_v(),B,T);
 }
 
@@ -112,24 +113,24 @@ void Detection3D::add_blob(std::vector<std::vector<Position> >& blobs, std::vect
  * approximation of the actual contours defined by the violation and detection methods.
  */
 void Detection3D::horizontalContours(std::vector<std::vector<Position> >& blobs, const TrafficState& ownship, const TrafficState& intruder,
-    double thr, double T) const {
+    real thr, real T) const {
   std::vector<Position> vin;
   const Position& po = ownship.getPosition();
   const Velocity& vo = ownship.getAirVelocity();
-  double current_trk = vo.trk();
+  real current_trk = vo.trk();
   std::vector<Position> vout;
   /* First step: Computes conflict contour (contour in the current path of the aircraft).
    * Get contour portion to the right.  If los.getTimeIn() == 0, a 360 degree
    * contour will be computed. Otherwise, stops at the first non-conflict degree.
    */
-  double right = 0; // Contour conflict limit to the right relative to current direction  [0-2pi rad]
-  double step = Pi/180;
-  double two_pi = 2*Pi;
+  real right = 0; // Contour conflict limit to the right relative to current direction  [0-2pi rad]
+  real step = Pi/180;
+  real two_pi = 2*Pi;
   TrafficState own = ownship;
   for (; right < two_pi; right += step) {
     Velocity vop = vo.mkTrk(current_trk+right);
     own.setAirVelocity(vop);
-    LossData los = conflictDetectionWithTrafficState(own,intruder,0.0,T);
+    LossData los = conflictDetectionWithTrafficState(own,intruder,real(0.0),T);
     if ( !los.conflict() ) {
       break;
     }
@@ -141,13 +142,13 @@ void Detection3D::horizontalContours(std::vector<std::vector<Position> >& blobs,
     vout.insert(vout.begin(), po.linear(vop,los.getTimeOut()));
   }
   /* Second step: Compute conflict contour to the left */
-  double left = 0;  // Contour conflict limit to the left relative to current direction [0-2pi rad]
+  real left = 0;  // Contour conflict limit to the left relative to current direction [0-2pi rad]
   if (0 < right && right < two_pi) {
     /* There is a conflict contour, but not a violation */
     for (left = step; left < two_pi; left += step) {
       Velocity vop = vo.mkTrk(current_trk-left);
       own.setAirVelocity(vop);
-      LossData los = conflictDetectionWithTrafficState(own,intruder,0.0,T);
+      LossData los = conflictDetectionWithTrafficState(own,intruder,real(0.0),T);
       if ( !los.conflict() ) {
         break;
       }
@@ -161,7 +162,7 @@ void Detection3D::horizontalContours(std::vector<std::vector<Position> >& blobs,
     for (; right < two_pi-left; right += step) {
       Velocity vop = vo.mkTrk(current_trk+right);
       own.setAirVelocity(vop);
-      LossData los = conflictDetectionWithTrafficState(own,intruder,0.0,T);
+      LossData los = conflictDetectionWithTrafficState(own,intruder,real(0.0),T);
       if (los.conflict()) {
         vin.push_back(po.linear(vop,los.getTimeIn()));
         vout.insert(vout.begin(), po.linear(vop,los.getTimeOut()));
@@ -179,7 +180,7 @@ void Detection3D::horizontalContours(std::vector<std::vector<Position> >& blobs,
     for (; left < two_pi-right; left += step) {
       Velocity vop = vo.mkTrk(current_trk-left);
       own.setAirVelocity(vop);
-      LossData los = conflictDetectionWithTrafficState(own,intruder,0.0,T);
+      LossData los = conflictDetectionWithTrafficState(own,intruder,real(0.0),T);
       if (los.conflict()) {
         vin.insert(vin.begin(), po.linear(vop,los.getTimeIn()));
         vout.push_back(po.linear(vop,los.getTimeOut()));
@@ -210,7 +211,7 @@ void Detection3D::horizontalContours(std::vector<std::vector<Position> >& blobs,
  * hazard zone.
  */
 void Detection3D::horizontalHazardZone(std::vector<Position>& haz, const TrafficState& ownship, const TrafficState& intruder,
-    double T) const {
+    real T) const {
   haz.clear();
 }
 

@@ -6,6 +6,7 @@
  * is claimed in the United States under Title 17, U.S.Code. All Other
  */
 
+#include "Real.h"
 #include "BandsMofN.h"
 #include "format.h"
 #include "DaidalusParameters.h"
@@ -17,7 +18,7 @@ BandsMofN::BandsMofN(const ColorValue& cv, int m, int n) : val(cv.val) {
   colors_right.setMofN(m,n,BandsRegion::orderOfRegion(cv.color_right));
 }
 
-BandsMofN::BandsMofN(double value, const MofN& mofn) :
+BandsMofN::BandsMofN(real value, const MofN& mofn) :
                 val(value),
                 colors_left(mofn),
                 colors_right(mofn)

@@ -6,6 +6,7 @@
  */
 #ifndef TRAFFICSTATE_H_
 #define TRAFFICSTATE_H_
+#include "Real.h"
 
 #include "Position.h"
 #include "Velocity.h"
@@ -157,7 +158,7 @@ public:
    * @param offset Offset time.
    * @return Projected aircraft.
    */
-  TrafficState linearProjection(double offset) const;
+  TrafficState linearProjection(real offset) const;
 
   /**
    * Index of aircraft id in traffic list. If aircraft is not in the list, returns -1
@@ -217,47 +218,47 @@ public:
    * Returns current horizontal direction in internal units [0 - 2pi] [rad] (clock-wise with respect to North)
    * Direction may be heading or track, depending on whether a wind vector was provided or not.
    */
-  double horizontalDirection() const;
+  real horizontalDirection() const;
 
   /**
    * Returns current direction in given units [0 - 2pi] [u] (clock wise with respect to North)
    * Direction may be heading or track, depending on whether a wind vector was provided or not.
    */
-  double horizontalDirection(const std::string& utrk) const;
+  real horizontalDirection(const std::string& utrk) const;
 
   /**
    * Returns current horizontal speed in internal units.
    * Horizontal speed may be airspeed or groundspeed, depending on whether a wind vector
    * was provided or not.
    */
-  double horizontalSpeed() const;
+  real horizontalSpeed() const;
 
   /**
    * Returns current horizontal speed in given units.
    * Horizontal speed may be airspeed or groundspeed, depending on whether a wind vector
    * was provided or not.
    */
-  double horizontalSpeed(const std::string& ugs) const;
+  real horizontalSpeed(const std::string& ugs) const;
 
   /**
    * Returns current vertical speed in internal units
    */
-  double verticalSpeed() const;
+  real verticalSpeed() const;
 
   /**
    * Returns current vertical speed in given units
    */
-  double verticalSpeed(const std::string& uvs) const;
+  real verticalSpeed(const std::string& uvs) const;
 
   /**
    * Returns current altitude in internal units
    */
-  double altitude() const;
+  real altitude() const;
 
   /**
    * Returns current altitude in given units
    */
-  double altitude(const std::string& ualt) const;
+  real altitude(const std::string& ualt) const;
 
   /**
    * @return SUM (Sensor Uncertainty Mitigation) data
@@ -274,24 +275,24 @@ public:
    * s_NS_std: North/South position standard deviation in internal units
    * s_EN_std: East/North position standard deviation in internal units
    */
-  void setHorizontalPositionUncertainty(double s_EW_std, double s_NS_std, double s_EN_std);
+  void setHorizontalPositionUncertainty(real s_EW_std, real s_NS_std, real s_EN_std);
 
   /**
    * sz_std : Vertical position standard deviation in internal units
    */
-  void setVerticalPositionUncertainty(double sz_std);
+  void setVerticalPositionUncertainty(real sz_std);
 
   /**
    * v_EW_std: East/West velocity standard deviation in internal units
    * v_NS_std: North/South velocity standard deviation in internal units
    * v_EN_std: East/North velocity standard deviation in internal units
    */
-  void setHorizontalVelocityUncertainty(double v_EW_std, double v_NS_std,  double v_EN_std);
+  void setHorizontalVelocityUncertainty(real v_EW_std, real v_NS_std,  real v_EN_std);
 
   /**
    * vz_std : Vertical velocity standard deviation in internal units
    */
-  void setVerticalSpeedUncertainty(double vz_std);
+  void setVerticalSpeedUncertainty(real vz_std);
 
   /**
    * Set all uncertainties to 0

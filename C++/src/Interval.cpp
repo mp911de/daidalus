@@ -10,6 +10,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Interval.h"
 #include "Util.h"
 #include "format.h"
@@ -19,16 +20,16 @@
 
 using namespace larcfm;
 
-const Interval Interval::EMPTY(0.0,-1.0);
+const Interval Interval::EMPTY(real(0.0),-real(1.0));
 
-Interval::Interval(double lb, double ub){ 
+Interval::Interval(real lb, real ub){
 	low = lb;
 	up =  ub;
 }
 
 Interval::Interval(){ 
-	low = 0.0;
-	up = -1.0;
+	low = real(0.0);
+	up = -real(1.0);
 }
 
 Interval::Interval(const Interval& r) {
@@ -69,42 +70,42 @@ bool Interval::isSingle() const {
 	return low == up;
 }
 
-bool Interval::isSingle(double width) const {
+bool Interval::isSingle(real width) const {
 	return low+width >= up;
 }
 
 /* Is the element in this closed/closed interval? */
-bool Interval::in(double x) const {
+bool Interval::in(real x) const {
 	return low <= x && x <= up;
 }
 
 /* Is the element in this closed/closed interval? */
-bool Interval::inCC(double x) const {
+bool Interval::inCC(real x) const {
 	return low <= x && x <= up;
 }
 
 /* Is the element in this closed/open interval? */
-bool Interval::inCO(double x) const {
+bool Interval::inCO(real x) const {
 	return low <= x && x < up;
 }
 
 /* Is the element in this open/closed interval? */
-bool Interval::inOC(double x) const {
+bool Interval::inOC(real x) const {
 	return low < x && x <= up;
 }
 
 /* Is the element in this open/open interval? */
-bool Interval::inOO(double x) const {
+bool Interval::inOO(real x) const {
 	return low < x && x < up;
 }
 
 /** Is the element (almost) in this interval, where close/open conditions are given as parameters */
-bool Interval::almost_in(double x, bool lb_close, bool ub_close) const {
+bool Interval::almost_in(real x, bool lb_close, bool ub_close) const {
 	return almost_in(x,lb_close,ub_close,PRECISION_DEFAULT);
 }
 
 /** Is the element (almost) in this interval, where close/open conditions are given as parameters */
-bool Interval::almost_in(double x, bool lb_close, bool ub_close, INT64FM maxUlps) const {
+bool Interval::almost_in(real x, bool lb_close, bool ub_close, INT64FM maxUlps) const {
   	bool in_lb = low < x ? lb_close || !Util::almost_equals(low,x,maxUlps) :
   			lb_close && Util::almost_equals(low,x,maxUlps);
   	bool in_ub = x < up ? ub_close || !Util::almost_equals(up,x,maxUlps) :

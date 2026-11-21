@@ -14,6 +14,7 @@
 
 #ifndef STATEVECTOR_H_
 #define STATEVECTOR_H_
+#include "Real.h"
 
 #include "Vect3.h"
 #include "Velocity.h"
@@ -30,11 +31,11 @@ public:
 
 	Vect3     ss;    // s ;
 	Velocity  vv;    // v ;
-	double    tt ;   // t;
+	real    tt ;   // t;
 
-	explicit StateVector(const Vect3& ss=Vect3::ZERO(), const Velocity& vv=Velocity::ZERO(), const double tt=0);
+	explicit StateVector(const Vect3& ss=Vect3::ZERO(), const Velocity& vv=Velocity::ZERO(), const real tt=0);
 
-    StateVector(const std::pair<Vect3,Velocity>& sv, double t );
+    StateVector(const std::pair<Vect3,Velocity>& sv, real t );
 
 	std::pair<Vect3,Velocity> pair() const;
 
@@ -42,7 +43,7 @@ public:
 
 	Velocity v() const;
 
-	double t() const;
+	real t() const;
 
    };
 

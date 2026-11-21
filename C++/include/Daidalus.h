@@ -7,6 +7,7 @@
 
 #ifndef DAIDALUS_H_
 #define DAIDALUS_H_
+#include "Real.h"
 
 #include "DaidalusCore.h"
 #include "DaidalusAltBands.h"
@@ -124,7 +125,7 @@ public:
    * Construct a Daidalus object with the default parameters and one alerter with the
    * given detector and T (in seconds) as the alerting time, early alerting time, and lookahead time.
    */
-  Daidalus(const Detection3D& det, double T);
+  Daidalus(const Detection3D& det, real T);
 
   /* Destructor */
   virtual ~Daidalus() {}
@@ -200,7 +201,7 @@ public:
    * @param airvel Ownship's air velocity
    * @param time Time stamp of ownship's state
    */
-  void setOwnshipState(const std::string& id, const Position& pos, const Velocity& vel, const Velocity& airvel, double time);
+  void setOwnshipState(const std::string& id, const Position& pos, const Velocity& vel, const Velocity& airvel, real time);
 
   /**
    * Set ownship state and current time. Clear all traffic and assume previous wind.
@@ -209,7 +210,7 @@ public:
    * @param vel Ownship's ground velocity
    * @param time Time stamp of ownship's state
    */
-  void setOwnshipState(const std::string& id, const Position& pos, const Velocity& vel, double time);
+  void setOwnshipState(const std::string& id, const Position& pos, const Velocity& vel, real time);
 
   /**
    * Set ownship state at time 0.0. Clear all traffic and assume previous wind.
@@ -234,7 +235,7 @@ public:
    * @param time Time stamp of aircraft's state
    * @return Aircraft's index
    */
-  int addTrafficState(const std::string& id, const Position& pos, const Velocity& vel, double time);
+  int addTrafficState(const std::string& id, const Position& pos, const Velocity& vel, real time);
 
   /**
    * Add traffic state at current time. If it's the first aircraft, this aircraft is
@@ -271,7 +272,7 @@ public:
    * Project ownship and traffic aircraft offset seconds in the future (if positive) or in the past (if negative)
    * EXPERT USE ONLY !!!
    */
-  void linearProjection(double offset);
+  void linearProjection(real offset);
 
   /**
    * @return true if ownship has been set
@@ -301,39 +302,39 @@ public:
   /**
    * Return currrent time in seconds. Current time is the time of the ownship.
    */
-  double getCurrentTime() const;
+  real getCurrentTime() const;
 
   /**
    * Return currrent time in specified units. Current time is the time of the ownship.
    */
-  double getCurrentTime(const std::string& u) const;
+  real getCurrentTime(const std::string& u) const;
 
   /* Wind Setting */
 
 	/**
 	 * Get ownship's heading in internal units [0-2PI]
 	 */
-	double getOwnshipHeading() const;
+	real getOwnshipHeading() const;
 
   /**
 	 * Get ownship's heading in given units [0-2PI]
 	 */
-  double getOwnshipHeading(const std::string& units) const;
+  real getOwnshipHeading(const std::string& units) const;
 
   /**
 	 * Get ownship's airspeed in internal units [m/s]
 	 */
-	double getOwnshipAirspeed() const;
+	real getOwnshipAirspeed() const;
 
   /**
 	 * Get ownship's airspeed in given units
 	 */
-	double getOwnshipAirspeed(const std::string& units) const;
+	real getOwnshipAirspeed(const std::string& units) const;
 
   /**
 	 * Set ownship's air velocity. This method resets the wind setting and the air velocity of all traffic aircraft.
 	 */
-	void setOwnshipAirVelocity(double heading, double airspeed);
+	void setOwnshipAirVelocity(real heading, real airspeed);
 
   /**
    * Get wind velocity specified in the TO direction
@@ -409,7 +410,7 @@ public:
    * s_NS_std: North/South position standard deviation in internal units
    * s_EN_std: East/North position standard deviation in internal units
    */
-  void setHorizontalPositionUncertainty(int ac_idx, double s_EW_std, double s_NS_std, double s_EN_std);
+  void setHorizontalPositionUncertainty(int ac_idx, real s_EW_std, real s_NS_std, real s_EN_std);
 
   /**
    * Set horizontal position uncertainty of aircraft at index ac_idx
@@ -417,19 +418,19 @@ public:
    * s_NS_std: North/South position standard deviation in given units
    * s_EN_std: East/North position standard deviation in given units
    */
-  void setHorizontalPositionUncertainty(int ac_idx, double s_EW_std, double s_NS_std, double s_EN_std, const std::string& u);
+  void setHorizontalPositionUncertainty(int ac_idx, real s_EW_std, real s_NS_std, real s_EN_std, const std::string& u);
 
   /**
    * Set vertical position uncertainty of aircraft at index ac_idx
    * sz_std : Vertical position standard deviation in internal units
    */
-  void setVerticalPositionUncertainty(int ac_idx, double sz_std);
+  void setVerticalPositionUncertainty(int ac_idx, real sz_std);
 
   /**
    * Set vertical position uncertainty of aircraft at index ac_idx
    * sz_std : Vertical position standard deviation in given units
    */
-  void setVerticalPositionUncertainty(int ac_idx, double sz_std, const std::string& u);
+  void setVerticalPositionUncertainty(int ac_idx, real sz_std, const std::string& u);
 
   /**
    * Set horizontal velocity uncertainty of aircraft at index ac_idx
@@ -437,7 +438,7 @@ public:
    * v_NS_std: North/South speed standard deviation in internal units
    * v_EN_std: East/North speed standard deviation in internal units
    */
-  void setHorizontalVelocityUncertainty(int ac_idx, double v_EW_std, double v_NS_std,  double v_EN_std);
+  void setHorizontalVelocityUncertainty(int ac_idx, real v_EW_std, real v_NS_std,  real v_EN_std);
 
   /**
    * Set horizontal velocity uncertainty of aircraft at index ac_idx
@@ -445,19 +446,19 @@ public:
    * v_NS_std: North/South speed standard deviation in given units
    * v_EN_std: East/North speed standard deviation in given units
    */
-  void setHorizontalVelocityUncertainty(int ac_idx, double v_EW_std, double v_NS_std,  double v_EN_std, const std::string& u);
+  void setHorizontalVelocityUncertainty(int ac_idx, real v_EW_std, real v_NS_std,  real v_EN_std, const std::string& u);
 
   /**
    * Set vertical speed uncertainty of aircraft at index ac_idx
    * vz_std : Vertical speed standard deviation in internal units
    */
-  void setVerticalSpeedUncertainty(int ac_idx, double vz_std);
+  void setVerticalSpeedUncertainty(int ac_idx, real vz_std);
 
   /**
    * Set vertical speed uncertainty of aircraft at index ac_idx
    * vz_std : Vertical speed standard deviation in given units
    */
-  void setVerticalSpeedUncertainty(int ac_idx, double vz_std, const std::string& u);
+  void setVerticalSpeedUncertainty(int ac_idx, real vz_std, const std::string& u);
 
   /**
    * Reset all uncertainties of aircraft at index ac_idx
@@ -575,338 +576,338 @@ public:
   /**
    * @return lookahead time in seconds.
    */
-  double getLookaheadTime() const;
+  real getLookaheadTime() const;
 
   /**
    * @return lookahead time in specified units [u].
    */
-  double getLookaheadTime(const std::string& u) const;
+  real getLookaheadTime(const std::string& u) const;
 
   /**
    * @return distance filter in meters.
    */
-	double getDistanceFilter() const;
+	real getDistanceFilter() const;
 
   /**
    * @return distance filter in specified units [u].
    */
-	double getDistanceFilter(const std::string& u) const;
+	real getDistanceFilter(const std::string& u) const;
 
   /**
    * @return altitude filter in meters.
    */
-	double getAltitudeFilter() const;
+	real getAltitudeFilter() const;
 
   /**
    * @return altitude filter in specified units [u].
    */
-	double getAltitudeFilter(const std::string& u) const;
+	real getAltitudeFilter(const std::string& u) const;
 
   /**
    * @return left direction in radians [0 - pi] [rad] from current ownship's direction
    */
-  double getLeftHorizontalDirection() const;
+  real getLeftHorizontalDirection() const;
 
   /**
    * @return left direction in specified units [0 - pi] [u] from current ownship's direction
    */
-  double getLeftHorizontalDirection(const std::string& u) const;
+  real getLeftHorizontalDirection(const std::string& u) const;
 
   /**
    * @return right direction in radians [0 - pi] [rad] from current ownship's direction
    */
-  double getRightHorizontalDirection() const;
+  real getRightHorizontalDirection() const;
 
   /**
    * @return right direction in specified units [0 - pi] [u] from current ownship's direction
    */
-  double getRightHorizontalDirection(const std::string& u) const;
+  real getRightHorizontalDirection(const std::string& u) const;
 
   /**
    * @return airspeed threshold in internal units [m/s].
    */
-  double getAirspeedThreshold() const;
+  real getAirspeedThreshold() const;
 
   /**
    * @return airspeed threshold in specified units [u].
    */
-  double getAirspeedThreshold(const std::string& u) const;
+  real getAirspeedThreshold(const std::string& u) const;
 
   /**
    * @return minimum horizontal speed for horizontal speed bands in internal units [m/s].
    */
-  double getMinHorizontalSpeed() const;
+  real getMinHorizontalSpeed() const;
 
   /**
    * @return minimum horizontal speed for horizontal speed bands in specified units [u].
    */
-  double getMinHorizontalSpeed(const std::string& u) const;
+  real getMinHorizontalSpeed(const std::string& u) const;
 
   /**
    * @return maximum horizontal speed for horizontal speed bands in internal units [m/s].
    */
-  double getMaxHorizontalSpeed() const;
+  real getMaxHorizontalSpeed() const;
 
   /**
    * @return maximum horizontal speed for horizontal speed bands in specified units [u].
    */
-  double getMaxHorizontalSpeed(const std::string& u) const;
+  real getMaxHorizontalSpeed(const std::string& u) const;
 
   /**
    * @return minimum vertical speed for vertical speed bands in internal units [m/s].
    */
-  double getMinVerticalSpeed() const;
+  real getMinVerticalSpeed() const;
 
   /**
    * @return minimum vertical speed for vertical speed bands in specified units [u].
    */
-  double getMinVerticalSpeed(const std::string& u) const;
+  real getMinVerticalSpeed(const std::string& u) const;
 
   /**
    * @return maximum vertical speed for vertical speed bands in internal units [m/s].
    */
-  double getMaxVerticalSpeed() const;
+  real getMaxVerticalSpeed() const;
 
   /**
    * @return maximum vertical speed for vertical speed bands in specified units [u].
    */
-  double getMaxVerticalSpeed(const std::string& u) const;
+  real getMaxVerticalSpeed(const std::string& u) const;
 
   /**
    * @return minimum altitude for altitude bands in internal units [m]
    */
-  double getMinAltitude() const;
+  real getMinAltitude() const;
 
   /**
    * @return minimum altitude for altitude bands in specified units [u].
    */
-  double getMinAltitude(const std::string& u) const;
+  real getMinAltitude(const std::string& u) const;
 
   /**
    * @return maximum altitude for altitude bands in internal units [m]
    */
-  double getMaxAltitude() const;
+  real getMaxAltitude() const;
 
   /**
    * @return maximum altitude for altitude bands in specified units [u].
    */
-  double getMaxAltitude(const std::string& u) const;
+  real getMaxAltitude(const std::string& u) const;
 
   /**
    * @return Horizontal speed in internal units (below current value) for the
    * computation of relative bands
    */
-  double getBelowRelativeHorizontalSpeed() const;
+  real getBelowRelativeHorizontalSpeed() const;
 
   /**
    * @return Horizontal speed in given units (below current value) for the
    * computation of relative bands
    */
-  double getBelowRelativeHorizontalSpeed(const std::string& u) const;
+  real getBelowRelativeHorizontalSpeed(const std::string& u) const;
 
   /**
    * @return Horizontal speed in internal units (above current value) for the
    * computation of relative bands
    */
-  double getAboveRelativeHorizontalSpeed() const;
+  real getAboveRelativeHorizontalSpeed() const;
 
   /**
    * @return Horizontal speed in given units (above current value) for the
    * computation of relative bands
    */
-  double getAboveRelativeHorizontalSpeed(const std::string& u) const;
+  real getAboveRelativeHorizontalSpeed(const std::string& u) const;
 
   /**
    * @return Vertical speed in internal units (below current value) for the
    * computation of relative bands
    */
-  double getBelowRelativeVerticalSpeed() const;
+  real getBelowRelativeVerticalSpeed() const;
 
   /**
    * @return Vertical speed in given units (below current value) for the
    * computation of relative bands
    */
-  double getBelowRelativeVerticalSpeed(const std::string& u) const;
+  real getBelowRelativeVerticalSpeed(const std::string& u) const;
 
   /**
    * @return Vertical speed in internal units (above current value) for the
    * computation of relative bands
    */
-  double getAboveRelativeVerticalSpeed() const;
+  real getAboveRelativeVerticalSpeed() const;
 
   /**
    * @return Vertical speed in given units (above current value) for the
    * computation of relative bands
    */
-  double getAboveRelativeVerticalSpeed(const std::string& u) const;
+  real getAboveRelativeVerticalSpeed(const std::string& u) const;
 
   /**
    * @return Altitude in internal units (below current value) for the
    * computation of relative bands
    */
-  double getBelowRelativeAltitude() const;
+  real getBelowRelativeAltitude() const;
 
   /**
    * @return Altitude in given units (below current value) for the
    * computation of relative bands
    */
-  double getBelowRelativeAltitude(const std::string& u) const;
+  real getBelowRelativeAltitude(const std::string& u) const;
 
   /**
    * @return Altitude in internal units (above current value) for the
    * computation of relative bands
    */
-  double getAboveRelativeAltitude() const;
+  real getAboveRelativeAltitude() const;
 
   /**
    * @return Altitude in given units (above current value) for the
    * computation of relative bands
    */
-  double getAboveRelativeAltitude(const std::string& u) const;
+  real getAboveRelativeAltitude(const std::string& u) const;
 
   /**
    * @return step size for direction bands in internal units [rad].
    */
-  double getHorizontalDirectionStep() const;
+  real getHorizontalDirectionStep() const;
 
   /**
    * @return step size for direction bands in specified units [u].
    */
-  double getHorizontalDirectionStep(const std::string& u) const;
+  real getHorizontalDirectionStep(const std::string& u) const;
 
   /**
    * @return step size for horizontal speed bands in internal units [m/s].
    */
-  double getHorizontalSpeedStep() const;
+  real getHorizontalSpeedStep() const;
 
   /**
    * @return step size for horizontal speed bands in specified units [u].
    */
-  double getHorizontalSpeedStep(const std::string& u) const;
+  real getHorizontalSpeedStep(const std::string& u) const;
 
   /**
    * @return step size for vertical speed bands in internal units [m/s].
    */
-  double getVerticalSpeedStep() const;
+  real getVerticalSpeedStep() const;
 
   /**
    * @return step size for vertical speed bands in specified units [u].
    */
-  double getVerticalSpeedStep(const std::string& u) const;
+  real getVerticalSpeedStep(const std::string& u) const;
 
   /**
    * @return step size for altitude bands in internal units [m]
    */
-  double getAltitudeStep() const;
+  real getAltitudeStep() const;
 
   /**
    * @return step size for altitude bands in specified units [u].
    */
-  double getAltitudeStep(const std::string& u) const;
+  real getAltitudeStep(const std::string& u) const;
 
   /**
    * @return horizontal acceleration for horizontal speed bands to value in internal units [m/s^2].
    */
-  double getHorizontalAcceleration() const;
+  real getHorizontalAcceleration() const;
 
   /**
    * @return horizontal acceleration for horizontal speed bands to value in specified units [u].
    */
-  double getHorizontalAcceleration(const std::string& u) const;
+  real getHorizontalAcceleration(const std::string& u) const;
 
   /**
    * @return constant vertical acceleration for vertical speed and altitude bands in internal [m/s^2]
    * units
    */
-  double getVerticalAcceleration() const;
+  real getVerticalAcceleration() const;
 
   /**
    * @return constant vertical acceleration for vertical speed and altitude bands in specified
    * units
    */
-  double getVerticalAcceleration(const std::string& u) const;
+  real getVerticalAcceleration(const std::string& u) const;
 
   /**
    * @return turn rate in internal units [rad/s].
    */
-  double getTurnRate() const;
+  real getTurnRate() const;
 
   /**
    * @return turn rate in specified units [u].
    */
-  double getTurnRate(const std::string& u) const;
+  real getTurnRate(const std::string& u) const;
 
   /**
    * @return bank angle in internal units [rad].
    */
-  double getBankAngle() const;
+  real getBankAngle() const;
 
   /**
    * @return bank angle in specified units [u].
    */
-  double getBankAngle(const std::string& u) const;
+  real getBankAngle(const std::string& u) const;
 
   /**
    * @return the vertical climb/descend rate for altitude bands in internal units [m/s]
    */
-  double getVerticalRate() const;
+  real getVerticalRate() const;
 
   /**
    * @return the vertical climb/descend rate for altitude bands in specified units [u].
    */
-  double getVerticalRate(const std::string& u) const;
+  real getVerticalRate(const std::string& u) const;
 
   /**
    * @return horizontal NMAC distance in internal units [m].
    */
-  double getHorizontalNMAC() const;
+  real getHorizontalNMAC() const;
 
   /**
    * @return horizontal NMAC distance in specified units [u].
    */
-  double getHorizontalNMAC(const std::string& u) const;
+  real getHorizontalNMAC(const std::string& u) const;
 
   /**
    * @return vertical NMAC distance in internal units [m].
    */
-  double getVerticalNMAC() const;
+  real getVerticalNMAC() const;
 
   /**
    * @return vertical NMAC distance in specified units [u].
    */
-  double getVerticalNMAC(const std::string& u) const;
+  real getVerticalNMAC(const std::string& u) const;
 
   /**
    * @return recovery stability time in seconds. Recovery bands are computed at time of
    * first conflict-free region plus this time.
    */
-  double getRecoveryStabilityTime() const;
+  real getRecoveryStabilityTime() const;
 
   /**
    * @return recovery stability time in specified Units:: Recovery bands are computed at time of
    * first conflict-free region plus this time.
    */
-  double getRecoveryStabilityTime(const std::string& u) const;
+  real getRecoveryStabilityTime(const std::string& u) const;
 
   /**
    * @return hysteresis time in seconds.
    */
-  double getHysteresisTime() const;
+  real getHysteresisTime() const;
 
   /**
    * @return hysteresis time in specified units [u].
    */
-  double getHysteresisTime(const std::string& u) const;
+  real getHysteresisTime(const std::string& u) const;
 
   /**
    * @return alerting persistence time in seconds.
    */
-  double getPersistenceTime() const;
+  real getPersistenceTime() const;
 
   /**
    * @return alerting persistence time in specified units [u].
    */
-  double getPersistenceTime(const std::string& u) const;
+  real getPersistenceTime(const std::string& u) const;
 
   /**
    * @return true if guidance persistence is enabled
@@ -931,42 +932,42 @@ public:
   /**
    * @return persistence for preferred horizontal direction resolution in internal units
    */
-  double getPersistencePreferredHorizontalDirectionResolution() const;
+  real getPersistencePreferredHorizontalDirectionResolution() const;
 
   /**
    * @return persistence for preferred horizontal direction resolution in given units
    */
-  double getPersistencePreferredHorizontalDirectionResolution(const std::string& u) const;
+  real getPersistencePreferredHorizontalDirectionResolution(const std::string& u) const;
 
   /**
    * @return persistence for preferred horizontal speed resolution in internal units
    */
-  double getPersistencePreferredHorizontalSpeedResolution() const;
+  real getPersistencePreferredHorizontalSpeedResolution() const;
 
   /**
    * @return persistence for preferred horizontal speed resolution in given units
    */
-  double getPersistencePreferredHorizontalSpeedResolution(const std::string& u) const;
+  real getPersistencePreferredHorizontalSpeedResolution(const std::string& u) const;
 
   /**
    * @return persistence for preferred vertical speed resolution in internal units
    */
-  double getPersistencePreferredVerticalSpeedResolution() const;
+  real getPersistencePreferredVerticalSpeedResolution() const;
 
   /**
    * @return persistence for preferred vertical speed resolution in given units
    */
-  double getPersistencePreferredVerticalSpeedResolution(const std::string& u) const;
+  real getPersistencePreferredVerticalSpeedResolution(const std::string& u) const;
 
   /**
    * @return persistence for preferred altitude resolution in internal units
    */
-  double getPersistencePreferredAltitudeResolution() const;
+  real getPersistencePreferredAltitudeResolution() const;
 
   /**
    * @return persistence for preferred altitude resolution in given units
    */
-  double getPersistencePreferredAltitudeResolution(const std::string& u) const;
+  real getPersistencePreferredAltitudeResolution(const std::string& u) const;
 
   /**
    * @return Alerting parameter m of "M of N" strategy
@@ -981,216 +982,216 @@ public:
   /**
    * @return minimum horizontal separation for recovery bands in internal units [m].
    */
-  double getMinHorizontalRecovery() const;
+  real getMinHorizontalRecovery() const;
 
   /**
    * Return minimum horizontal separation for recovery bands in specified units [u]
    */
-  double getMinHorizontalRecovery(const std::string& u) const;
+  real getMinHorizontalRecovery(const std::string& u) const;
 
   /**
    * @return minimum vertical separation for recovery bands in internal units [m].
    */
-  double getMinVerticalRecovery() const;
+  real getMinVerticalRecovery() const;
 
   /**
    * Return minimum vertical separation for recovery bands in specified units [u].
    */
-  double getMinVerticalRecovery(const std::string& u) const;
+  real getMinVerticalRecovery(const std::string& u) const;
 
   /**
    * Sets lookahead time in seconds.
    */
-  bool setLookaheadTime(double t);
+  bool setLookaheadTime(real t);
 
   /**
    * Set lookahead time to value in specified units [u].
    */
-  bool setLookaheadTime(double t, const std::string& u);
+  bool setLookaheadTime(real t, const std::string& u);
 
   /**
    * Set distance filter to value in meters.
    */
-	bool setDistanceFilter(double val);
+	bool setDistanceFilter(real val);
 
   /**
    * Set distance filter to value in specified units [u].
    */
-  bool setDistanceFilter(double val, const std::string& u);
+  bool setDistanceFilter(real val, const std::string& u);
 
   /**
    * Set altitude filter to value in meters.
    */
-	bool setAltitudeFilter(double val);
+	bool setAltitudeFilter(real val);
 
   /**
    * Set altitude filter to value in specified units [u].
    */
-  bool setAltitudeFilter(double val, const std::string& u);
+  bool setAltitudeFilter(real val, const std::string& u);
 
   /**
    * Set left direction to value in internal units [rad]. Value is expected to be in [0 - pi]
    */
-  bool setLeftHorizontalDirection(double val);
+  bool setLeftHorizontalDirection(real val);
 
   /**
    * Set left direction to value in specified units [u]. Value is expected to be in [0 - pi]
    */
-  bool setLeftHorizontalDirection(double val, const std::string& u);
+  bool setLeftHorizontalDirection(real val, const std::string& u);
 
   /**
    * Set right direction to value in internal units [rad]. Value is expected to be in [0 - pi]
    */
-  bool setRightHorizontalDirection(double val);
+  bool setRightHorizontalDirection(real val);
 
   /**
    * Set right direction to value in specified units [u]. Value is expected to be in [0 - pi]
    */
-  bool setRightHorizontalDirection(double val, const std::string& u);
+  bool setRightHorizontalDirection(real val, const std::string& u);
 
 	/**
    * Set airspeed threshold to value in internal units [m/s].
    */
-	bool setAirspeedThreshold(double val);
+	bool setAirspeedThreshold(real val);
 
   /**
    * Set airspeed threshold to value in specified units [u].
    */
-	bool setAirspeedThreshold(double val, const std::string& u);
+	bool setAirspeedThreshold(real val, const std::string& u);
 
   /**
    * Sets minimum horizontal speed for horizontal speed bands to value in internal units [m/s].
    * Minimum horizontal speed must be non-negative.
    */
-  bool setMinHorizontalSpeed(double val);
+  bool setMinHorizontalSpeed(real val);
 
   /**
    * Sets minimum horizontal speed for horizontal speed bands to value in specified units [u].
    * Minimum horizontal speed must be non-negative.
    */
-  bool setMinHorizontalSpeed(double val, const std::string& u);
+  bool setMinHorizontalSpeed(real val, const std::string& u);
 
   /**
    * Sets maximum horizontal speed for horizontal speed bands to value in internal units [m/s].
    */
-  bool setMaxHorizontalSpeed(double val);
+  bool setMaxHorizontalSpeed(real val);
 
   /**
    * Sets maximum horizontal speed for horizontal speed bands to value in specified units [u].
    */
-  bool setMaxHorizontalSpeed(double val, const std::string& u);
+  bool setMaxHorizontalSpeed(real val, const std::string& u);
 
   /**
    * Sets minimum vertical speed for vertical speed bands to value in internal units [m/s].
    */
-  bool setMinVerticalSpeed(double val);
+  bool setMinVerticalSpeed(real val);
 
   /**
    * Sets minimum vertical speed for vertical speed bands to value in specified units [u].
    */
-  bool setMinVerticalSpeed(double val, const std::string& u);
+  bool setMinVerticalSpeed(real val, const std::string& u);
 
   /**
    * Sets maximum vertical speed for vertical speed bands to value in internal units [m/s].
    */
-  bool setMaxVerticalSpeed(double val);
+  bool setMaxVerticalSpeed(real val);
 
   /**
    * Sets maximum vertical speed for vertical speed bands to value in specified units [u].
    */
-  bool setMaxVerticalSpeed(double val, const std::string& u);
+  bool setMaxVerticalSpeed(real val, const std::string& u);
 
   /**
    * Sets minimum altitude for altitude bands to value in internal units [m]
    */
-  bool setMinAltitude(double val);
+  bool setMinAltitude(real val);
 
   /**
    * Sets minimum altitude for altitude bands to value in specified units [u].
    */
-  bool setMinAltitude(double val, const std::string& u);
+  bool setMinAltitude(real val, const std::string& u);
 
   /**
    * Sets maximum altitude for altitude bands to value in internal units [m]
    */
-  bool setMaxAltitude(double val);
+  bool setMaxAltitude(real val);
 
   /**
    * Sets maximum altitude for altitude bands to value in specified units [u].
    */
-  bool setMaxAltitude(double val, const std::string& u);
+  bool setMaxAltitude(real val, const std::string& u);
 
   /**
    * Set horizontal speed in internal units (below current value) for the
    * computation of relative bands
    */
-  bool setBelowRelativeHorizontalSpeed(double val);
+  bool setBelowRelativeHorizontalSpeed(real val);
 
   /**
    * Set horizontal speed in given units (below current value) for the
    * computation of relative bands
    */
-  bool setBelowRelativeHorizontalSpeed(double val,const std::string& u);
+  bool setBelowRelativeHorizontalSpeed(real val,const std::string& u);
 
   /**
    * Set horizontal speed in internal units (above current value) for the
    * computation of relative bands
    */
-  bool setAboveRelativeHorizontalSpeed(double val);
+  bool setAboveRelativeHorizontalSpeed(real val);
 
   /**
    * Set horizontal speed in given units (above current value) for the
    * computation of relative bands
    */
-  bool setAboveRelativeHorizontalSpeed(double val, const std::string& u);
+  bool setAboveRelativeHorizontalSpeed(real val, const std::string& u);
 
   /**
    * Set vertical speed in internal units (below current value) for the
    * computation of relative bands
    */
-  bool setBelowRelativeVerticalSpeed(double val);
+  bool setBelowRelativeVerticalSpeed(real val);
 
   /**
    * Set vertical speed in given units (below current value) for the
    * computation of relative bands
    */
-  bool setBelowRelativeVerticalSpeed(double val, const std::string& u);
+  bool setBelowRelativeVerticalSpeed(real val, const std::string& u);
 
   /**
    * Set vertical speed in internal units (above current value) for the
    * computation of relative bands
    */
-  bool setAboveRelativeVerticalSpeed(double val);
+  bool setAboveRelativeVerticalSpeed(real val);
 
   /**
    * Set vertical speed in given units (above current value) for the
    * computation of relative bands
    */
-  bool setAboveRelativeVerticalSpeed(double val, const std::string& u);
+  bool setAboveRelativeVerticalSpeed(real val, const std::string& u);
 
   /**
    * Set altitude in internal units (below current value) for the
    * computation of relative bands
    */
-  bool setBelowRelativeAltitude(double val);
+  bool setBelowRelativeAltitude(real val);
 
   /**
    * Set altitude in given units (below current value) for the
    * computation of relative bands
    */
-  bool setBelowRelativeAltitude(double val, const std::string& u);
+  bool setBelowRelativeAltitude(real val, const std::string& u);
 
   /**
    * Set altitude in internal units (above current value) for the
    * computation of relative bands
    */
-  bool setAboveRelativeAltitude(double val);
+  bool setAboveRelativeAltitude(real val);
 
   /**
    * Set altitude in given units (above current value) for the
    * computation of relative bands
    */
-  bool setAboveRelativeAltitude(double val, const std::string& u);
+  bool setAboveRelativeAltitude(real val, const std::string& u);
 
   /**
    * Set below value to min when computing horizontal speed bands
@@ -1240,190 +1241,190 @@ public:
   /**
    * Sets step size for direction bands in internal units [rad].
    */
-  bool setHorizontalDirectionStep(double val);
+  bool setHorizontalDirectionStep(real val);
 
   /**
    * Sets step size for direction bands in specified units [u].
    */
-  bool setHorizontalDirectionStep(double val, const std::string& u);
+  bool setHorizontalDirectionStep(real val, const std::string& u);
 
   /**
    * Sets step size for horizontal speed bands to value in internal units [m/s].
    */
-  bool setHorizontalSpeedStep(double val);
+  bool setHorizontalSpeedStep(real val);
 
   /**
    * Sets step size for horizontal speed bands to value in specified units [u].
    */
-  bool setHorizontalSpeedStep(double val, const std::string& u);
+  bool setHorizontalSpeedStep(real val, const std::string& u);
 
   /**
    * Sets step size for vertical speed bands to value in internal units [m/s].
    */
-  bool setVerticalSpeedStep(double val);
+  bool setVerticalSpeedStep(real val);
 
   /**
    * Sets step size for vertical speed bands to value in specified units [u].
    */
-  bool setVerticalSpeedStep(double val, const std::string& u);
+  bool setVerticalSpeedStep(real val, const std::string& u);
 
   /**
    * Sets step size for altitude bands to value in internal units [m]
    */
-  bool setAltitudeStep(double val);
+  bool setAltitudeStep(real val);
 
   /**
    * Sets step size for altitude bands to value in specified units [u].
    */
-  bool setAltitudeStep(double val, const std::string& u);
+  bool setAltitudeStep(real val, const std::string& u);
 
   /**
    * Sets horizontal acceleration for horizontal speed bands to value in internal units [m/s^2].
    */
-  bool setHorizontalAcceleration(double val);
+  bool setHorizontalAcceleration(real val);
 
   /**
    * Sets horizontal acceleration for horizontal speed bands to value in specified units [u].
    */
-  bool setHorizontalAcceleration(double val, const std::string& u);
+  bool setHorizontalAcceleration(real val, const std::string& u);
 
   /**
    * Sets the constant vertical acceleration for vertical speed and altitude bands
    * to value in internal units [m/s^2]
    */
-  bool setVerticalAcceleration(double val);
+  bool setVerticalAcceleration(real val);
 
   /**
    * Sets the constant vertical acceleration for vertical speed and altitude bands
    * to value in specified units [u].
    */
-  bool setVerticalAcceleration(double val, const std::string& u);
+  bool setVerticalAcceleration(real val, const std::string& u);
 
   /**
    * Sets turn rate for direction bands to value in internal units [rad/s]. As a side effect, this method
    * resets the bank angle.
    */
-  bool setTurnRate(double val);
+  bool setTurnRate(real val);
 
   /**
    * Sets turn rate for direction bands to value in specified units [u]. As a side effect, this method
    * resets the bank angle.
    */
-  bool setTurnRate(double val, const std::string& u);
+  bool setTurnRate(real val, const std::string& u);
 
   /**
    * Sets bank angle for direction bands to value in internal units [rad]. As a side effect, this method
    * resets the turn rate.
    */
-  bool setBankAngle(double val);
+  bool setBankAngle(real val);
 
   /**
    * Sets bank angle for direction bands to value in specified units [u]. As a side effect, this method
    * resets the turn rate.
    */
-  bool setBankAngle(double val, const std::string& u);
+  bool setBankAngle(real val, const std::string& u);
 
   /**
    * Sets vertical rate for altitude bands to value in internal units [m/s]
    */
-  bool setVerticalRate(double val);
+  bool setVerticalRate(real val);
 
   /**
    * Sets vertical rate for altitude bands to value in specified units [u].
    */
-  bool setVerticalRate(double val, const std::string& u);
+  bool setVerticalRate(real val, const std::string& u);
 
   /**
    * Set horizontal NMAC distance to value in internal units [m].
    */
-  bool setHorizontalNMAC(double val);
+  bool setHorizontalNMAC(real val);
 
   /**
    * Set horizontal NMAC distance to value in specified units [u].
    */
-  bool setHorizontalNMAC(double val, const std::string& u);
+  bool setHorizontalNMAC(real val, const std::string& u);
 
   /**
    * Set vertical NMAC distance to value in internal units [m].
    */
-  bool setVerticalNMAC(double val);
+  bool setVerticalNMAC(real val);
 
   /**
    * Set vertical NMAC distance to value in specified units [u].
    */
-  bool setVerticalNMAC(double val, const std::string& u);
+  bool setVerticalNMAC(real val, const std::string& u);
 
   /**
    * Sets recovery stability time in seconds. Recovery bands are computed at time of
    * first conflict-free region plus this time.
    */
-  bool setRecoveryStabilityTime(double t);
+  bool setRecoveryStabilityTime(real t);
 
   /**
    * Sets recovery stability time in specified units. Recovery bands are computed at time of
    * first conflict-free region plus this time.
    */
-  bool setRecoveryStabilityTime(double t, const std::string& u);
+  bool setRecoveryStabilityTime(real t, const std::string& u);
 
   /**
    * Set hysteresis time to value in seconds.
    */
-  bool setHysteresisTime(double val);
+  bool setHysteresisTime(real val);
 
   /**
    * Set alerting persistence time to value in seconds.
    */
-  bool setPersistenceTime(double val);
+  bool setPersistenceTime(real val);
 
   /**
    * Set alerting persistence time to value in specified units [u].
    */
-  bool setPersistenceTime(double val, const std::string& u);
+  bool setPersistenceTime(real val, const std::string& u);
 
   /**
    * Set hysteresis time to value in specified units [u].
    */
-  bool setHysteresisTime(double val, const std::string& u);
+  bool setHysteresisTime(real val, const std::string& u);
 
   /**
    * Set persistence for preferred horizontal direction resolution in internal units
    */
-  bool setPersistencePreferredHorizontalDirectionResolution(double val);
+  bool setPersistencePreferredHorizontalDirectionResolution(real val);
 
   /**
    * Set persistence for preferred horizontal direction resolution in given units
    */
-  bool setPersistencePreferredHorizontalDirectionResolution(double val, const std::string& u);
+  bool setPersistencePreferredHorizontalDirectionResolution(real val, const std::string& u);
 
   /**
    * Set persistence for preferred horizontal speed resolution in internal units
    */
-  bool setPersistencePreferredHorizontalSpeedResolution(double val);
+  bool setPersistencePreferredHorizontalSpeedResolution(real val);
 
   /**
    * Set persistence for preferred horizontal speed resolution in given units
    */
-  bool setPersistencePreferredHorizontalSpeedResolution(double val, const std::string& u);
+  bool setPersistencePreferredHorizontalSpeedResolution(real val, const std::string& u);
 
   /**
    * Set persistence for preferred vertical speed resolution in internal units
    */
-  bool setPersistencePreferredVerticalSpeedResolution(double val);
+  bool setPersistencePreferredVerticalSpeedResolution(real val);
 
   /**
    * Set persistence for preferred vertical speed resolution in given units
    */
-  bool setPersistencePreferredVerticalSpeedResolution(double val, const std::string& u);
+  bool setPersistencePreferredVerticalSpeedResolution(real val, const std::string& u);
 
   /**
    * Set persistence for preferred altitude resolution in internal units
    */
-  bool setPersistencePreferredAltitudeResolution(double val);
+  bool setPersistencePreferredAltitudeResolution(real val);
 
   /**
    * Set persistence for preferred altitude resolution in given units
    */
-  bool setPersistencePreferredAltitudeResolution(double val, const std::string& u);
+  bool setPersistencePreferredAltitudeResolution(real val, const std::string& u);
 
   /**
    * @return Alerting parameter m of "M of N" strategy
@@ -1433,22 +1434,22 @@ public:
   /**
    * Sets minimum horizontal separation for recovery bands in internal units [m].
    */
-  bool setMinHorizontalRecovery(double val);
+  bool setMinHorizontalRecovery(real val);
 
   /**
    * Set minimum horizontal separation for recovery bands in specified units [u].
    */
-  bool setMinHorizontalRecovery(double val, const std::string& u);
+  bool setMinHorizontalRecovery(real val, const std::string& u);
 
   /**
    * Sets minimum vertical separation for recovery bands in internal units [m].
    */
-  bool setMinVerticalRecovery(double val);
+  bool setMinVerticalRecovery(real val);
 
   /**
    * Set minimum vertical separation for recovery bands in units
    */
-  bool setMinVerticalRecovery(double val, const std::string& u);
+  bool setMinVerticalRecovery(real val, const std::string& u);
 
   /**
    * @return true if repulsive criteria is enabled for conflict bands.
@@ -1583,110 +1584,110 @@ public:
   /**
    * @return get factor for computing collision avoidance bands. Factor value is in (0,1]
    */
-  double getCollisionAvoidanceBandsFactor() const;
+  real getCollisionAvoidanceBandsFactor() const;
 
   /**
    * @return set factor for computing collision avoidance bands. Factor value is in (0,1]
    */
-  bool setCollisionAvoidanceBandsFactor(double val);
+  bool setCollisionAvoidanceBandsFactor(real val);
 
   /**
    * @return get z-score (number of standard deviations) for horizontal position
    */
-  double getHorizontalPositionZScore() const;
+  real getHorizontalPositionZScore() const;
 
   /**
    * @return set z-score (number of standard deviations) for horizontal position (non-negative value)
    */
-  bool setHorizontalPositionZScore(double val);
+  bool setHorizontalPositionZScore(real val);
 
   /**
    * @return get min z-score (number of standard deviations) for horizontal velocity
    */
-  double getHorizontalVelocityZScoreMin() const;
+  real getHorizontalVelocityZScoreMin() const;
 
   /**
    * @return set min z-score (number of standard deviations) for horizontal velocity (non-negative value)
    */
-  bool setHorizontalVelocityZScoreMin(double val);
+  bool setHorizontalVelocityZScoreMin(real val);
 
   /**
    * @return get max z-score (number of standard deviations) for horizontal velocity
    */
-  double getHorizontalVelocityZScoreMax() const;
+  real getHorizontalVelocityZScoreMax() const;
 
   /**
    * @return set max z-score (number of standard deviations) for horizontal velocity (non-negative value)
    */
-  bool setHorizontalVelocityZScoreMax(double val);
+  bool setHorizontalVelocityZScoreMax(real val);
 
   /**
    * @return Distance (in internal units) at which h_vel_z_score scales from min to max as range decreases
    */
-  double getHorizontalVelocityZDistance() const;
+  real getHorizontalVelocityZDistance() const;
 
   /**
    * @return Distance (in given units) at which h_vel_z_score scales from min to max as range decreases
    */
-  double getHorizontalVelocityZDistance(const std::string& u) const;
+  real getHorizontalVelocityZDistance(const std::string& u) const;
 
   /**
    * @return Set distance (in internal units) at which h_vel_z_score scales from min to max as range decreases
    */
-  bool setHorizontalVelocityZDistance(double val);
+  bool setHorizontalVelocityZDistance(real val);
 
   /**
    * @return Set distance (in given units) at which h_vel_z_score scales from min to max as range decreases
    */
-  bool setHorizontalVelocityZDistance(double val, const std::string& u);
+  bool setHorizontalVelocityZDistance(real val, const std::string& u);
 
   /**
    * @return get z-score (number of standard deviations) for vertical position
    */
-  double getVerticalPositionZScore() const;
+  real getVerticalPositionZScore() const;
 
   /**
    * @return set z-score (number of standard deviations) for vertical position (non-negative value)
    */
-  bool setVerticalPositionZScore(double val);
+  bool setVerticalPositionZScore(real val);
 
   /**
    * @return get z-score (number of standard deviations) for vertical velocity
    */
-  double getVerticalSpeedZScore() const;
+  real getVerticalSpeedZScore() const;
 
   /**
    * @return set z-score (number of standard deviations) for vertical velocity (non-negative value)
    */
-  bool setVerticalSpeedZScore(double val);
+  bool setVerticalSpeedZScore(real val);
 
   /**
    * Get horizontal contour threshold, specified in internal units [rad] as an angle to
    * the left/right of current aircraft direction. A value of 0 means only conflict contours.
    * A value of pi means all contours.
    */
-  double getHorizontalContourThreshold() const;
+  real getHorizontalContourThreshold() const;
 
   /**
    * Get horizontal contour threshold, specified in given units [u] as an angle to
    * the left/right of current aircraft direction. A value of 0 means only conflict contours.
    * A value of pi means all contours.
    */
-  double getHorizontalContourThreshold(const std::string& u) const;
+  real getHorizontalContourThreshold(const std::string& u) const;
 
   /**
    * Set horizontal contour threshold, specified in internal units [rad] [0 - pi] as an angle to
    * the left/right of current aircraft direction. A value of 0 means only conflict contours.
    * A value of pi means all contours.
    */
-  bool setHorizontalContourThreshold(double val);
+  bool setHorizontalContourThreshold(real val);
 
   /**
    * Set horizontal contour threshold, specified in given units [u] [0 - pi] as an angle to
    * the left/right of current aircraft direction. A value of 0 means only conflict contours.
    * A value of pi means all contours.
    */
-  bool setHorizontalContourThreshold(double val, const std::string& u);
+  bool setHorizontalContourThreshold(real val, const std::string& u);
 
   /**
    * Return true if DTA logic is active at current time
@@ -1760,62 +1761,62 @@ public:
   /**
    * Set DAA Terminal Area (DTA) latitude (internal units)
    */
-  bool setDTALatitude(double lat);
+  bool setDTALatitude(real lat);
 
   /**
    * Set DAA Terminal Area (DTA) latitude in given units
    */
-  bool setDTALatitude(double lat, const std::string& ulat);
+  bool setDTALatitude(real lat, const std::string& ulat);
 
   /**
    * Set DAA Terminal Area (DTA) longitude (internal units)
    */
-  bool setDTALongitude(double lon);
+  bool setDTALongitude(real lon);
 
   /**
    * Set DAA Terminal Area (DTA) longitude in given units
    */
-  bool setDTALongitude(double lon, const std::string& ulon);
+  bool setDTALongitude(real lon, const std::string& ulon);
 
   /**
    * Get DAA Terminal Area (DTA) radius (internal units)
    */
-  double getDTARadius() const;
+  real getDTARadius() const;
 
   /**
    * Get DAA Terminal Area (DTA) radius in given units
    */
-  double getDTARadius(const std::string& u) const;
+  real getDTARadius(const std::string& u) const;
 
   /**
    * Set DAA Terminal Area (DTA) radius (internal units)
    */
-  bool setDTARadius(double val);
+  bool setDTARadius(real val);
 
   /**
    * Set DAA Terminal Area (DTA) radius in given units
    */
-  bool setDTARadius(double val, const std::string& u);
+  bool setDTARadius(real val, const std::string& u);
 
   /**
    * Get DAA Terminal Area (DTA) height (internal units)
    */
-  double getDTAHeight() const;
+  real getDTAHeight() const;
 
   /**
    * Get DAA Terminal Area (DTA) height in given units
    */
-  double getDTAHeight(const std::string& u) const;
+  real getDTAHeight(const std::string& u) const;
 
   /**
    * Set DAA Terminal Area (DTA) height (internal units)
    */
-  bool setDTAHeight(double val);
+  bool setDTAHeight(real val);
 
   /**
    * Set DAA Terminal Area (DTA) height in given units
    */
-  bool setDTAHeight(double val, const std::string& u);
+  bool setDTAHeight(real val, const std::string& u);
 
   /**
    * Get DAA Terminal Area (DTA) alerter
@@ -1968,13 +1969,13 @@ public:
    * Set absolute min/max directions for bands computations. Directions are specified in internal units [rad].
    * Values are expected to be in [0 - 2pi)
    */
-  void setAbsoluteHorizontalDirectionBands(double min, double max);
+  void setAbsoluteHorizontalDirectionBands(real min, real max);
 
   /**
    * Set absolute min/max directions for bands computations. Directions are specified in given units [u].
    * Values are expected to be in [0 - 2pi) [u]
    */
-  void setAbsoluteHorizontalDirectionBands(double min, double max, const std::string& u);
+  void setAbsoluteHorizontalDirectionBands(real min, real max, const std::string& u);
 
   /* Utility methods */
 
@@ -2060,34 +2061,34 @@ public:
    * @return the index of a given direction specified in internal units [rad]
    * @param dir [rad]
    */
-  int indexOfHorizontalDirection(double dir);
+  int indexOfHorizontalDirection(real dir);
 
   /**
    * @return the index of a given direction specified in given units [u]
    * @param dir [u]
    * @param u Units
    */
-  int indexOfHorizontalDirection(double dir, const std::string& u);
+  int indexOfHorizontalDirection(real dir, const std::string& u);
 
   /**
    * @return the region of a given direction specified in internal units [rad].
    * @param dir [rad]
    */
-  BandsRegion::Region regionOfHorizontalDirection(double dir);
+  BandsRegion::Region regionOfHorizontalDirection(real dir);
 
   /**
    * @return the region of a given direction specified in given units [u]
    * @param dir [u]
    * @param u Units
    */
-  BandsRegion::Region regionOfHorizontalDirection(double dir, const std::string& u);
+  BandsRegion::Region regionOfHorizontalDirection(real dir, const std::string& u);
 
   /**
    * Return last time to direction maneuver, in seconds, for ownship with respect to traffic
    * aircraft ac. Return NaN if the ownship is not in conflict with aircraft ac within
    * lookahead time. Return negative infinity if there is no time to maneuver.
    */
-  double lastTimeToHorizontalDirectionManeuver(const TrafficState& ac);
+  real lastTimeToHorizontalDirectionManeuver(const TrafficState& ac);
 
   /**
    * Return last time to horizontal direction maneuver, in seconds, for ownship with respect to traffic
@@ -2095,7 +2096,7 @@ public:
    * aircraft within lookahead time. Return negative infinity if there is no time to maneuver.
    * Return NaN if ac_idx is not a valid index.
    */
-  double lastTimeToHorizontalDirectionManeuver(int ac_idx);
+  real lastTimeToHorizontalDirectionManeuver(int ac_idx);
 
   /**
    * Return last time to horizontal direction maneuver, in given units, for ownship with respect to traffic
@@ -2103,7 +2104,7 @@ public:
    * aircraft within lookahead time. Return negative infinity if there is no time to maneuver.
    * Return NaN if ac_idx is not a valid index.
    */
-  double lastTimeToHorizontalDirectionManeuver(int ac_idx, const std::string& u);
+  real lastTimeToHorizontalDirectionManeuver(int ac_idx, const std::string& u);
 
   /**
    * @return recovery information for horizontal direction bands.
@@ -2131,7 +2132,7 @@ public:
    * positive infinity if there is no resolution to the right, and negative infinity if there
    * is no resolution to the left.
    */
-  double horizontalDirectionResolution(bool dir);
+  real horizontalDirectionResolution(bool dir);
 
   /**
    * Compute horizontal direction resolution maneuver for a given direction.
@@ -2142,7 +2143,7 @@ public:
    * positive infinity if there is no resolution to the right, and negative infinity if there
    * is no resolution to the left.
    */
-  double horizontalDirectionResolution(bool dir, const std::string& u);
+  real horizontalDirectionResolution(bool dir, const std::string& u);
 
   /**
    * Compute horizontal direction *raw* resolution maneuver for a given direction.
@@ -2153,7 +2154,7 @@ public:
    * positive infinity if there is no resolution to the right, and negative infinity if there
    * is no resolution to the left.
    */
-  double horizontalDirectionRawResolution(bool dir);
+  real horizontalDirectionRawResolution(bool dir);
 
   /**
    * Compute horizontal direction *raw* resolution maneuver for a given direction.
@@ -2165,7 +2166,7 @@ public:
    * positive infinity if there is no resolution to the right, and negative infinity if there
    * is no resolution to the left.
    */
-  double horizontalDirectionRawResolution(bool dir, const std::string& u);
+  real horizontalDirectionRawResolution(bool dir, const std::string& u);
 
   /**
    * Compute preferred horizontal direction based on resolution that is closer to current direction.
@@ -2207,34 +2208,34 @@ public:
    * @return the range index of a given horizontal speed specified in internal units [m/s]
    * @param gs [m/s]
    */
-  int indexOfHorizontalSpeed(double gs);
+  int indexOfHorizontalSpeed(real gs);
 
   /**
    * @return the range index of a given horizontal speed specified in given units [u]
    * @param gs [u]
    * @param u Units
    */
-  int indexOfHorizontalSpeed(double gs, const std::string& u);
+  int indexOfHorizontalSpeed(real gs, const std::string& u);
 
   /**
    * @return the region of a given horizontal speed specified in internal units [m/s]
    * @param gs [m/s]
    */
-  BandsRegion::Region regionOfHorizontalSpeed(double gs);
+  BandsRegion::Region regionOfHorizontalSpeed(real gs);
 
   /**
    * @return the region of a given horizontal speed specified in given units [u]
    * @param gs [u]
    * @param u Units
    */
-  BandsRegion::Region regionOfHorizontalSpeed(double gs, const std::string& u);
+  BandsRegion::Region regionOfHorizontalSpeed(real gs, const std::string& u);
 
   /**
    * Return last time to horizontal speed maneuver, in seconds, for ownship with respect to traffic
    * aircraft ac. Return NaN if the ownship is not in conflict with aircraft ac within
    * lookahead time. Return negative infinity if there is no time to maneuver.
    */
-  double lastTimeToHorizontalSpeedManeuver(const TrafficState& ac);
+  real lastTimeToHorizontalSpeedManeuver(const TrafficState& ac);
 
   /**
    * Return last time to horizontal speed maneuver, in seconds, for ownship with respect to traffic
@@ -2242,7 +2243,7 @@ public:
    * aircraft within lookahead time. Return negative infinity if there is no time to maneuver.
    * Return NaN if ac_idx is not a valid index.
    */
-  double lastTimeToHorizontalSpeedManeuver(int ac_idx);
+  real lastTimeToHorizontalSpeedManeuver(int ac_idx);
 
   /**
    * Return last time to horizontal speed maneuver, in given units, for ownship with respect to traffic
@@ -2250,7 +2251,7 @@ public:
    * aircraft within lookahead time. Return negative infinity if there is no time to maneuver.
    * Return NaN if ac_idx is not a valid index.
    */
-  double lastTimeToHorizontalSpeedManeuver(int ac_idx, const std::string& u);
+  real lastTimeToHorizontalSpeedManeuver(int ac_idx, const std::string& u);
 
   /**
    * @return recovery information for horizontal speed bands.
@@ -2278,7 +2279,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double horizontalSpeedResolution(bool dir);
+  real horizontalSpeedResolution(bool dir);
 
   /**
    * Compute horizontal speed resolution maneuver for corrective region.
@@ -2289,7 +2290,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double horizontalSpeedResolution(bool dir, const std::string& u);
+  real horizontalSpeedResolution(bool dir, const std::string& u);
 
   /**
    * Compute horizontal speed *raw* resolution maneuver.
@@ -2300,7 +2301,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double horizontalSpeedRawResolution(bool dir);
+  real horizontalSpeedRawResolution(bool dir);
 
   /**
    * Compute horizontal speed *raw* resolution maneuver for corrective region.
@@ -2312,7 +2313,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double horizontalSpeedRawResolution(bool dir, const std::string& u);
+  real horizontalSpeedRawResolution(bool dir, const std::string& u);
 
   /**
    * Compute preferred horizontal speed direction on resolution that is closer to current horizontal speed.
@@ -2354,34 +2355,34 @@ public:
    * @return the region of a given vertical speed specified in internal units [m/s]
    * @param vs [m/s]
    */
-  int indexOfVerticalSpeed(double vs);
+  int indexOfVerticalSpeed(real vs);
 
   /**
    * @return the region of a given vertical speed specified in given units [u]
    * @param vs [u]
    * @param u Units
    */
-  int indexOfVerticalSpeed(double vs, const std::string& u);
+  int indexOfVerticalSpeed(real vs, const std::string& u);
 
   /**
    * @return the region of a given vertical speed specified in internal units [m/s]
    * @param vs [m/s]
    */
-  BandsRegion::Region regionOfVerticalSpeed(double vs);
+  BandsRegion::Region regionOfVerticalSpeed(real vs);
 
   /**
    * @return the region of a given vertical speed specified in given units [u]
    * @param vs [u]
    * @param u Units
    */
-  BandsRegion::Region regionOfVerticalSpeed(double vs, const std::string& u);
+  BandsRegion::Region regionOfVerticalSpeed(real vs, const std::string& u);
 
   /**
    * Return last time to vertical speed maneuver, in seconds, for ownship with respect to traffic
    * aircraft ac. Return NaN if the ownship is not in conflict with aircraft ac within
    * lookahead time. Return negative infinity if there is no time to maneuver.
    */
-  double lastTimeToVerticalSpeedManeuver(const TrafficState& ac);
+  real lastTimeToVerticalSpeedManeuver(const TrafficState& ac);
 
   /**
    * Return last time to vertical speed maneuver, in seconds, for ownship with respect to traffic
@@ -2389,7 +2390,7 @@ public:
    * aircraft within lookahead time. Return negative infinity if there is no time to maneuver.
    * Return NaN if ac_idx is not a valid index.
    */
-  double lastTimeToVerticalSpeedManeuver(int ac_idx);
+  real lastTimeToVerticalSpeedManeuver(int ac_idx);
 
   /**
    * Return last time to vertical speed maneuver, in given units, for ownship with respect to traffic
@@ -2397,7 +2398,7 @@ public:
    * aircraft within lookahead time. Return negative infinity if there is no time to maneuver.
    * Return NaN if ac_idx is not a valid index.
    */
-  double lastTimeToVerticalSpeedManeuver(int ac_idx, const std::string& u);
+  real lastTimeToVerticalSpeedManeuver(int ac_idx, const std::string& u);
 
   /**
    * @return recovery information for vertical speed bands.
@@ -2425,7 +2426,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double verticalSpeedResolution(bool dir);
+  real verticalSpeedResolution(bool dir);
 
   /**
    * Compute vertical speed resolution maneuver for given direction.
@@ -2436,7 +2437,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double verticalSpeedResolution(bool dir, const std::string& u);
+  real verticalSpeedResolution(bool dir, const std::string& u);
 
   /**
    * Compute vertical speed *raw* resolution maneuver for given direction.
@@ -2447,7 +2448,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double verticalSpeedRawResolution(bool dir);
+  real verticalSpeedRawResolution(bool dir);
 
   /**
    * Compute vertical speed *raw* resolution maneuver for given direction.
@@ -2459,7 +2460,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double verticalSpeedRawResolution(bool dir, const std::string& u);
+  real verticalSpeedRawResolution(bool dir, const std::string& u);
 
   /**
    * Compute preferred  vertical speed direction based on resolution that is closer to current vertical speed.
@@ -2502,34 +2503,34 @@ public:
    * @return the range index of a given altitude specified internal units [m]
    * @param alt [m]
    */
-  int indexOfAltitude(double alt);
+  int indexOfAltitude(real alt);
 
   /**
    * @return the range index of a given altitude specified in given units [u]
    * @param alt [u]
    * @param u Units
    */
-  int indexOfAltitude(double alt, const std::string& u);
+  int indexOfAltitude(real alt, const std::string& u);
 
   /**
    * @return the region of a given altitude specified in internal units [m]
    * @param alt [m]
    */
-  BandsRegion::Region regionOfAltitude(double alt);
+  BandsRegion::Region regionOfAltitude(real alt);
 
   /**
    * @return the region of a given altitude specified in given units [u]
    * @param alt [u]
    * @param u Units
    */
-  BandsRegion::Region regionOfAltitude(double alt, const std::string& u);
+  BandsRegion::Region regionOfAltitude(real alt, const std::string& u);
 
   /**
    * Return last time to altitude maneuver, in seconds, for ownship with respect to traffic
    * aircraft ac. Return NaN if the ownship is not in conflict with aircraft ac within
    * lookahead time. Return negative infinity if there is no time to maneuver.
    */
-  double lastTimeToAltitudeManeuver(const TrafficState& ac);
+  real lastTimeToAltitudeManeuver(const TrafficState& ac);
 
   /**
    * Return last time to altitude maneuver, in seconds, for ownship with respect to traffic
@@ -2537,7 +2538,7 @@ public:
    * aircraft within lookahead time. Return negative infinity if there is no time to maneuver.
    * Return NaN if ac_idx is not a valid index.
    */
-  double lastTimeToAltitudeManeuver(int ac_idx);
+  real lastTimeToAltitudeManeuver(int ac_idx);
 
   /**
    * Return last time to altitude maneuver, in given units, for ownship with respect to traffic
@@ -2545,7 +2546,7 @@ public:
    * aircraft within lookahead time. Return negative infinity if there is no time to maneuver.
    * Return NaN if ac_idx is not a valid index.
    */
-  double lastTimeToAltitudeManeuver(int ac_idx, const std::string& u);
+  real lastTimeToAltitudeManeuver(int ac_idx, const std::string& u);
 
   /**
    * @return recovery information for altitude speed bands.
@@ -2573,7 +2574,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double altitudeResolution(bool dir);
+  real altitudeResolution(bool dir);
 
   /**
    * Compute altitude resolution maneuver for given direction.
@@ -2584,7 +2585,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double altitudeResolution(bool dir, const std::string& u);
+  real altitudeResolution(bool dir, const std::string& u);
 
   /**
    * Compute altitude *raw* resolution maneuver for given direction.
@@ -2595,7 +2596,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double altitudeRawResolution(bool dir);
+  real altitudeRawResolution(bool dir);
 
   /**
    * Compute altitude *raw* resolution maneuver for given direction.
@@ -2607,7 +2608,7 @@ public:
    * positive infinity if there is no up resolution, and negative infinity if there
    * is no down resolution.
    */
-  double altitudeRawResolution(bool dir, const std::string& u);
+  real altitudeRawResolution(bool dir, const std::string& u);
 
   /**
    * Compute preferred  altitude direction on resolution that is closer to current altitude.
@@ -2682,7 +2683,7 @@ public:
    * conflict within lookahead time. NaN means aircraft index is out of range.
    * @param ac_idx is the index of the traffic aircraft
    */
-  double timeToCorrectiveVolume(int ac_idx);
+  real timeToCorrectiveVolume(int ac_idx);
 
   /**
    * @return region corresponding to a given alert level for a particular aircraft.
@@ -2715,51 +2716,51 @@ public:
    * Returns current horizontal separation, in internal units, between ownship and aircraft at index ac_idx.
    * Returns NaN if aircraft index is not valid
    */
-  double currentHorizontalSeparation(int ac_idx) const;
+  real currentHorizontalSeparation(int ac_idx) const;
 
   /**
    * Returns current horizontal separation, in given units, between ownship and aircraft at index ac_idx.
    * Returns NaN if aircraft index is not valid
    */
-  double currentHorizontalSeparation(int ac_idx,const std::string& u) const;
+  real currentHorizontalSeparation(int ac_idx,const std::string& u) const;
 
   /**
    * Returns current vertical separation, in internal units, between ownship and aircraft at index ac_idx.
    * Returns NaN if aircraft index is not valid
    */
-  double currentVerticalSeparation(int ac_idx) const;
+  real currentVerticalSeparation(int ac_idx) const;
 
   /**
    * Returns current vertical separation, in given units, between ownship and aircraft at index ac_idx.
    * Returns NaN if aircraft index is not valid
    */
-  double currentVerticalSeparation(int ac_idx,const std::string& u) const;
+  real currentVerticalSeparation(int ac_idx,const std::string& u) const;
 
 	/**
 	 * Returns norm of horizontal relative velocity, in internal units, between ownship and aircraft index at ac_idx.
 	 * Returns NaN if aircraft index is not valid
 	 */
-  double horizontalRelativeSpeed(int ac_idx) const;
+  real horizontalRelativeSpeed(int ac_idx) const;
 
 	/**
 	 * Returns norm of horizontal relative velocity, in given units, between ownship and aircraft at index ac_idx.
 	 * Returns NaN if aircraft index is not valid
 	 */
-  double horizontalRelativeSpeed(int ac_idx,const std::string& u) const;
+  real horizontalRelativeSpeed(int ac_idx,const std::string& u) const;
 
 	/**
 	 * Returns horizontal closure rate, in internal units, between ownship and aircraft at index ac_idx.
 	 * If positive, aircraft are horizontally converging.
 	 * Returns NaN if aircraft index is not valid.
 	 */
-  double horizontalClosureRate(int ac_idx) const;
+  real horizontalClosureRate(int ac_idx) const;
 
 	/**
 	 * Returns horizontal closure rate, in given units, between ownship and aircraft at index ac_idx.
 	 * If positive, aircraft are horizontally converging.
 	 * Returns NaN if aircraft index is not valid
 	 */
-  double horizontalClosureRate(int ac_idx,const std::string& u) const;
+  real horizontalClosureRate(int ac_idx,const std::string& u) const;
 
 	/**
 	 * Returns angle, in [0-pi] radians, between the horizontal velocity vectors of the
@@ -2771,7 +2772,7 @@ public:
 	 * [3pi/4,pi]  : reciprocal tracks (head-on)
 	 * Returns NaN if aircraft index is not valid
 	 */
-  double horizontalRelativeAngle(int ac_idx) const;
+  real horizontalRelativeAngle(int ac_idx) const;
 
 	/**
 	 * Returns angle, in [0-180] degrees, between the horizontal velocity vectors of the
@@ -2783,46 +2784,46 @@ public:
 	 * [135,180]  : reciprocal tracks (head-on)
 	 * Returns NaN if aircraft index is not valid
 	 */
-  double horizontalRelativeAngle(int ac_idx,const std::string& u) const;
+  real horizontalRelativeAngle(int ac_idx,const std::string& u) const;
 
   /**
    * Returns vertical closure rate, in internal units, between ownship and aircraft at index ac_idx.
    * If positive, aircraft are vertically converging.
    * Returns NaN if aircraft index is not valid
    */
-  double verticalClosureRate(int ac_idx) const;
+  real verticalClosureRate(int ac_idx) const;
 
   /**
    * Returns vertical closure rate, in given units, between ownship and aircraft at index ac_idx.
    * If positive, aircraft are vertically converging.
    * Returns NaN if aircraft index is not valid
    */
-  double verticalClosureRate(int ac_idx,const std::string& u) const;
+  real verticalClosureRate(int ac_idx,const std::string& u) const;
 
   /**
    * Returns predicted HMD, in internal units, between ownship and aircraft at index ac_idx (up to lookahead time),
    * assuming straight line trajectory. Returns NaN if aircraft index is not valid
    */
-  double predictedHorizontalMissDistance(int ac_idx) const;
+  real predictedHorizontalMissDistance(int ac_idx) const;
 
   /**
    * Returns predicted HMD, in provided units, between ownship and aircraft at index ac_idx (up to lookahead time),
    * assuming straight line trajectory. Returns NaN if aircraft index is not valid
    */
-  double predictedHorizontalMissDistance(int ac_idx, const std::string& u) const;
+  real predictedHorizontalMissDistance(int ac_idx, const std::string& u) const;
 
   /**
    * Returns predicted VMD, in internal units, between ownship and aircraft at index ac_idx (up to lookahead time),
    * assuming straight line trajectory. Returns NaN if aircraft index is not valid
    */
-  double predictedVerticalMissDistance(int ac_idx) const;
+  real predictedVerticalMissDistance(int ac_idx) const;
 
 
   /**
    * Returns predicted VMD, in provided units, between ownship and aircraft at index ac_idx (up to lookahead time),
    * assuming straight line trajectory. Return NaN if aircraft index is not valid
    */
-  double predictedVerticalMissDistance(int ac_idx, const std::string& u) const;
+  real predictedVerticalMissDistance(int ac_idx, const std::string& u) const;
 
   /**
    * Returns time, in seconds, to horizontal closest point of approach between ownship and aircraft
@@ -2830,7 +2831,7 @@ public:
    * If aircraft are diverging, the returned time is 0.
    * Returns NaN if aircraft index is not valid
    */
-  double timeToHorizontalClosestPointOfApproach(int ac_idx) const;
+  real timeToHorizontalClosestPointOfApproach(int ac_idx) const;
 
   /**
    * Returns time, in given units, to horizontal closest point of approach between ownship and aircraft
@@ -2838,7 +2839,7 @@ public:
    * If aircraft are diverging, the returned time is 0.
    * Returns NaN if aircraft index is not valid
    */
-  double timeToHorizontalClosestPointOfApproach(int ac_idx, const std::string& u) const;
+  real timeToHorizontalClosestPointOfApproach(int ac_idx, const std::string& u) const;
 
   /**
    * Returns distance, in internal units, at horizontal closest point of approach between ownship and aircraft
@@ -2846,7 +2847,7 @@ public:
    * If aircraft are diverging, the returned distance is current horizontal separation.
    * Returns NaN if aircraft index is not valid
    */
-  double distanceAtHorizontalClosestPointOfApproach(int ac_idx) const;
+  real distanceAtHorizontalClosestPointOfApproach(int ac_idx) const;
 
   /**
    * Returns distance, in given units, at horizontal closest point of approach with aircraft
@@ -2854,7 +2855,7 @@ public:
    * If aircraft are diverging, the returned distance is current horizontal separation.
    * Returns NaN if aircraft index is not valid
    */
-  double distanceAtHorizontalClosestPointOfApproach(int ac_idx, const std::string& u) const;
+  real distanceAtHorizontalClosestPointOfApproach(int ac_idx, const std::string& u) const;
 
   /**
    * Returns time, in seconds, to co-altitude between ownship and aircraft
@@ -2863,7 +2864,7 @@ public:
    * vertical closure is 0, returns negative infinite.
    * Returns NaN if aircraft index is not valid or if vertical closure is 0.
    */
-  double timeToCoAltitude(int ac_idx) const;
+  real timeToCoAltitude(int ac_idx) const;
 
   /**
    * Returns time, in given units, to co-altitude between ownship and aircraft
@@ -2871,7 +2872,7 @@ public:
    * If aircraft are diverging, returns negative value.
    * Returns NaN if aircraft index is not valid or if vertical closure is 0
    */
-  double timeToCoAltitude(int ac_idx, const std::string& u) const;
+  real timeToCoAltitude(int ac_idx, const std::string& u) const;
 
   /**
    * Returns modified tau time, in seconds, for distance DMOD (given in internal units),
@@ -2879,7 +2880,7 @@ public:
    * If aircraft are diverging or DMOD is greater than current range, returns -1.
    * Returns NaN if aircraft index is not valid or if vertical closure is 0
    */
-  double modifiedTau(int ac_idx, double DMOD) const;
+  real modifiedTau(int ac_idx, real DMOD) const;
 
   /**
    * Returns modified tau time, in given units, for distance DMOD (given in DMODu units),
@@ -2887,7 +2888,7 @@ public:
    * If aircraft are diverging or DMOD is greater than current range, returns -1.
    * Returns NaN if aircraft index is not valid or if vertical closure is 0
    */
-  double modifiedTau(int ac_idx, double DMOD, const std::string& DMODu, const std::string& u) const;
+  real modifiedTau(int ac_idx, real DMOD, const std::string& DMODu, const std::string& u) const;
 
   /* Input/Output methods */
 
@@ -2941,7 +2942,7 @@ public:
   @Deprecated
    * Use setMaxHorizontalSpeed instead
    */
-  virtual void setMaxGroundSpeed(double gs, const std::string& unit) {
+  virtual void setMaxGroundSpeed(real gs, const std::string& unit) {
     setMaxHorizontalSpeed(gs,unit);
   }
 
@@ -2949,7 +2950,7 @@ public:
   @Deprecated
    * Use getMaxHorizontalSpeed instead
    */
-  virtual double getMaxGroundSpeed(const std::string& unit) const {
+  virtual real getMaxGroundSpeed(const std::string& unit) const {
     return getMaxHorizontalSpeed(unit);
   }
 
@@ -2981,7 +2982,7 @@ public:
     @Deprecated
    * Use regionOfHorizontalDirection instead
    */
-  virtual BandsRegion::Region regionOfTrack(double trk, const std::string& unit) {
+  virtual BandsRegion::Region regionOfTrack(real trk, const std::string& unit) {
     return regionOfHorizontalDirection(trk,unit);
   }
 
@@ -3013,7 +3014,7 @@ public:
     @Deprecated
    * Use regionOfHorizontalSpeed instead
    */
-  virtual BandsRegion::Region regionOfGroundSpeed(double gs, const std::string& unit) {
+  virtual BandsRegion::Region regionOfGroundSpeed(real gs, const std::string& unit) {
     return regionOfHorizontalSpeed(gs,unit);
   }
 

@@ -11,6 +11,7 @@
  *
  */
 
+#include "Real.h"
 #include "FixedAircraftUrgencyStrategy.h"
 
 namespace larcfm {
@@ -30,7 +31,7 @@ void FixedAircraftUrgencyStrategy::setFixedAircraftId(const std::string& id) {
 /**
  * @return index of aircraft id
  */
-int FixedAircraftUrgencyStrategy::mostUrgentAircraft( const TrafficState& ownship, const std::vector<TrafficState>& traffic, double T) const {
+int FixedAircraftUrgencyStrategy::mostUrgentAircraft( const TrafficState& ownship, const std::vector<TrafficState>& traffic, real T) const {
   (void)ownship; //bypass unused parameter warning (needed for interface)
   (void)T; //bypass unused parameter warning (needed for interface)
   return TrafficState::findAircraftIndex(traffic,ac_);

@@ -11,6 +11,7 @@
 
 #ifndef SEPARATEDOUTPUT_H
 #define SEPARATEDOUTPUT_H
+#include "Real.h"
 
 #include "Units.h"
 #include "ErrorLog.h"
@@ -189,12 +190,12 @@ public:
     /**
      * Sets the next column value equal to the given value. The value is in internal units.
      */
-	void setColumn(int i, double val);
+	void setColumn(int i, real val);
 	
     /**
      * Sets the next column value equal to the given value.  The value is in internal units.
      */
-	void setColumn(double val);
+	void setColumn(real val);
 
     /**
      * Sets the next column value equal to the given value.

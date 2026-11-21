@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "DAAFormatter.h"
 
 namespace larcfm {
@@ -82,7 +83,7 @@ namespace larcfm {
 	}
 
     std::string DAAFormatter::formattedTrafficState(const TrafficState& ac, const bool header, const DaidalusParameters& params, 
-        const double time) const {
+        const real time) const {
 		std::stringstream s;
 		if (header) {
 			s << formatted_header(ac.getPosition().isLatLon(),params);

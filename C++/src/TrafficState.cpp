@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "TrafficState.h"
 #include "Position.h"
 #include "Velocity.h"
@@ -181,7 +182,7 @@ Velocity TrafficState::inverseVelocity(const Velocity& v) const {
   return eprj_.inverseVelocity(get_s(),v,true);
 }
 
-TrafficState TrafficState::linearProjection(double offset) const {
+TrafficState TrafficState::linearProjection(real offset) const {
   Position new_pos = pos_.linear(gvel_,offset);
   TrafficState ac = *this;
   ac.setPosition(new_pos);
@@ -306,35 +307,35 @@ const Velocity& TrafficState::velocityXYZ() const {
   return velxyz_;
 }
 
-double TrafficState::horizontalDirection() const {
+real TrafficState::horizontalDirection() const {
   return avel_.compassAngle();
 }
 
-double TrafficState::horizontalDirection(const std::string& utrk) const {
+real TrafficState::horizontalDirection(const std::string& utrk) const {
   return avel_.compassAngle(utrk);
 }
 
-double TrafficState::horizontalSpeed() const {
+real TrafficState::horizontalSpeed() const {
   return avel_.gs();
 }
 
-double TrafficState::horizontalSpeed(const std::string& ugs) const {
+real TrafficState::horizontalSpeed(const std::string& ugs) const {
   return avel_.groundSpeed(ugs);
 }
 
-double TrafficState::verticalSpeed() const {
+real TrafficState::verticalSpeed() const {
   return avel_.vs();
 }
 
-double TrafficState::verticalSpeed(const std::string& uvs) const {
+real TrafficState::verticalSpeed(const std::string& uvs) const {
   return avel_.verticalSpeed(uvs);
 }
 
-double TrafficState::altitude() const{
+real TrafficState::altitude() const{
   return pos_.alt();
 }
 
-double TrafficState::altitude(const std::string& ualt) const {
+real TrafficState::altitude(const std::string& ualt) const {
   return Units::to(ualt,pos_.alt());
 }
 
@@ -354,14 +355,14 @@ void TrafficState::setSUM(const SUMData& sum) {
  * s_NS_std: North/South position standard deviation in internal units
  * s_EN_std: East/North position standard deviation in internal units
  */
-void TrafficState::setHorizontalPositionUncertainty(double s_EW_std, double s_NS_std, double s_EN_std) {
+void TrafficState::setHorizontalPositionUncertainty(real s_EW_std, real s_NS_std, real s_EN_std) {
   sum_.setHorizontalPositionUncertainty(s_EW_std, s_NS_std, s_EN_std);
 }
 
 /**
  * sz_std : Vertical position standard deviation in internal units
  */
-void TrafficState::setVerticalPositionUncertainty(double sz_std) {
+void TrafficState::setVerticalPositionUncertainty(real sz_std) {
   sum_.setVerticalPositionUncertainty(sz_std);
 }
 
@@ -370,14 +371,14 @@ void TrafficState::setVerticalPositionUncertainty(double sz_std) {
  * v_NS_std: North/South velocity standard deviation in internal units
  * v_EN_std: East/North velocity standard deviation in internal units
  */
-void TrafficState::setHorizontalVelocityUncertainty(double v_EW_std, double v_NS_std,  double v_EN_std) {
+void TrafficState::setHorizontalVelocityUncertainty(real v_EW_std, real v_NS_std,  real v_EN_std) {
   sum_.setHorizontalVelocityUncertainty(v_EW_std, v_NS_std, v_EN_std);
 }
 
 /**
  * vz_std : Vertical velocity standard deviation in internal units
  */
-void TrafficState::setVerticalSpeedUncertainty(double vz_std) {
+void TrafficState::setVerticalSpeedUncertainty(real vz_std) {
   sum_.setVerticalSpeedUncertainty(vz_std);
 }
 

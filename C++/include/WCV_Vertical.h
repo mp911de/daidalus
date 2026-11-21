@@ -6,6 +6,7 @@
  */
 #ifndef WCV_VERTICAL_H_
 #define WCV_VERTICAL_H_
+#include "Real.h"
 
 #include "Interval.h"
 #include "string_util.h"
@@ -18,8 +19,8 @@ class WCV_Vertical {
 public:
 
   virtual ~WCV_Vertical() = 0;
-  virtual bool vertical_WCV(double ZTHR, double TTHR, double sz, double vz) const = 0;
-  virtual Interval vertical_WCV_interval(double ZTHR, double TTHR, double B, double T, double sz, double vz) const = 0;
+  virtual bool vertical_WCV(real ZTHR, real TTHR, real sz, real vz) const = 0;
+  virtual Interval vertical_WCV_interval(real ZTHR, real TTHR, real B, real T, real sz, real vz) const = 0;
   virtual WCV_Vertical* copy() const = 0;
 };
 

@@ -6,6 +6,7 @@
  */
 #ifndef WCV_VMOD_H_
 #define WCV_VMOD_H_
+#include "Real.h"
 
 #include "WCV_Vertical.h"
 
@@ -17,8 +18,8 @@ class WCV_VMOD : public WCV_Vertical {
 
 public:
 
-  virtual bool vertical_WCV(double ZTHR, double T_star, double sz, double vz) const;
-  virtual Interval vertical_WCV_interval(double ZTHR, double T_star, double B, double T, double sz, double vz) const;
+  virtual bool vertical_WCV(real ZTHR, real T_star, real sz, real vz) const;
+  virtual Interval vertical_WCV_interval(real ZTHR, real T_star, real B, real T, real sz, real vz) const;
   virtual ~WCV_VMOD() {}
 
   /**

@@ -9,6 +9,7 @@
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+#include "Real.h"
 #include "AziEquiProjection.h"
 #include "EuclideanProjection.h"
 #include "LatLonAlt.h"
@@ -27,23 +28,23 @@ namespace larcfm {
   
   // Static functions
   
-  static Vect3 spherical2xyz(double lat, double lon) {
-    double r = GreatCircle::spherical_earth_radius;
+  static Vect3 spherical2xyz(real lat, real lon) {
+    real r = GreatCircle::spherical_earth_radius;
     // convert latitude to 0-PI
-    double theta = Pi/2 - lat;
-    double phi = Pi - lon;
-    double x = r*std::sin(theta)*std::cos(phi);
-    double y = r*std::sin(theta)*std::sin(phi);
-    double z = r*std::cos(theta);
+    real theta = Pi/2 - lat;
+    real phi = Pi - lon;
+    real x = r*std::sin(theta)*std::cos(phi);
+    real y = r*std::sin(theta)*std::sin(phi);
+    real z = r*std::cos(theta);
     return Vect3(x,y,z);
   }
   
-  static LatLonAlt xyz2spherical(const Vect3& v, double alt) {
-    double r = GreatCircle::spherical_earth_radius;
-    double theta = acos_safe(v.z()/r);
-    double phi = atan2_safe(v.y(), v.x());
-    double lat = Pi/2 - theta;
-    double lon = to_pi(Pi - phi);
+  static LatLonAlt xyz2spherical(const Vect3& v, real alt) {
+    real r = GreatCircle::spherical_earth_radius;
+    real theta = acos_safe(v.z()/r);
+    real phi = atan2_safe(v.y(), v.x());
+    real lat = Pi/2 - theta;
+    real lon = to_pi(Pi - phi);
     return LatLonAlt::mk(lat, lon, alt);
   }
   
@@ -78,8 +79,8 @@ namespace larcfm {
   }
   
   static Vect3 plane_to_sphere(const Vect2& v) {
-    double r = GreatCircle::spherical_earth_radius;
-    double x = std::sqrt(r*r - v.x*v.x - v.y*v.y);
+    real r = GreatCircle::spherical_earth_radius;
+    real x = std::sqrt(r*r - v.x*v.x - v.y*v.y);
     return Vect3(x, v.x, -v.y);
   }
   
@@ -102,7 +103,7 @@ namespace larcfm {
         //llaRef = lla;
     }
     
-    AziEquiProjection::AziEquiProjection(double lat, double lon, double alt) : 
+    AziEquiProjection::AziEquiProjection(real lat, real lon, real alt) :
     	ref(spherical2xyz(lat,lon)),
     	llaRef(LatLonAlt::mk(lat, lon, alt)) {
         projAlt = alt;
@@ -114,11 +115,11 @@ namespace larcfm {
       return AziEquiProjection(lla);
     }
 
-    AziEquiProjection AziEquiProjection::makeNew(double lat, double lon, double alt) const {
+    AziEquiProjection AziEquiProjection::makeNew(real lat, real lon, real alt) const {
       return AziEquiProjection(lat, lon, alt);
     }
 
-    double AziEquiProjection::conflictRange(double lat, double accuracy) const {
+    real AziEquiProjection::conflictRange(real lat, real accuracy) const {
 //      if (accuracy < Units::from(_NM, 0.01)) { //~0.001 nm accuracy
 //        return Units::from(_NM, 21);
 //      } else if (accuracy < Units::from(_NM, 0.1)) {	//0.01 nm accuracy
@@ -128,10 +129,10 @@ namespace larcfm {
 //      } else {  //0.5 nm accuracy
 //        return Units::from(_NM, 260);
 //      }
-    	return Units::from("NM", std::floor(329.2*std::pow(Units::to("NM",accuracy),1.0/3.0)));
+        return Units::from("NM", std::floor(real(329.2)*std::pow(Units::to("NM",accuracy),real(1.0)/real(3.0))));
     }
     
-    double AziEquiProjection::maxRange() const{
+    real AziEquiProjection::maxRange() const{
       return GreatCircle::spherical_earth_radius*Pi/2;
     }
     
@@ -141,7 +142,7 @@ namespace larcfm {
 
     Vect2 AziEquiProjection::project2(const LatLonAlt& lla) const {
       Vect2 p =  sphere_to_plane(ref, spherical2xyz(lla.lat(),lla.lon()));
-      if (p.norm() <= 0.0) {
+      if (p.norm() <= real(0.0)) {
     	  return Vect2::ZERO();
       } else {
           return p.Scal(GreatCircle::distance(lla, llaRef)/p.norm());
@@ -167,8 +168,8 @@ namespace larcfm {
     }
 
 
-    LatLonAlt AziEquiProjection::inverse(const Vect2& xy, double alt) const {
-      double d = std::sin(GreatCircle::angle_from_distance(xy.norm(),0.0))*GreatCircle::spherical_earth_radius;
+    LatLonAlt AziEquiProjection::inverse(const Vect2& xy, real alt) const {
+      real d = std::sin(GreatCircle::angle_from_distance(xy.norm(),real(0.0)))*GreatCircle::spherical_earth_radius;
     	return xyz2spherical(equator_map_inv(ref, plane_to_sphere(xy.Hat().Scal(d))), alt + projAlt);
     }
 
@@ -177,7 +178,7 @@ namespace larcfm {
     }
     
   Velocity AziEquiProjection::projectVelocity(const LatLonAlt& lla, const Velocity& v) const {
-    double timeStep = 10.0;
+    real timeStep = real(10.0);
     LatLonAlt ll2 = GreatCircle::linear_initial(lla,v,timeStep);
     Vect3 se = project(lla);
     Vect3 s2 = project(ll2);
@@ -196,7 +197,7 @@ namespace larcfm {
   // The user needs to keep track of whether to translate back (i.e. whether original was LatLon())
   Velocity AziEquiProjection::inverseVelocity(const Vect3& s, const Velocity& v, bool toLatLon) const {
     if (toLatLon) {
-      double timeStep = 10.0;
+      real timeStep = real(10.0);
       Vect3 s2 = s.linear(v.vect3(),timeStep);
       LatLonAlt lla1 = inverse(s);
       LatLonAlt lla2 = inverse(s2);
@@ -213,7 +214,7 @@ namespace larcfm {
 
   std::pair<Vect3,Velocity> AziEquiProjection::project(const LatLonAlt& lla, const Velocity& v) const {
 	   Vect3 vec3 = Vect3(project2(lla),lla.alt() - projAlt);
-	   double timeStep = 10.0;
+	   real timeStep = real(10.0);
 	   LatLonAlt ll2 = GreatCircle::linear_initial(lla,v,timeStep);
 	   Vect3 s2 = project(ll2);
 	   Vect3 vn = s2.Sub(vec3).Scal(1/timeStep);

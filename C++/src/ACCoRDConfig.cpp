@@ -13,24 +13,25 @@
  *
  */
 
+#include "Real.h"
 #include "ACCoRDConfig.h"
 #include "Units.h"
 
 namespace larcfm {
 
-const double ACCoRDConfig::minHorizExitSpeedLoS_default = Units::from("kn",100.0);
-const double ACCoRDConfig::minVertExitSpeedLoS_default = Units::from("fpm",1499.99999999);
-const double ACCoRDConfig::maxGs_default = Units::from("kn",700.0);
-const double ACCoRDConfig::minGs_default = Units::from("kn",150.0);       // must be greater than 0
-const double ACCoRDConfig::maxVs_default = Units::from("fpm",5000.0);       // must be greater than 0
-double ACCoRDConfig::gsSearchLosDiscard = Units::from("nm",1.5);
-double ACCoRDConfig::vsDiscretization_default = Units::from("fpm",10.0);
+const real ACCoRDConfig::minHorizExitSpeedLoS_default = Units::from("kn",real(100.0));
+const real ACCoRDConfig::minVertExitSpeedLoS_default = Units::from("fpm",real(1499.99999999));
+const real ACCoRDConfig::maxGs_default = Units::from("kn",real(700.0));
+const real ACCoRDConfig::minGs_default = Units::from("kn",real(150.0));       // must be greater than 0
+const real ACCoRDConfig::maxVs_default = Units::from("fpm",real(5000.0));       // must be greater than 0
+real ACCoRDConfig::gsSearchLosDiscard = Units::from("nm",real(1.5));
+real ACCoRDConfig::vsDiscretization_default = Units::from("fpm",real(10.0));
 
-const double ACCoRDConfig::NMAC_D = Units::from("ft",500); // Defined in RTCA SC-147
-const double ACCoRDConfig::NMAC_H = Units::from("ft",100); // Defined in RTCA SC-147
+const real ACCoRDConfig::NMAC_D = Units::from("ft",500); // Defined in RTCA SC-147
+const real ACCoRDConfig::NMAC_H = Units::from("ft",100); // Defined in RTCA SC-147
 
 // internal units right now
-void ACCoRDConfig::setGsSearchLosDiscard(double val) {
+void ACCoRDConfig::setGsSearchLosDiscard(real val) {
   gsSearchLosDiscard = val;
 }
 

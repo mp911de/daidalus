@@ -14,6 +14,7 @@
 
 #ifndef DCPAURGENCYSTRATEGY_H_
 #define DCPAURGENCYSTRATEGY_H_
+#include "Real.h"
 
 #include "UrgencyStrategy.h"
 
@@ -26,7 +27,7 @@ public:
    * @return most urgent traffic aircraft for given ownship, traffic and lookahead time T.
    * Return -1 if no aircraft is most urgent.
    */
-  int mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, double T) const;
+  int mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, real T) const;
   UrgencyStrategy* copy() const;
 };
 

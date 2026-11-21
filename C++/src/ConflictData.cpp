@@ -11,13 +11,14 @@
  *      Author: rbutler
  */
 
+#include "Real.h"
 #include "ConflictData.h"
 #include "format.h"
 #include "Units.h"
 
 namespace larcfm {
 
-ConflictData::ConflictData(double t_in, double t_out, double t_crit, double d_crit, const Vect3& s, const Vect3& v) :
+ConflictData::ConflictData(real t_in, real t_out, real t_crit, real d_crit, const Vect3& s, const Vect3& v) :
               LossData(t_in, t_out),
               time_crit(t_crit),
               dist_crit(d_crit),
@@ -36,7 +37,7 @@ const ConflictData& ConflictData::EMPTY() {
   return tmp;
 }
 
-ConflictData::ConflictData(const LossData& ld, double t_crit, double d_crit, const Vect3& s, const Vect3& v) :
+ConflictData::ConflictData(const LossData& ld, real t_crit, real d_crit, const Vect3& s, const Vect3& v) :
               LossData(ld),
               time_crit(t_crit),
               dist_crit(d_crit),
@@ -60,28 +61,28 @@ Vect3 const & ConflictData::get_v() const {
 /**
  * Returns HMD, in internal units, within lookahead time t, in seconds, assuming straight line trajectory.
  */
-double ConflictData::HMD(double T) const {
+real ConflictData::HMD(real T) const {
   return Horizontal::hmd(s_.vect2(),v_.vect2(),T);
 }
 
 /**
  * Returns HMD, in specified units, within lookahead time t, in seconds, assuming straight line trajectory.
  */
-double ConflictData::HMD(const std::string& u, double T) const {
+real ConflictData::HMD(const std::string& u, real T) const {
   return Units::to(u,HMD(T));
 }
 
 /**
  * Returns VMD, in internal units, within lookahead time t, in seconds, assuming straight line trajectory.
  */
-double ConflictData::VMD(double T) const {
+real ConflictData::VMD(real T) const {
   return Vertical::vmd(s_.z(),v_.z(),T);
 }
 
 /**
  * Returns VMD, in specified units, within lookahead time t, in seconds, assuming straight line trajectory.
  */
-double ConflictData::VMD(const std::string& u, double T) const {
+real ConflictData::VMD(const std::string& u, real T) const {
   return Units::to(u,VMD(T));
 }
 
@@ -89,7 +90,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * Horizontal separation
  * @return Horizontal separation in internal units at current time
  */
- double ConflictData::horizontalSeparation() const {
+ real ConflictData::horizontalSeparation() const {
     return s_.norm2D();
 }
 
@@ -98,7 +99,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @param u units
  * @return Horizontal separation in specified units u at current time
  */
- double ConflictData::horizontalSeparation(const std::string& u) const {
+ real ConflictData::horizontalSeparation(const std::string& u) const {
     return Units::to(u,horizontalSeparation());
 }
 
@@ -107,7 +108,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @param time in seconds
  * @return Horizontal separation in internal units at given time
  */
- double ConflictData::horizontalSeparationAtTime(double time) const {
+ real ConflictData::horizontalSeparationAtTime(real time) const {
     return s_.AddScal(time,v_).norm2D();
 }
 
@@ -117,7 +118,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @param u units
  * @return Horizontal separation in specified units at given time
  */
- double ConflictData::horizontalSeparationAtTime(const std::string& u, double time) const {
+ real ConflictData::horizontalSeparationAtTime(const std::string& u, real time) const {
     return Units::to(u,horizontalSeparationAtTime(time));
 }
 
@@ -125,7 +126,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * Vertical separation
  * @return Vertical separation in internal units at current time
  */
- double ConflictData::verticalSeparation() const {
+ real ConflictData::verticalSeparation() const {
     return std::abs(s_.z());
 }
 
@@ -134,7 +135,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @param u units
  * @return Vertical separation in specified units at current time
  */
- double ConflictData::verticalSeparation(const std::string& u) const {
+ real ConflictData::verticalSeparation(const std::string& u) const {
     return Units::to(u,verticalSeparation());
 }
 
@@ -143,7 +144,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @param time time in seconds
  * @return Vertical separation in internal units at given time
  */
- double ConflictData::verticalSeparationAtTime(double time) const {
+ real ConflictData::verticalSeparationAtTime(real time) const {
     return std::abs(s_.AddScal(time,v_).z());
 }
 
@@ -153,7 +154,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @param u units
  * @return Vertical separation in specified units at given time
  */
- double ConflictData::verticalSeparationAtTime(const std::string& u, double time) const {
+ real ConflictData::verticalSeparationAtTime(const std::string& u, real time) const {
     return Units::to(u,verticalSeparationAtTime(time));
 }
 
@@ -161,15 +162,15 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * Time to horizontal closest point of approach in seconds.
  * When aircraft are diverging, tcpa is defined as 0.
  */
- double ConflictData::tcpa2D() const {
-    return Util::max(0.0,Horizontal::tcpa(s_.vect2(),v_.vect2()));
+ real ConflictData::tcpa2D() const {
+    return Util::max(real(0.0),Horizontal::tcpa(s_.vect2(),v_.vect2()));
 }
 
 /**
  * Time to 3D closest point of approach in seconds.
  * When aircraft are diverging, tcpa is defined as 0
  */
- double ConflictData::tcpa3D() const {
+ real ConflictData::tcpa3D() const {
     return Vect3::tcpa(s_,Vect3::ZERO(),v_,Vect3::ZERO());
 }
 
@@ -177,7 +178,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * Time to co-altitude.
  * @return time to co-altitude in seconds. Returns NaN is v_.z is zero.
  */
- double ConflictData::tcoa() const {
+ real ConflictData::tcoa() const {
     return Vertical::time_coalt(s_.z(),v_.z());
 }
 
@@ -185,7 +186,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * Horizontal relative speed (ownship wrt intruder)
  * @return Horizontal relative speed in internal units at current time
  */
- double ConflictData::horizontalRelativeSpeed() const {
+ real ConflictData::horizontalRelativeSpeed() const {
     return v_.norm2D();
 }
 
@@ -194,7 +195,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @param u units
  * @return Horizontal relative speed in specified units u at current time
  */
- double ConflictData::horizontalRelativeSpeed(const std::string& u) const {
+ real ConflictData::horizontalRelativeSpeed(const std::string& u) const {
     return Units::to(u,horizontalRelativeSpeed());
 }
 
@@ -203,10 +204,10 @@ double ConflictData::VMD(const std::string& u, double T) const {
    * @return Horizontal closure rate in internal units at current time
    * If positive, aircraft are horizontally converging.
    */
-  double ConflictData::horizontalClosureRate() const {
-    double sdotv = s_.dot2D(v_);
-    if (Util::almost_equals(sdotv,0.0)) {
-      return 0.0;
+  real ConflictData::horizontalClosureRate() const {
+    real sdotv = s_.dot2D(v_);
+    if (Util::almost_equals(sdotv,real(0.0))) {
+      return real(0.0);
     }
     return -sdotv/s_.norm2D();
   }
@@ -217,7 +218,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
    * @return Horizontal closure rate in specified units u at current time
    * If positive, aircraft are horizontally converging.
    */
-  double ConflictData::horizontalClosureRate(const std::string& u) const {
+  real ConflictData::horizontalClosureRate(const std::string& u) const {
     return Units::to(u,horizontalClosureRate());
   }
 
@@ -225,7 +226,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * Vertical relative speed (ownship wrt intruder)
  * @return Vertical relative speed in internal units at current time
  */
- double ConflictData::verticalRelativeSpeed() const {
+ real ConflictData::verticalRelativeSpeed() const {
     return v_.z();
 }
 
@@ -234,7 +235,7 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @param u units
  * @return Vertical relative speed in specified units at current time
  */
- double ConflictData::verticalRelativeSpeed(const std::string& u) const {
+ real ConflictData::verticalRelativeSpeed(const std::string& u) const {
     return Units::to(u,verticalRelativeSpeed());
 }
 
@@ -243,9 +244,9 @@ double ConflictData::VMD(const std::string& u, double T) const {
  * @return Vertical closure rate in internal units at current time
  * If positive, aircraft are vertically converging.
  */
-double ConflictData::verticalClosureRate() const {
-  if (Util::almost_equals(s_.z()*v_.z(),0.0)) {
-    return 0.0;
+real ConflictData::verticalClosureRate() const {
+  if (Util::almost_equals(s_.z()*v_.z(),real(0.0))) {
+    return real(0.0);
   }
   return -Util::sign(s_.z())*v_.z();
 }
@@ -256,15 +257,15 @@ double ConflictData::verticalClosureRate() const {
  * @return Vertical closure rate in specified units at current time
  * If positive, aircraft are vertically converging.
  */
-double ConflictData::verticalClosureRate(const std::string& u) const {
+real ConflictData::verticalClosureRate(const std::string& u) const {
   return Units::to(u,verticalClosureRate());
 }
 
 /**
  * return SLoWC classification for SC-228 SLoWC value
  **/
-ConflictData::SLoWCClassification ConflictData::classifySLoWC(double slowc) {
-  if (slowc <= 0.0) return ConflictData::SLoWC_None;
+ConflictData::SLoWCClassification ConflictData::classifySLoWC(real slowc) {
+  if (slowc <= real(0.0)) return ConflictData::SLoWC_None;
   else if (slowc <= 17) return ConflictData::SLoWC_Minimal;
   else if (slowc <= 33) return ConflictData::SLoWC_Minor;
   else if (slowc <= 47) return ConflictData::SLoWC_Major;
@@ -283,9 +284,9 @@ std::string ConflictData::SLoWCClassificationToString(ConflictData::SLoWCClassif
   }
 }
 
-double ConflictData::squircle(double x, double y) {
-  double sqx = Util::sq(x);
-  double sqy = Util::sq(y);
+real ConflictData::squircle(real x, real y) {
+  real sqx = Util::sq(x);
+  real sqy = Util::sq(y);
   return Util::sqrt_safe(sqx + (1-sqx)*sqy);
 }
 
@@ -293,26 +294,26 @@ double ConflictData::squircle(double x, double y) {
  * Severity of Loss of Well Clear calculation for one time instant, 0.0 (minimal) - 100.0 (catastrophic).
  * For an encounter, it should take max of every instance (SC-228)
  **/
-double ConflictData::SLoWC(double DMOD, double TAUMOD, double ZTHR) const {
+real ConflictData::SLoWC(real DMOD, real TAUMOD, real ZTHR) const {
   Vect2 s2 = s_.vect2();
   Vect2 v2 = v_.vect2();
 
-  double r_i = s2.norm();
-  double rdot_i = Util::almost_equals(r_i,0.0) ? 0.0 : s2.dot(v2)/r_i;
+  real r_i = s2.norm();
+  real rdot_i = Util::almost_equals(r_i,real(0.0)) ? real(0.0) : s2.dot(v2)/r_i;
 
-  double rdotTAUMOD = rdot_i*TAUMOD;
-  double S_i = Util::max(DMOD, (Util::sqrt_safe(Util::sq(rdotTAUMOD)+4*Util::sq(DMOD))-rdotTAUMOD)/2.0);
-  double RangePen_i = Util::almost_equals(r_i,0.0) ? 0 : Util::min(r_i/S_i, 1.0);
+  real rdotTAUMOD = rdot_i*TAUMOD;
+  real S_i = Util::max(DMOD, (Util::sqrt_safe(Util::sq(rdotTAUMOD)+4*Util::sq(DMOD))-rdotTAUMOD)/real(2.0));
+  real RangePen_i = Util::almost_equals(r_i,real(0.0)) ? 0 : Util::min(r_i/S_i, real(1.0));
 
-  double sqv2 = v2.sqv();
-  double t_CPA = Util::almost_equals(sqv2,0.0) ? 0.0 : -s2.dot(v2)/v2.sqv();
-  double HMD_i = s2.AddScal(t_CPA, v2).norm();
-  double HMDPen_i = Util::almost_equals(DMOD,0.0) ? 0 : Util::min(HMD_i/DMOD, 1.0);
+  real sqv2 = v2.sqv();
+  real t_CPA = Util::almost_equals(sqv2,real(0.0)) ? real(0.0) : -s2.dot(v2)/v2.sqv();
+  real HMD_i = s2.AddScal(t_CPA, v2).norm();
+  real HMDPen_i = Util::almost_equals(DMOD,real(0.0)) ? 0 : Util::min(HMD_i/DMOD, real(1.0));
 
-  double dh_i = std::abs(s_.z());
-  double VertPen_i = Util::almost_equals(ZTHR,0.0) ? 0.0 : Util::min(dh_i/ZTHR, 1.0);
+  real dh_i = std::abs(s_.z());
+  real VertPen_i = Util::almost_equals(ZTHR,real(0.0)) ? real(0.0) : Util::min(dh_i/ZTHR, real(1.0));
 
-  double slowc = (1.0 - squircle(RangePen_i, squircle(HMDPen_i, VertPen_i))) * 100.0;
+  real slowc = (real(1.0) - squircle(RangePen_i, squircle(HMDPen_i, VertPen_i))) * real(100.0);
 
   return slowc;
 }
@@ -321,11 +322,11 @@ double ConflictData::SLoWC(double DMOD, double TAUMOD, double ZTHR) const {
  * @return A time in seconds that can be used to compare severity of conflicts for arbitrary
  * well-clear volumes. This time is not necessarily TCPA. ** Don't use it as TCPA. **
  */
-double ConflictData::getCriticalTimeOfConflict() const {
+real ConflictData::getCriticalTimeOfConflict() const {
   return time_crit;
 }
 
-double ConflictData::getDistanceAtCriticalTime() const {
+real ConflictData::getDistanceAtCriticalTime() const {
   return dist_crit;
 }
 

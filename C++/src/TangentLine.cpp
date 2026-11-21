@@ -14,33 +14,34 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "TangentLine.h"
 
 namespace larcfm {
 
-TangentLine::TangentLine() : Vect2(0.0,0.0) {
+TangentLine::TangentLine() : Vect2(real(0.0),real(0.0)) {
   eps = 0;
   //x = y = 0.0;
 }
 
-Vect2 TangentLine::Q(const Vect2& s, const double D, const int eps) {
-  double sq_s = s.sqv();
-  double sq_D = sq(D);
-  double delta = sq_s -sq_D;
+Vect2 TangentLine::Q(const Vect2& s, const real D, const int eps) {
+  real sq_s = s.sqv();
+  real sq_D = sq(D);
+  real delta = sq_s -sq_D;
   if (delta >= 0) { 
-    double alpha = sq_D/sq_s;
-    double beta  = D*sqrt_safe(delta)/sq_s;
+    real alpha = sq_D/sq_s;
+    real beta  = D*sqrt_safe(delta)/sq_s;
     return Vect2(alpha*s.x+eps*beta*s.y,
 		 alpha*s.y-eps*beta*s.x);   
     }
     return Vect2();
 }
 
-double InitTangentLineX (const Vect2& s, const double D, const int eps) {
-  double x;
+real InitTangentLineX (const Vect2& s, const real D, const int eps) {
+  real x;
 //  double y;
-  double sq_s  = s.sqv();
-  double sq_D  = sq(D);
+  real sq_s  = s.sqv();
+  real sq_D  = sq(D);
   if (Util::almost_equals(sq_s,sq_D))  {
     x = eps*s.y;
 //    y = -eps*s.x;
@@ -56,11 +57,11 @@ double InitTangentLineX (const Vect2& s, const double D, const int eps) {
   return x;
 }
 
-double InitTangentLineY (const Vect2& s, const double D, const int eps) {
+real InitTangentLineY (const Vect2& s, const real D, const int eps) {
 //  double x;
-  double y;
-  double sq_s  = s.sqv();
-  double sq_D  = sq(D);
+  real y;
+  real sq_s  = s.sqv();
+  real sq_D  = sq(D);
   if (Util::almost_equals(sq_s,sq_D))  {
 //    x = eps*s.y;
     y = -eps*s.x;
@@ -76,7 +77,7 @@ double InitTangentLineY (const Vect2& s, const double D, const int eps) {
   return y;
 }
 
-TangentLine::TangentLine(const Vect2& s, const double D, const int eps) : Vect2(InitTangentLineX(s, D, eps), InitTangentLineY(s, D, eps) ) {
+TangentLine::TangentLine(const Vect2& s, const real D, const int eps) : Vect2(InitTangentLineX(s, D, eps), InitTangentLineY(s, D, eps) ) {
   this->eps = eps;
 }
 

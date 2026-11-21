@@ -6,6 +6,7 @@
  */
 #ifndef INDEXLEVELT_H_
 #define INDEXLEVELT_H_
+#include "Real.h"
 
 #include <vector>
 #include <string>
@@ -17,11 +18,11 @@ class IndexLevelT {
 public:
   int index; // Aircraft 0-Index
   int level; // Alert level
-  double time_horizon;
+  real time_horizon;
   // Time horizon for computation of bands, either lookahead time for conflict bands
   // or alerting time for peripheral bands
 
-  IndexLevelT(int idx, int lvl, double th);
+  IndexLevelT(int idx, int lvl, real th);
 
   std::string toString() const;
 

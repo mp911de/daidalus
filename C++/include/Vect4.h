@@ -11,6 +11,7 @@
 
 #ifndef VECT4_H_
 #define VECT4_H_
+#include "Real.h"
 
 #include "Vect3.h"
 
@@ -34,22 +35,22 @@ public:
 	// these members.
 
     /** x component */
-  double  x;
+  real  x;
 	/** y component */
-  double  y;
+  real  y;
 	/** z component */
-  double  z;
+  real  z;
 	/** t component */
-  double  t;
+  real  t;
 
   /** Construct a Vect4 */
-  explicit Vect4(const double xx=0, const double yy=0, const double zz=0, const double tt=0);
+  explicit Vect4(const real xx=0, const real yy=0, const real zz=0, const real tt=0);
   /** Construct a Vect4 
    * 
    * @param v vector
    * @param t time (4th dimension of vector)
    */
-  Vect4(const Vect3& v, double t);
+  Vect4(const Vect3& v, real t);
 
   /** Is this vector zero? */
   bool isZero() const;
@@ -81,9 +82,9 @@ public:
   /** Return a new vector that is the negation of this vector  */
   Vect4  operator - () const;
   /** Return a new vector that is the scale of this vector by k */
-  Vect4  operator * (const double k) const;
+  Vect4  operator * (const real k) const;
   /** The dot product of this vector and the parameter */
-  double operator * (const Vect4& v) const; // Dot product
+  real operator * (const Vect4& v) const; // Dot product
   
   /** Are these two vectors equal? */
   bool operator == (const Vect4& v) const;
@@ -119,38 +120,38 @@ public:
    * @param k scale factor
    * @return scaled vector
    * */
-  Vect4  Scal(double k) const;
+  Vect4  Scal(real k) const;
   /** Return a new vector that is this*k+v 
    * 
    * @param k vector scale factor
    * @param v vector
    * @return result of this*k+v
    */
-  Vect4  ScalAdd(const double k, const Vect4& v) const;
+  Vect4  ScalAdd(const real k, const Vect4& v) const;
 
   /** A symmetry calculation */
   int    breakSymmetry() const;
 
   /** The dot product of this vector and the parameter */
-  double dot(const double x, const double y, const double z, const double t) const;
+  real dot(const real x, const real y, const real z, const real t) const;
   /** The sum of the square of each component 
    * 
    * @return sum of squares
    */
-  double sqv() const;
+  real sqv() const;
   /** The vector norm of this vector, i.e., the Euclidean distance 
    * @return norm
    */
-  double norm() const;
+  real norm() const;
 
   /** The latitude component of this vector 
    * @return latitude
    */
-  double lat() const;
+  real lat() const;
   /** The longitude component of this vector 
    * @return longitude
    */
-  double lon() const;
+  real lon() const;
 
   /** A string representation of this vector */
   std::string toString() const;

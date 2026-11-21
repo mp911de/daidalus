@@ -10,6 +10,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "LatLonAlt.h"
 #include "Units.h"
 #include "GreatCircle.h"
@@ -19,7 +20,7 @@
 
 namespace larcfm {
 
-LatLonAlt::LatLonAlt(double x, double y, double z) :
+LatLonAlt::LatLonAlt(real x, real y, real z) :
     				lat_(x),
 					lon_(y),
 					alt_(z) {
@@ -55,38 +56,38 @@ bool LatLonAlt::equals2D(const LatLonAlt& lla) const {
 	return (lat_ == lla.lat_) && (lon_ == lla.lon_);
 }
 
-double LatLonAlt::decimal_angle(double degrees, double minutes, double seconds, bool north_east) {
-	return ((north_east) ? 1.0 : -1.0) * Units::from("deg", (degrees + minutes / 60.0 + seconds / 3600.0));
+real LatLonAlt::decimal_angle(real degrees, real minutes, real seconds, bool north_east) {
+	return ((north_east) ? real(1.0) : -real(1.0)) * Units::from("deg", (degrees + minutes / real(60.0) + seconds / real(3600.0)));
 }
 
-double LatLonAlt::latitude(const std::string& units) const {
+real LatLonAlt::latitude(const std::string& units) const {
 	return to_180(Units::to(units, lat_));
 }
 
-double LatLonAlt::longitude(const std::string& units) const {
+real LatLonAlt::longitude(const std::string& units) const {
 	return to_180(Units::to(units, lon_));
 }
 
-double LatLonAlt::altitude(const std::string& units) const {
+real LatLonAlt::altitude(const std::string& units) const {
 	return Units::to(units, alt_);
 }
 
-double LatLonAlt::lat() const {
+real LatLonAlt::lat() const {
 	return lat_;
 }
-double LatLonAlt::lon() const {
+real LatLonAlt::lon() const {
 	return lon_;
 }
-double LatLonAlt::alt() const {
+real LatLonAlt::alt() const {
 	return alt_;
 }
 
-double LatLonAlt::distanceH(const LatLonAlt& lla2) const {
+real LatLonAlt::distanceH(const LatLonAlt& lla2) const {
 	return GreatCircle::distance(*this,lla2);
 }
 
 const LatLonAlt LatLonAlt::make() {
-	return LatLonAlt(0.0, 0.0, 0.0);
+	return LatLonAlt(real(0.0), real(0.0), real(0.0));
 }
 
 const LatLonAlt LatLonAlt::mk(const LatLonAlt& v) {
@@ -95,52 +96,52 @@ const LatLonAlt LatLonAlt::mk(const LatLonAlt& v) {
 			v.alt());
 }
 
-const LatLonAlt LatLonAlt::make(double lat, double lon, double alt){
+const LatLonAlt LatLonAlt::make(real lat, real lon, real alt){
 	return LatLonAlt(Units::from("deg", lat),
 			Units::from("deg", lon),
 			Units::from("ft", alt));
 }
 
-const LatLonAlt LatLonAlt::make(double lat, const std::string& lat_unit, double lon, const std::string& lon_unit,
-		double alt, const std::string& alt_unit) {
+const LatLonAlt LatLonAlt::make(real lat, const std::string& lat_unit, real lon, const std::string& lon_unit,
+		real alt, const std::string& alt_unit) {
 	return LatLonAlt(Units::from(lat_unit, lat),
 			Units::from(lon_unit, lon),
 			Units::from(alt_unit, alt));
 }
 
-const LatLonAlt LatLonAlt::mk(double lat, double lon, double alt) {
+const LatLonAlt LatLonAlt::mk(real lat, real lon, real alt) {
 	return LatLonAlt(lat, lon, alt);
 }
 
-const LatLonAlt LatLonAlt::mkAlt(double alt) const {
+const LatLonAlt LatLonAlt::mkAlt(real alt) const {
 	return LatLonAlt(lat_, lon_, alt);
 }
 
-const LatLonAlt LatLonAlt::makeAlt(double alt) const {
+const LatLonAlt LatLonAlt::makeAlt(real alt) const {
 	return LatLonAlt(lat_, lon_, Units::from("ft",alt));
 }
 
 const LatLonAlt LatLonAlt::zeroAlt() const {
-	return LatLonAlt(lat_, lon_, 0.0);
+	return LatLonAlt(lat_, lon_, real(0.0));
 }
 
 bool LatLonAlt::isInvalid() const {
 	return lat_ != lat_ || lon_ != lon_ || alt_ != alt_;
 }
 
-const LatLonAlt LatLonAlt::linearEst(double dn, double de) const {
+const LatLonAlt LatLonAlt::linearEst(real dn, real de) const {
 	//f.pln(" lat = "+Units.str("deg",lati)+" lon = "+Units.str("deg",longi));
-	double R = GreatCircle::spherical_earth_radius; //6378137;                   // diameter earth in meters
-	double nLat = lat_ + dn/R;
-	double nLon = lon_ + de/(R*cos(lat_));
+	real R = GreatCircle::spherical_earth_radius; //6378137;                   // diameter earth in meters
+	real nLat = lat_ + dn/R;
+	real nLon = lon_ + de/(R*std::cos(lat_));
 	//f.pln(" nLat = "+Units.str("deg",nLat)+" nLon = "+Units.str("deg",nLon));
 	return LatLonAlt::mk(nLat,nLon,alt_);
 }
 
-const LatLonAlt LatLonAlt::linearEst(const Velocity& vo, double tm)  const{
-	double dn = vo.vect3().Scal(tm).y();
-	double de = vo.vect3().Scal(tm).x();
-	double nAlt = alt_ + vo.z()*tm;
+const LatLonAlt LatLonAlt::linearEst(const Velocity& vo, real tm)  const{
+	real dn = vo.vect3().Scal(tm).y();
+	real de = vo.vect3().Scal(tm).x();
+	real nAlt = alt_ + vo.z()*tm;
 	return linearEst(dn,de).mkAlt(nAlt);
 }
 
@@ -167,7 +168,7 @@ std::string LatLonAlt::toString(const std::string& latunit, const std::string& l
 }
 
 const LatLonAlt& LatLonAlt::ZERO() {
-	const static LatLonAlt v(0.0,0.0,0.0);
+	const static LatLonAlt v(real(0.0),real(0.0),real(0.0));
 	return v;
 }
 
@@ -192,8 +193,8 @@ const LatLonAlt LatLonAlt::parse(const std::string& str) {
 }
 
 
-LatLonAlt LatLonAlt::normalize(double lat, double lon, double alt) {
-	double nlat, nlon;
+LatLonAlt LatLonAlt::normalize(real lat, real lon, real alt) {
+	real nlat, nlon;
 	nlon = Util::to_pi(lon);
 	lat = Util::to_pi(lat);
 	nlat = Util::to_pi2_cont(lat);
@@ -203,8 +204,8 @@ LatLonAlt LatLonAlt::normalize(double lat, double lon, double alt) {
 	return LatLonAlt::mk(nlat, nlon, alt);
 }
 
-LatLonAlt LatLonAlt::normalize(double lat, double lon) {
-	return normalize(lat, lon, 0.0);
+LatLonAlt LatLonAlt::normalize(real lat, real lon) {
+	return normalize(lat, lon, real(0.0));
 }
 
 LatLonAlt LatLonAlt::normalize() const {
@@ -217,7 +218,7 @@ bool LatLonAlt::isWest(const LatLonAlt& a) const {
 	return Util::clockwise(a.lon(), lon());
 }
 
-double LatLonAlt::track(const LatLonAlt& p) const {
+real LatLonAlt::track(const LatLonAlt& p) const {
 	LatLonAlt ThisLatLonAlt = mk(lat_,lon_,alt_);
 	return GreatCircle::initial_course(ThisLatLonAlt,p);
 }

@@ -7,6 +7,7 @@
 
 #ifndef ALERTER_H_
 #define ALERTER_H_
+#include "Real.h"
 
 #include "AlertThresholds.h"
 #include "BandsRegion.h"
@@ -257,7 +258,7 @@ public:
    * @return alerting thresholds for single bands given by detector,
    * alerting time, and lookahead time. The single bands region is NEAR
    */
-  static Alerter SingleBands(const Detection3D& detector, double alerting_time, double lookahead_time,
+  static Alerter SingleBands(const Detection3D& detector, real alerting_time, real lookahead_time,
       const std::string& name="default");
 
   /**

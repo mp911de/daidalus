@@ -9,6 +9,7 @@
 
 #ifndef PROJECTEDKINEMATICS_H_
 #define PROJECTEDKINEMATICS_H_
+#include "Real.h"
 
 #include "Position.h"
 #include "Velocity.h"
@@ -34,7 +35,7 @@ public:
 	 * @param R
 	 * @return the turn angle
 	 */
-	static double turnAngle(const Position& s1, const Position& s2, double R);
+	static real turnAngle(const Position& s1, const Position& s2, real R);
 
   /**
    * Horizontal distance covered in a turn
@@ -44,7 +45,7 @@ public:
    * @param R
    * @return the turn distance
    */
-	static double turnDistance(const Position& s1, const Position& s2, double R);
+	static real turnDistance(const Position& s1, const Position& s2, real R);
 
 	/**
 	 * Given two points on a turn and the velocity (direction) at the first point, determine the direction for the shortest turn going through the second point,
@@ -71,15 +72,15 @@ public:
 	 * @param endDist   end distance of turn
 	 * @return          distance along turn
 	 */
-	static double closestDistOnTurn(const Position& turnstart, const Velocity& v1, double R, int dir, const Position& x, double endDist);
+	static real closestDistOnTurn(const Position& turnstart, const Velocity& v1, real R, int dir, const Position& x, real endDist);
 
-	static std::pair<Position,Velocity> turn(const Position& so, const Velocity& vo, double t, double R, bool turnRight);
-	static std::pair<Position,Velocity> gsAccel(const Position& so, const Velocity& vo, double t, double accel);
+	static std::pair<Position,Velocity> turn(const Position& so, const Velocity& vo, real t, real R, bool turnRight);
+	static std::pair<Position,Velocity> gsAccel(const Position& so, const Velocity& vo, real t, real accel);
 
-	static std::pair<Position,Velocity> gsAccelUntil(const Position& so, const Velocity& vo, double t, double goalGs, double a);
-	static std::pair<Position,Velocity> vsAccel(const Position& so, const Velocity& vo, double t, double accel);
+	static std::pair<Position,Velocity> gsAccelUntil(const Position& so, const Velocity& vo, real t, real goalGs, real a);
+	static std::pair<Position,Velocity> vsAccel(const Position& so, const Velocity& vo, real t, real accel);
 
-	static std::pair<Position,Velocity> vsAccelUntil(const Position& so, const Velocity& vo, double t, double goalVs,  double accel);
+	static std::pair<Position,Velocity> vsAccelUntil(const Position& so, const Velocity& vo, real t, real goalVs,  real accel);
 
 	/**
 	 *  Position and velocity after t time units turning in direction "dir" with radius R.  This is a wrapper around turnPosition and
@@ -91,9 +92,9 @@ public:
 	 * @param turnRight true iff only turn direction is to the right
 	 * @return Position and Velocity after t time
 	 */
-	static std::pair<Position,Velocity> turnOmega(const Position& so, const Velocity& vo, double t, double omega);
+	static std::pair<Position,Velocity> turnOmega(const Position& so, const Velocity& vo, real t, real omega);
 
-	static std::pair<Position,Velocity> turnOmega(const Position& so, const Velocity& vo, double t, double omega, const EuclideanProjection& proj);
+	static std::pair<Position,Velocity> turnOmega(const Position& so, const Velocity& vo, real t, real omega, const EuclideanProjection& proj);
 
 
 	/**
@@ -107,30 +108,30 @@ public:
 	 * @param turnRight true iff only turn direction is to the right
 	 * @return Position and Velocity after t time
 	 */
-	static std::pair<Position,Velocity> turnUntil(const Position& so, const Velocity& vo, double t, double goalTrack, double bankAngle);
+	static std::pair<Position,Velocity> turnUntil(const Position& so, const Velocity& vo, real t, real goalTrack, real bankAngle);
 
-	static std::pair<Position,Velocity> turnUntil(const std::pair<Position,Velocity>& sv, double t, double goalTrack, double bankAngle);
+	static std::pair<Position,Velocity> turnUntil(const std::pair<Position,Velocity>& sv, real t, real goalTrack, real bankAngle);
 
-	static std::pair<Position,Velocity> linear(const std::pair<Position,Velocity>& p, double t);
+	static std::pair<Position,Velocity> linear(const std::pair<Position,Velocity>& p, real t);
 
-	static std::pair<Position,Velocity> linear(const Position& so, const Velocity& p, double t);
+	static std::pair<Position,Velocity> linear(const Position& so, const Velocity& p, real t);
 
-	static  std::pair<Position,double> intersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi);
-
-
-	static double timeOfintersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi);
+	static  std::pair<Position,real> intersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi);
 
 
-	static Quad<Position,Velocity,double,int> directToPoint(const Position& so, const Velocity& vo, const Position& wp, double R);
+	static real timeOfintersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi);
 
 
-	static Triple<Position,double,double> genDirectToVertex(const Position& sop, const Velocity& vo, const Position& wpp, double bankAngle, double timeBeforeTurn);
+	static Quad<Position,Velocity,real,int> directToPoint(const Position& so, const Velocity& vo, const Position& wp, real R);
 
-	static Triple<Position,Velocity,double> vsLevelOutFinal(const Position& so, const Velocity& vo, double climbRate, double targetAlt, double a);
 
-	static double vsLevelOutTime(const Position& so, const Velocity& vo, double climbRate, double targetAlt, double a);
+	static Triple<Position,real,real> genDirectToVertex(const Position& sop, const Velocity& vo, const Position& wpp, real bankAngle, real timeBeforeTurn);
 
-	static std::pair<Position,Velocity> vsLevelOut(const Position& so, const Velocity& vo, double t, double climbRate, double targetAlt, double a);
+	static Triple<Position,Velocity,real> vsLevelOutFinal(const Position& so, const Velocity& vo, real climbRate, real targetAlt, real a);
+
+	static real vsLevelOutTime(const Position& so, const Velocity& vo, real climbRate, real targetAlt, real a);
+
+	static std::pair<Position,Velocity> vsLevelOut(const Position& so, const Velocity& vo, real t, real climbRate, real targetAlt, real a);
 
 
 };

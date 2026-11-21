@@ -7,6 +7,7 @@
 
 #ifndef BANDSRANGE_H_
 #define BANDSRANGE_H_
+#include "Real.h"
 
 #include "Interval.h"
 #include "BandsRegion.h"
@@ -34,7 +35,7 @@ public:
    * Return index in ranges_ where val is found, -1 if invalid input or not found. Notice that values at
    * the limits may be included or not depending on the regions.
    */
-  static int index_of(const std::vector<BandsRange>& ranges, double val, double mod);
+  static int index_of(const std::vector<BandsRange>& ranges, real val, real mod);
 
   std::string toString() const;
   std::string toPVS() const;

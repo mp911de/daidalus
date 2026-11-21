@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "DaidalusDirBands.h"
 #include "Velocity.h"
 #include "Position.h"
@@ -26,23 +27,23 @@ bool DaidalusDirBands::do_recovery(const DaidalusParameters& parameters) const {
   return parameters.isEnabledRecoveryHorizontalDirectionBands();
 }
 
-double DaidalusDirBands::get_step(const DaidalusParameters& parameters) const {
+real DaidalusDirBands::get_step(const DaidalusParameters& parameters) const {
   return parameters.getHorizontalDirectionStep();
 }
 
-double DaidalusDirBands::get_min(const DaidalusParameters& parameters) const {
-  return 0.0;
+real DaidalusDirBands::get_min(const DaidalusParameters& parameters) const {
+  return real(0.0);
 }
 
-double DaidalusDirBands::get_max(const DaidalusParameters& parameters) const {
+real DaidalusDirBands::get_max(const DaidalusParameters& parameters) const {
   return get_mod();
 }
 
-double DaidalusDirBands::get_min_rel(const DaidalusParameters& parameters) const {
+real DaidalusDirBands::get_min_rel(const DaidalusParameters& parameters) const {
   return parameters.getLeftHorizontalDirection();
 }
 
-double DaidalusDirBands::get_max_rel(const DaidalusParameters& parameters) const {
+real DaidalusDirBands::get_max_rel(const DaidalusParameters& parameters) const {
   return parameters.getRightHorizontalDirection();
 }
 
@@ -59,25 +60,25 @@ void DaidalusDirBands::set_special_configuration(const DaidalusParameters& param
 }
 
 bool DaidalusDirBands::instantaneous_bands(const DaidalusParameters& parameters) const {
-  return (parameters.getTurnRate() == 0.0 && parameters.getBankAngle() == 0.0) || below_as_thr_ > 0;
+  return (parameters.getTurnRate() == real(0.0) && parameters.getBankAngle() == real(0.0)) || below_as_thr_ > 0;
 }
 
-double DaidalusDirBands::own_val(const TrafficState& ownship) const {
+real DaidalusDirBands::own_val(const TrafficState& ownship) const {
   return ownship.velocityXYZ().compassAngle();
 }
 
-double DaidalusDirBands::time_step(const DaidalusParameters& parameters, const TrafficState& ownship) const {
-	double gso = ownship_gs(parameters,ownship);
-  double omega = parameters.getTurnRate() == 0.0 ? Kinematics::turnRate(gso,parameters.getBankAngle()) : parameters.getTurnRate();
-  	if (omega == 0.0) {
-			return 0.0;
+real DaidalusDirBands::time_step(const DaidalusParameters& parameters, const TrafficState& ownship) const {
+	real gso = ownship_gs(parameters,ownship);
+  real omega = parameters.getTurnRate() == real(0.0) ? Kinematics::turnRate(gso,parameters.getBankAngle()) : parameters.getTurnRate();
+        if (omega == real(0.0)) {
+			return real(0.0);
 		} else {
       return get_step(parameters)/omega;
     }
 }
 
-double DaidalusDirBands::ownship_gs(const DaidalusParameters& parameters, const TrafficState& ownship) const {
-  double gso = below_as_thr_ == 0 ? ownship.velocityXYZ().gs() : 
+real DaidalusDirBands::ownship_gs(const DaidalusParameters& parameters, const TrafficState& ownship) const {
+  real gso = below_as_thr_ == 0 ? ownship.velocityXYZ().gs() :
     std::max(parameters.getAirspeedThreshold(),ownship.velocityXYZ().gs());
   return  std::max(parameters.getHorizontalSpeedStep(),gso);
 }
@@ -86,24 +87,24 @@ Velocity DaidalusDirBands::ownship_vel(const DaidalusParameters& parameters, con
  	return ownship.velocityXYZ().mkGs(ownship_gs(parameters,ownship));
 }
 
-std::pair<Vect3, Vect3> DaidalusDirBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, double time, bool dir, int target_step, bool instantaneous) const {
+std::pair<Vect3, Vect3> DaidalusDirBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, real time, bool dir, int target_step, bool instantaneous) const {
   std::pair<Position,Velocity> posvel;
   Velocity ownship_velocityXYZ = ownship_vel(parameters,ownship);
-  if (time == 0.0 && target_step == 0.0) {
+  if (time == real(0.0) && target_step == real(0.0)) {
     return std::pair<Vect3, Vect3>(ownship.get_s(),ownship_velocityXYZ.vect3());
   } else if (instantaneous) {
-    double trk = ownship_velocityXYZ.compassAngle()+(dir?1:-1)*target_step*get_step(parameters);
+    real trk = ownship_velocityXYZ.compassAngle()+(dir?1:-1)*target_step*get_step(parameters);
     posvel = std::pair<Position, Velocity>(ownship.positionXYZ(),ownship_velocityXYZ.mkTrk(trk));
   } else {
-    double gso = ownship_velocityXYZ.gs();
-    double bank = parameters.getTurnRate() == 0.0 ? parameters.getBankAngle() : std::abs(Kinematics::bankAngle(gso,parameters.getTurnRate()));
-    double R = Kinematics::turnRadius(gso,bank);
+    real gso = ownship_velocityXYZ.gs();
+    real bank = parameters.getTurnRate() == real(0.0) ? parameters.getBankAngle() : std::abs(Kinematics::bankAngle(gso,parameters.getTurnRate()));
+    real R = Kinematics::turnRadius(gso,bank);
     posvel = ProjectedKinematics::turn(ownship.positionXYZ(),ownship_velocityXYZ,time,R,dir);
   }
   return std::pair<Vect3, Vect3>(ownship.pos_to_s(posvel.first),ownship.vel_to_v(posvel.first,posvel.second));
 }
 
-double DaidalusDirBands::max_delta_resolution(const DaidalusParameters& parameters) const {
+real DaidalusDirBands::max_delta_resolution(const DaidalusParameters& parameters) const {
   return parameters.getPersistencePreferredHorizontalDirectionResolution();
 }
 

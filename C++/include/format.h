@@ -7,6 +7,7 @@
 
 #ifndef FORMAT_H_
 #define FORMAT_H_
+#include "Real.h"
 
 #include <string>
 #include <vector>
@@ -23,34 +24,34 @@ namespace larcfm {
   /** Format an unsigned long with 0 decimal places */
   std::string Fmul(unsigned long v);
   /** Format a double with 0 decimal places */
-  std::string Fm0(double v);
+  std::string Fm0(real v);
   /** Format a double with 1 decimal place */
-  std::string Fm1(double v);
+  std::string Fm1(real v);
   /** Format a double with 2 decimal place */
-  std::string Fm2(double v);
+  std::string Fm2(real v);
   /** Format a double with 2 decimal place, filled with zeros */
-  std::string Fm2z(double v);
+  std::string Fm2z(real v);
   /** Format a double with 3 decimal place */
-  std::string Fm3(double v);
+  std::string Fm3(real v);
   /** Format a double with 3 decimal place, filled with zeros */
-  std::string Fm3z(double v);
+  std::string Fm3z(real v);
   /** Format a double with 4 decimal place */
-  std::string Fm4(double v);
+  std::string Fm4(real v);
   /** Format a double with 6 decimal place */
-  std::string Fm6(double v);
+  std::string Fm6(real v);
   /** Format a double with 8 decimal place */
-  std::string Fm8(double v);
+  std::string Fm8(real v);
   /** Format a double with 12 decimal place */
-  std::string Fm12(double v);
+  std::string Fm12(real v);
   /** Format a double with 16 decimal place */
-  std::string Fm16(double v);
+  std::string Fm16(real v);
 
   /** Format an integer to have at least minLength digits, prepending zeros as necessary */
   std::string FmLead(int i, int minLength);
 
-  std::string FmPrecision(double v);
-  std::string FmPrecision(double v, int precision);
-  std::string FmPrecision(double v, int precision, bool includeTrailingZeros);
+  std::string FmPrecision(real v);
+  std::string FmPrecision(real v, int precision);
+  std::string FmPrecision(real v, int precision, bool includeTrailingZeros);
 
   std::string Fmb(bool b);
 
@@ -79,34 +80,34 @@ namespace larcfm {
   void fdln(const std::string& str);
 
   std::string FmPair(const std::pair<int,int>& p);
-  std::string FmPair(const std::pair<double,double>& p);
+  std::string FmPair(const std::pair<real,real>& p);
   std::string FmTriple(const Triple<int,int,int>& p);
-  std::string FmTriple(const Triple<double,double,double>& p);
+  std::string FmTriple(const Triple<real,real,real>& p);
 
   std::string Fobj(const std::vector<int>& v);
-  std::string Fobj(const std::vector<double>& v);
+  std::string Fobj(const std::vector<real>& v);
   std::string Fobj(const std::vector<std::string>& v);
   std::string Fobj(const std::vector<std::pair<int,int> >& v);
-  std::string Fobj(const std::vector<std::pair<double,double> >& v);
+  std::string Fobj(const std::vector<std::pair<real,real> >& v);
   std::string Fobj(const std::vector<Triple<int,int,int> >& v);
-  std::string Fobj(const std::vector<Triple<double, double, double> >& v);
+  std::string Fobj(const std::vector<Triple<real, real, real> >& v);
 
   std::string Fobj(const std::map<std::string,std::string>& v);
   std::string Fobj(const std::map<int,int>& v);
   std::string Fobj(const std::map<int,std::string>& v);
   std::string Fobj(const std::map<std::string,int>& v);
-  std::string Fobj(const std::map<double,double>& v);
-  std::string Fobj(const std::map<double,std::string>& v);
-  std::string Fobj(const std::map<std::string,double>& v);
+  std::string Fobj(const std::map<real,real>& v);
+  std::string Fobj(const std::map<real,std::string>& v);
+  std::string Fobj(const std::map<std::string,real>& v);
 
   std::string list2str(const std::vector<std::string>& l, const std::string& delimiter);
 
   std::string Farray(int const v[], int sz);
-  std::string Farray(double const v[], int sz);
+  std::string Farray(real const v[], int sz);
   std::string Farray(std::string const v[], int sz);
 
-  std::string double2PVS(double val);
-  std::string double2PVS(double val, int precision);
+  std::string double2PVS(real val);
+  std::string double2PVS(real val, int precision);
 
 }
 #endif /* FORMAT_H_ */

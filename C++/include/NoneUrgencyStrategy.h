@@ -13,6 +13,7 @@
 
 #ifndef NONEURGENCYSTRATEGY_H_
 #define NONEURGENCYSTRATEGY_H_
+#include "Real.h"
 
 #include "UrgencyStrategy.h"
 
@@ -25,7 +26,7 @@ public:
   /**
    * @return -1, which is not a valid aircraft index
    */
-  int mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, double T) const;
+  int mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, real T) const;
   UrgencyStrategy* copy() const;
 };
 

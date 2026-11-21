@@ -16,6 +16,7 @@
 
 #ifndef VELOCITY_H_
 #define VELOCITY_H_
+#include "Real.h"
 
 #include "Units.h"
 #include "Vect2.h"
@@ -39,8 +40,8 @@ namespace larcfm {
 class Velocity {
 
 private:
-	double trk_; // Track (true north, clockwise, radians)
-    double gs_;  // Norm of velicity vector (internal units)
+	real trk_; // Track (true north, clockwise, radians)
+    real gs_;  // Norm of velicity vector (internal units)
 	Vect3 v_;    // 3-D vector
 
 	/**
@@ -52,8 +53,8 @@ private:
 	 * @param vy the vy
 	 * @param vz the vz
 	 */
-	Velocity(const double trk, const double gs, 
-		const double vx, const double vy, const double vz);
+	Velocity(const real trk, const real gs,
+		const real vx, const real vy, const real vz);
 	
 	/**
 	 * Instantiates a new velocity in internal units.
@@ -62,7 +63,7 @@ private:
 	 * @param vy the vy
 	 * @param vz the vz
 	 */
-	Velocity(const double vx, const double vy, const double vz);
+	Velocity(const real vx, const real vy, const real vz);
 
 public:
 	/**
@@ -81,11 +82,11 @@ public:
 
 	const Vect3& vect3() const { return v_; }
 
-	double x() const { return v_.x(); }
+	real x() const { return v_.x(); }
 
-	double y() const { return v_.y(); }
+	real y() const { return v_.y(); }
 
-	double z() const { return v_.z(); }
+	real z() const { return v_.z(); }
 
 	/**
 	 * Angle in explicit units in corresponding range [-<code>Math.PI</code>, <code>Math.PI</code>].
@@ -95,7 +96,7 @@ public:
 	 *
 	 * @return the track angle [rad]
 	 */
-	double angle(const std::string& uangle) const;
+	real angle(const std::string& uangle) const;
 
 	/**
 	 * Angle in radians in the range [-<code>Math.PI</code>, <code>Math.PI</code>].
@@ -103,7 +104,7 @@ public:
 	 *
 	 * @return the track angle [rad]
 	 */
-	double angle() const;
+	real angle() const;
 
 	/**
 	 * Track angle in radians in the range [-<code>Math.PI</code>, <code>Math.PI</code>].
@@ -111,7 +112,7 @@ public:
 	 *
 	 * @return the track angle [rad]
 	 */
-	double trk() const { return trk_; }
+	real trk() const { return trk_; }
 
 	/**
 	 * Track angle in explicit units in the corresponding range [-<code>Math.PI</code>, <code>Math.PI</code>].
@@ -121,7 +122,7 @@ public:
 	 *
 	 * @return the track angle [utrk]
 	 */
-	double track(const std::string& utrk) const;
+	real track(const std::string& utrk) const;
 
 	/**
 	 * Compass angle in radians in the range [<code>0</code>, <code>2*Math.PI</code>).
@@ -129,7 +130,7 @@ public:
 	 * 
 	 * @return the compass angle [rad]
 	 */
-	double compassAngle() const;
+	real compassAngle() const;
 
 	/**
 	 * Compass angle in explicit units in corresponding range [<code>0</code>, <code>2*Math.PI</code>).
@@ -139,14 +140,14 @@ public:
 	 *
 	 *  @return the compass angle [u]
 	 */
-	double compassAngle(const std::string& u) const;
+	real compassAngle(const std::string& u) const;
 
 	/**
 	 * Ground speed in internal units.
 	 * 
 	 * @return the ground speed
 	 */
-	double gs() const {return gs_; }
+	real gs() const {return gs_; }
 
 	/**
 	 * Ground speed in explicit units.
@@ -155,14 +156,14 @@ public:
 	 *
 	 * @return the ground speed [ugs]
 	 */
-	double groundSpeed(const std::string& ugs) const;
+	real groundSpeed(const std::string& ugs) const;
 
 	/**
 	 * Vertical speed in internal units.
 	 * 
 	 * @return the vertical speed
 	 */
-	double vs() const;
+	real vs() const;
 
 	/**
 	 * Vertical speed in explicit units.
@@ -171,7 +172,7 @@ public:
 	 *
 	 * @return the vertical speed [uvs]
 	 */
-	double verticalSpeed(const std::string& uvs) const;
+	real verticalSpeed(const std::string& uvs) const;
 
 	/**
 	 * Compare Velocities: return true iff delta is within specified limits
@@ -182,7 +183,7 @@ public:
 	 * @param maxVs   maximum vs
 	 * @return true, if the velocities compare correctly
 	 */
-	bool compare(const Velocity& v, double maxTrk, double maxGs, double maxVs) const;
+	bool compare(const Velocity& v, real maxTrk, real maxGs, real maxVs) const;
 
 	/**
 	 * Compare two velocities based on horizontal and vertical components.  This could be used against a set of nacV ADS-B limits, for example.
@@ -191,7 +192,7 @@ public:
 	 * @param vertDelta vertical tolerance (absolute value)
 	 * @return true if the velocities are within both horizontal and vertical tolerances of each other.
 	 */
-	bool compare(const Velocity& v, double horizDelta, double vertDelta) const;
+	bool compare(const Velocity& v, real horizDelta, real vertDelta) const;
 	
 	/**
 	 * New velocity from Vect3 in internal units.
@@ -221,7 +222,7 @@ public:
 	 * @return the velocity
 	 * 
 	 */
-	static Velocity mkVxyz(const double vx, const double vy, const double vz);
+	static Velocity mkVxyz(const real vx, const real vy, const real vz);
 
 	/**
 	 * New velocity from Euclidean coordinates in explicit units.
@@ -234,8 +235,8 @@ public:
 	 *
 	 * @return the velocity
 	 */
-	static Velocity makeVxyz(const double vx, const double vy, const std::string& uvxy,
-			const double vz, const std::string& uvz);
+	static Velocity makeVxyz(const real vx, const real vy, const std::string& uvxy,
+			const real vz, const std::string& uvz);
 
 	/**
 	 * New velocity from Track, Ground Speed, and Vertical speed in internal units.
@@ -247,7 +248,7 @@ public:
 	 * 
 	 * @return the velocity
 	 */
-	static Velocity mkTrkGsVs(const double trk, const double gs, const double vs);
+	static Velocity mkTrkGsVs(const real trk, const real gs, const real vs);
 
 
 	/**
@@ -260,7 +261,7 @@ public:
 	 *
 	 * @return the velocity
 	 */
-	static Velocity makeTrkGsVs(const double trk, const double gs, const double vs);
+	static Velocity makeTrkGsVs(const real trk, const real gs, const real vs);
 
 
 	/**
@@ -276,9 +277,9 @@ public:
 	 * 
 	 * @return the velocity
 	 */
-	static Velocity makeTrkGsVs(const double trk, const std::string& utrk,
-			const double gs, const std::string& ugs,
-			const double vs, const std::string& uvs);
+	static Velocity makeTrkGsVs(const real trk, const std::string& utrk,
+			const real gs, const std::string& ugs,
+			const real vs, const std::string& uvs);
 
 	/**
 	 * Return the velocity along the line from p1 to p2 at the given speed
@@ -287,7 +288,7 @@ public:
 	 * @param speed speed [internal units] (composite 3 dimensional speed, Not ground or vertical speed!)
 	 * @return the velocity
 	 */
-	static Velocity mkVel(const Vect3& p1,const Vect3& p2, double speed);
+	static Velocity mkVel(const Vect3& p1,const Vect3& p2, real speed);
 
 	/**
 	 * Return the track along the line from p1 to p2 at the given speed
@@ -295,7 +296,7 @@ public:
 	 * @param p2 second point
 	 * @return the track
 	 */
-	static double track(const Vect3& p1, const Vect3& p2);
+	static real track(const Vect3& p1, const Vect3& p2);
 
 	Velocity Neg() const;
 
@@ -316,7 +317,7 @@ public:
 	 * @param dt time
 	 * @return the velocity
 	 */
-	static Velocity genVel(const Vect3& p1, const Vect3& p2, double dt);
+	static Velocity genVel(const Vect3& p1, const Vect3& p2, real dt);
 
 	/**
 	 * New velocity from existing velocity by adding the given track angle to this
@@ -325,7 +326,7 @@ public:
 	 * @param atrk track angle [rad]
 	 * @return new velocity
 	 */
-	Velocity mkAddTrk(double atrk) const;
+	Velocity mkAddTrk(real atrk) const;
 
 
 	/** Return a zero velocity vector */
@@ -343,7 +344,7 @@ public:
 	 * @param gs  ground speed
 	 * @return x component of velocity
 	 */
-	static double trkgs2vx(double trk, double gs);
+	static real trkgs2vx(real trk, real gs);
 
 	/** Return the y component of velocity given the track and ground
 	 *	speed.  The track angle is assumed to use the radians from
@@ -353,7 +354,7 @@ public:
 	 * @param gs  ground speed
 	 * @return y component of velocity
 	 */
-	static double trkgs2vy(double trk, double gs);
+	static real trkgs2vy(real trk, real gs);
 
 	/** Return the 2-dimensional Euclidean vector for velocity given the track and ground
 	 *	speed.  The track angle is assumed to use the radians from
@@ -363,14 +364,14 @@ public:
 	 * @param gs  ground speed
 	 * @return 2-D velocity
 	 */
-	static Vect2 trkgs2v(double trk, double gs);
+	static Vect2 trkgs2v(real trk, real gs);
 
 	/**
 	 * New velocity from existing velocity, changing only the track
 	 * @param trk track angle [rad]
 	 * @return new velocity
 	 */
-	Velocity mkTrk(double trk) const;
+	Velocity mkTrk(real trk) const;
 
 	/**
 	 * New velocity from existing velocity, changing only the track
@@ -378,14 +379,14 @@ public:
 	 * @param u units
 	 * @return new velocity
 	 */
-	Velocity mkTrk(double trk, const std::string& u) const;
+	Velocity mkTrk(real trk, const std::string& u) const;
 
 	/**
 	 * New velocity from existing velocity, changing only the ground speed
 	 * @param ags ground speed [m/s]
 	 * @return new velocity
 	 */
-	Velocity mkGs(double ags) const;
+	Velocity mkGs(real ags) const;
 
 	/**
 	 * New velocity from existing velocity, changing only the ground speed
@@ -393,14 +394,14 @@ public:
 	 * @param u units
 	 * @return new velocity
 	 */
-	Velocity mkGs(double gs, const std::string& u) const;
+	Velocity mkGs(real gs, const std::string& u) const;
 
 	/**
 	 * New velocity from existing velocity, changing only the vertical speed
 	 * @param vs vertical speed [m/s]
 	 * @return new velocity
 	 */
-	Velocity mkVs(double vs) const;
+	Velocity mkVs(real vs) const;
 
 	/**
 	 * New velocity from existing velocity, changing only the vertical speed
@@ -408,7 +409,7 @@ public:
 	 * @param u units
 	 * @return new velocity
 	 */
-	Velocity mkVs(double vs, const std::string& u) const;
+	Velocity mkVs(real vs, const std::string& u) const;
 
 	/**
 	 * If the z component of the velocity vector is smaller than the threshold, return a new vector with this component set to 0.
@@ -417,7 +418,7 @@ public:
 	 * @return the new velocity
 	 */
 
-	Velocity zeroSmallVs(double threshold) const ;
+	Velocity zeroSmallVs(real threshold) const ;
 
 	/** This parses a space or comma-separated string as a XYZ Velocity (an inverse to the toStringXYZ method).  If three bare values are present, then it is interpreted as internal units.
 	 * If there are 3 value/unit pairs then each values is interpreted wrt the appropriate unit.  If the string cannot be parsed, an INVALID value is

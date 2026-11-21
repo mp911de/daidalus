@@ -7,6 +7,7 @@
 
 #ifndef POSITIONUTIL_H_
 #define POSITIONUTIL_H_
+#include "Real.h"
 
 #include "Velocity.h"
 #include "Position.h"
@@ -22,7 +23,7 @@ class PositionUtil {
 public:
 	static bool collinear(const Position & p0, const Position & p1, const Position & p2);
 
-	static Position interpolate(const Position & v1, const Position & v2, double f);
+	static Position interpolate(const Position & v1, const Position & v2, real f);
 
 	/**
 	 * Return angle between P1-P2 and P2-P3
@@ -31,11 +32,11 @@ public:
 	 * @param p3 point 3
 	 * @return angle between two lines
 	 */
-	static double angle_between(const Position & p1, const Position & p2, const Position & p3);
+	static real angle_between(const Position & p1, const Position & p2, const Position & p3);
 
-	static std::pair<Position,double> intersection(const Position & so, const Velocity & vo, const Position & si, const Velocity & vi);
+	static std::pair<Position,real> intersection(const Position & so, const Velocity & vo, const Position & si, const Velocity & vi);
 
-	static std::pair<Position,double> intersection(const Position & so1, const Position & so2, double dto, const Position & si1, const Position & si2);
+	static std::pair<Position,real> intersection(const Position & so1, const Position & so2, real dto, const Position & si1, const Position & si2);
 
 	static Position closestPoint(const Position & a, const Position & b, const Position & x);
 

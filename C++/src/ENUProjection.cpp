@@ -9,6 +9,7 @@
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+#include "Real.h"
 #include "ENUProjection.h"
 #include "EuclideanProjection.h"
 #include "LatLonAlt.h"
@@ -36,24 +37,24 @@ namespace larcfm {
   
   // Static functions
   
-  static Vect3 spherical2xyz(double lat, double lon) {
-    double r = GreatCircle::spherical_earth_radius;
+  static Vect3 spherical2xyz(real lat, real lon) {
+    real r = GreatCircle::spherical_earth_radius;
     // convert latitude to 0-PI
-    double theta = Pi/2 - lat;
-    double phi = Pi - lon;
-    double rsintheta = r*std::sin(theta);
-    double x = rsintheta*std::cos(phi);
-    double y = rsintheta*std::sin(phi);
-    double z = r*std::cos(theta);
+    real theta = Pi/2 - lat;
+    real phi = Pi - lon;
+    real rsintheta = r*std::sin(theta);
+    real x = rsintheta*std::cos(phi);
+    real y = rsintheta*std::sin(phi);
+    real z = r*std::cos(theta);
     return Vect3(x,y,z);
   }
   
-  static LatLonAlt xyz2spherical(const Vect3& v, double alt) {
-    double r = GreatCircle::spherical_earth_radius;
-    double theta = acos_safe(v.z()/r);
-    double phi = atan2_safe(v.y(), v.x());
-    double lat = Pi/2 - theta;
-    double lon = to_pi(Pi - phi);
+  static LatLonAlt xyz2spherical(const Vect3& v, real alt) {
+    real r = GreatCircle::spherical_earth_radius;
+    real theta = acos_safe(v.z()/r);
+    real phi = atan2_safe(v.y(), v.x());
+    real lat = Pi/2 - theta;
+    real lon = to_pi(Pi - phi);
     return LatLonAlt::mk(lat, lon, alt);
   }
   
@@ -88,8 +89,8 @@ namespace larcfm {
   }
   
   static Vect3 plane_to_sphere(const Vect2& v) {
-    double r = GreatCircle::spherical_earth_radius;
-    double x = std::sqrt(r*r - v.x*v.x - v.y*v.y);
+    real r = GreatCircle::spherical_earth_radius;
+    real x = std::sqrt(r*r - v.x*v.x - v.y*v.y);
     return Vect3(x, v.x, -v.y);
   }
   
@@ -112,7 +113,7 @@ namespace larcfm {
         //llaRef = lla;
     }
     
-    ENUProjection::ENUProjection(double lat, double lon, double alt) :
+    ENUProjection::ENUProjection(real lat, real lon, real alt) :
     	ref(spherical2xyz(lat,lon)),
     	llaRef(LatLonAlt::mk(lat, lon, alt)) {
         projAlt = alt;
@@ -124,11 +125,11 @@ namespace larcfm {
       return ENUProjection(lla);
     }
 
-    ENUProjection ENUProjection::makeNew(double lat, double lon, double alt) const {
+    ENUProjection ENUProjection::makeNew(real lat, real lon, real alt) const {
       return ENUProjection(lat, lon, alt);
     }
 
-    double ENUProjection::conflictRange(double lat, double accuracy) const {
+    real ENUProjection::conflictRange(real lat, real accuracy) const {
 //      if (accuracy < Units::from("NM", 0.01)) { //~0.001 nm accuracy
 //        return Units::from("NM", 18);
 //      } else if (accuracy < Units::from("NM", 0.1)) {	//0.01 nm accuracy
@@ -138,10 +139,10 @@ namespace larcfm {
 //      } else {  //0.5 nm accuracy
 //        return Units::from("NM", 205);
 //      }
-      return Units::from("NM", std::floor(243.0*std::pow(Units::to("NM",std::ceil(accuracy)),1.0/3.0)));
+      return Units::from("NM", std::floor(real(243.0)*std::pow(Units::to("NM",std::ceil(accuracy)),real(1.0)/real(3.0))));
    }
     
-    double ENUProjection::maxRange() const{
+    real ENUProjection::maxRange() const{
       return Units::from("NM", 3400);
     }
     
@@ -171,7 +172,7 @@ namespace larcfm {
     	return project(sip);
     }
 
-    LatLonAlt ENUProjection::inverse(const Vect2& xy, double alt) const {
+    LatLonAlt ENUProjection::inverse(const Vect2& xy, real alt) const {
       return xyz2spherical(equator_map_inv(ref, plane_to_sphere(xy)), alt + projAlt);
     }
 
@@ -180,7 +181,7 @@ namespace larcfm {
     }
     
   Velocity ENUProjection::projectVelocity(const LatLonAlt& lla, const Velocity& v) const {
-    double timeStep = 10.0;
+    real timeStep = real(10.0);
     LatLonAlt ll2 = GreatCircle::linear_initial(lla,v,timeStep);
     Vect3 se = project(lla);
     Vect3 s2 = project(ll2);
@@ -199,7 +200,7 @@ namespace larcfm {
   // The user needs to keep track of whether to translate back (i.e. whether original was LatLon())
   Velocity ENUProjection::inverseVelocity(const Vect3& s, const Velocity& v, bool toLatLon) const {
     if (toLatLon) {
-      double timeStep = 10.0;
+      real timeStep = real(10.0);
       Vect3 s2 = s.linear(v.vect3(),timeStep);
       LatLonAlt lla1 = inverse(s);
       LatLonAlt lla2 = inverse(s2);

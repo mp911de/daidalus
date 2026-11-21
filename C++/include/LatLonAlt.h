@@ -12,6 +12,7 @@
 
 #ifndef LATLONALT_H_
 #define LATLONALT_H_
+#include "Real.h"
 
 #include "Vect2.h"
 #include "Velocity.h"
@@ -33,14 +34,14 @@ namespace larcfm {
 class LatLonAlt {
 private:
 
-	double lat_;
-	double lon_;
-	double alt_;
+	real lat_;
+	real lon_;
+	real alt_;
 
 	/**
 	 * Creates a new position 
 	 */
-	LatLonAlt(double x, double y, double z);
+	LatLonAlt(real x, real y, real z);
 
 
 public:
@@ -73,40 +74,40 @@ public:
 	 * @param north_east true, if north or east
 	 * @return an angle
 	 */
-    static double decimal_angle(double degrees, double minutes, double seconds, bool north_east);
+    static real decimal_angle(real degrees, real minutes, real seconds, bool north_east);
 
 	/** Return latitude in the given units in a northerly direction 
 	 * @param units to return a value in
 	 * @return latitude altitude
 	 */
-	double latitude(const std::string& units) const;
+	real latitude(const std::string& units) const;
 
 	/** Return longitude in the given units in an easterly direction 
 	 * @param units to return a value in
 	 * @return longitude in [units]
 	 */
-	double longitude(const std::string& units) const;
+	real longitude(const std::string& units) const;
 
 	/** Return altitude in the given units 
 	 * @param units to return a value in
 	 * @return altitude
 	 */
-	double altitude(const std::string& units) const;
+	real altitude(const std::string& units) const;
 
 	/** Return latitude in internal units 
 	 * @return latitude value
 	 * */
-	double lat() const;
+	real lat() const;
 	/** Return longitude in internal units 
 	 * @return longitude value
 	 * */
-	double lon() const;
+	real lon() const;
 	/** Return altitude in internal units 
 	 * @return altitude value
 	 * */
-	double alt() const;
+	real alt() const;
 
-	double distanceH(const LatLonAlt& lla2) const;
+	real distanceH(const LatLonAlt& lla2) const;
 
 	/** String representation with units of [deg,deg,ft] */
 	std::string toString() const;
@@ -158,7 +159,7 @@ public:
 	 * @param alt altitude [ft]
 	 * @return new LatLonAlt object
 	 */
-	static const LatLonAlt make(double lat, double lon, double alt);
+	static const LatLonAlt make(real lat, real lon, real alt);
 
 	/**
 	 * Creates a new position with coordinates (<code>lat</code>,<code>lon</code>,<code>alt</code>).
@@ -171,7 +172,7 @@ public:
 	 * @param alt_unit units of altitude
 	 * @return new LatLonAlt object
 	 */
-	static const LatLonAlt make(double lat, const std::string& lat_unit, double lon, const std::string& lon_unit, double alt, const std::string& alt_unit);
+	static const LatLonAlt make(real lat, const std::string& lat_unit, real lon, const std::string& lon_unit, real alt, const std::string& alt_unit);
 
 
 	/**
@@ -182,7 +183,7 @@ public:
 	 * @param alt altitude [internal]
 	 * @return new LatLonAlt object
 	 */
-	static const LatLonAlt mk(double lat, double lon, double alt);
+	static const LatLonAlt mk(real lat, real lon, real alt);
 
 	/**
 	 * Creates a new LatLonAlt with only altitude changed
@@ -190,7 +191,7 @@ public:
 	 * @param alt altitude [internal]
 	 * @return new LatLonAlt object with modified altitude
 	 */
-	const LatLonAlt mkAlt(double alt) const;
+	const LatLonAlt mkAlt(real alt) const;
 
 	/**
 	 * Creates a new LatLonAlt with only altitude changed
@@ -198,7 +199,7 @@ public:
 	 * @param alt altitude [feet]
 	 * @return new LatLonAlt object with modified altitude
 	 */
-	const LatLonAlt makeAlt(double alt) const;
+	const LatLonAlt makeAlt(real alt) const;
 
 	/**
 	 * Return a copy of the current LatLonAlt with a zero altitude.  This is useful for 
@@ -238,7 +239,7 @@ public:
 	 * @param de  offset in east direction  (m)
 	 * @return new position
 	 */
-	const LatLonAlt linearEst(double dn, double de) const;
+	const LatLonAlt linearEst(real dn, real de) const;
 
 	/** Compute a new lat/lon that is obtained by moving with velocity vo for tm secs
 	 * This is a computationally fast estimate, and only should be used for relatively short distances.
@@ -247,7 +248,7 @@ public:
 	 * @param tm   time of relocation
 	 * @return new lat/lon position in direction v0
 	 */
-	const LatLonAlt linearEst(const Velocity& vo, double tm) const;
+	const LatLonAlt linearEst(const Velocity& vo, real tm) const;
 
 
 	/** A default value representing zero latitude, longitude, and altitude */
@@ -279,7 +280,7 @@ public:
 	 * @param alt altitude
 	 * @return normalized LatLonAlt value
 	 */
-	static LatLonAlt normalize(double lat, double lon, double alt);
+	static LatLonAlt normalize(real lat, real lon, real alt);
 
 	/**
 	 * Normalizes the given latitude and longitude values to conventional spherical angles. Thus
@@ -291,7 +292,7 @@ public:
 	 * @param lon longitude
 	 * @return normalized LatLonAlt value
 	 */
-	static LatLonAlt normalize(double lat, double lon);
+	static LatLonAlt normalize(real lat, real lon);
 
 	/**
 	 * Creates a new LatLonAlt object from the current LatLonAlt object so that latitude and longitude values are 
@@ -311,7 +312,7 @@ public:
 	 */
 	bool isWest(const LatLonAlt& a) const;
 
-	double track(const LatLonAlt& p) const;
+	real track(const LatLonAlt& p) const;
 };
 
 

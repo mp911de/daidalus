@@ -48,6 +48,7 @@
 
 #ifndef CDCYLINDER_H_
 #define CDCYLINDER_H_
+#include "Real.h"
 
 #include "CD2D.h"
 #include "CD3D.h"
@@ -62,8 +63,8 @@ class CDCylinder : public Detection3D {
 
 private:
 
-  double D_;
-  double H_;
+  real D_;
+  real H_;
   std::map<std::string,std::string> units_;
   std::string id;
 
@@ -79,8 +80,8 @@ public:
    * @param tab
    */
   CDCylinder(const CDCylinder& cdc);
-  CDCylinder(double d, double h);
-  CDCylinder(double d, const std::string& dunit, double h, const std::string& hunit);
+  CDCylinder(real d, real h);
+  CDCylinder(real d, const std::string& dunit, real h, const std::string& hunit);
 
   /**
    * Create a new state-based conflict detection object using specified units.
@@ -88,7 +89,7 @@ public:
    * @param distance the minimum horizontal separation distance in specified units
    * @param height the minimum vertical separation height in specified units.
    */
-  static CDCylinder make(double distance, const std::string& dUnits, double height, const std::string& hUnits);
+  static CDCylinder make(real distance, const std::string& dUnits, real height, const std::string& hUnits);
 
   /**
    * Create a new state-based conflict detection object using internal units.
@@ -96,7 +97,7 @@ public:
    * @param distance the minimum horizontal separation distance [m]
    * @param height the minimum vertical separation height [m].
    */
-  static CDCylinder mk(double distance, double height);
+  static CDCylinder mk(real distance, real height);
 
   /**
    * @return one static CDCylinder
@@ -110,21 +111,21 @@ public:
 
   std::string getUnits(const std::string& key) const;
 
-  double getHorizontalSeparation() const;
+  real getHorizontalSeparation() const;
 
-  void setHorizontalSeparation(double d);
+  void setHorizontalSeparation(real d);
 
-  double getVerticalSeparation() const;
+  real getVerticalSeparation() const;
 
-  void setVerticalSeparation(double h);
+  void setVerticalSeparation(real h);
 
-  double getHorizontalSeparation(const std::string& u) const;
+  real getHorizontalSeparation(const std::string& u) const;
 
-  void setHorizontalSeparation(double d, const std::string& u);
+  void setHorizontalSeparation(real d, const std::string& u);
 
-  double getVerticalSeparation(const std::string& u) const;
+  real getVerticalSeparation(const std::string& u) const;
 
-  void setVerticalSeparation(double h, const std::string& u);
+  void setVerticalSeparation(real h, const std::string& u);
 
   /**
    * Computes the conflict time interval in [B,T].
@@ -139,7 +140,7 @@ public:
    * 
    * @return true, if the conflict time interval (t_in,t_out) is in [B,T].
    */
-  LossData detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H, const double B, const double T) const;
+  LossData detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H, const real B, const real T) const;
 
   /**
    * Computes the conflict time interval in [0,T].
@@ -153,7 +154,7 @@ public:
    * 
    * @return true, if the conflict time interval (t_in,t_out) is in [0,T].
    */
-  LossData detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H, const double T) const;
+  LossData detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H, const real T) const;
 
   /**
    * Computes the conflict time interval in [0,...).
@@ -166,20 +167,20 @@ public:
    *
    * @return true, if the conflict time interval (t_in,t_out) is in [0,...)
    */
-  LossData detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H) const;
+  LossData detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H) const;
 
   virtual ~CDCylinder() {}
 
-  static ConflictData conflict_detection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double D, double H, double B, double T);
-  static double time_of_closest_approach(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double D, double H, double B, double T);
+  static ConflictData conflict_detection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real D, real H, real B, real T);
+  static real time_of_closest_approach(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real D, real H, real B, real T);
 
 
   // The non-static methods violation and conflict are
   // inherited from Detection3D. This enable a uniform
   // treatment of border cases in the generic bands algorithms
 
-  virtual ConflictData conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const;
-  double timeOfClosestApproach(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const;
+  virtual ConflictData conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const;
+  real timeOfClosestApproach(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const;
 
   /** This returns a pointer to a new instance of this type of Detector3D.  You are responsible for destroying this instance when it is no longer needed. */
   virtual CDCylinder* copy() const;
@@ -203,10 +204,10 @@ public:
    * in [0,2*pi].
    */
   static void circular_arc(std::vector<Position>& arc, const Position& pc, const Velocity& v,
-      double alpha, bool include_last);
+      real alpha, bool include_last);
 
   virtual void horizontalHazardZone(std::vector<Position>& haz,
-      const TrafficState& ownship, const TrafficState& intruder, double T) const;
+      const TrafficState& ownship, const TrafficState& intruder, real T) const;
 
 };
 

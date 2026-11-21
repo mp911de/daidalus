@@ -14,6 +14,7 @@
 
 #ifndef VECT3_H_
 #define VECT3_H_
+#include "Real.h"
 
 #include "Vect2.h"
 #include <string>
@@ -31,18 +32,18 @@ class Vect3 {
 private:
 
 	Vect2 v2_;
-	double z_;
+	real z_;
 
 public:	
 
 	/** x coordinate */
-	double x() const { return v2_.x; }
+	real x() const { return v2_.x; }
 
 	/** y coordinate */
-	double y() const { return v2_.y; }
+	real y() const { return v2_.y; }
 
 	/** z coordinate */
-	double z() const { return z_; }
+	real z() const { return z_; }
 
 	/**
 	 * 2-Dimensional projection.
@@ -58,7 +59,7 @@ public:
 	 * @param yy Real value
 	 * @param zz Real value
 	 */
-	explicit Vect3(double xx=0, double yy=0, double zz=0);
+	explicit Vect3(real xx=0, real yy=0, real zz=0);
 
 	/**
 	 * Creates a new vector whose x and y components are v, and whose z component is vz.
@@ -66,7 +67,7 @@ public:
 	 * @param v a 2-D Vector
 	 * @param vz the z component of the new vector
 	 */
-	Vect3(const Vect2& v, double vz);
+	Vect3(const Vect2& v, real vz);
 
 	/** Destructor */
 	virtual ~Vect3() { }
@@ -82,7 +83,7 @@ public:
 	 * @param uz Units z
 	 * @return a new vector
 	 */
-	static Vect3 makeXYZ(double x, const std::string& ux, double y, const std::string& uy, double z, const std::string& uz);
+	static Vect3 makeXYZ(real x, const std::string& ux, real y, const std::string& uy, real z, const std::string& uz);
 
 	/**
 	 * Creates a new vector with coordinates (<code>x</code>,<code>y</code>,<code>z</code>) in internal units.
@@ -92,13 +93,13 @@ public:
 	 * @param z Real value [internal units]
 	 * @return a new vector
 	 */
-	static Vect3 mkXYZ(double x, double y, double z);
+	static Vect3 mkXYZ(real x, real y, real z);
 
-	Vect3 mkX(double nx);
+	Vect3 mkX(real nx);
 
-	Vect3 mkY(double ny);
+	Vect3 mkY(real ny);
 
-	Vect3 mkZ(double nz);
+	Vect3 mkZ(real nz);
 
 	/**
 	 * Checks if vector is zero.
@@ -117,7 +118,7 @@ public:
 	 */
 	bool almostEquals(const Vect3& v) const;
 
-	bool almostEquals2D(const Vect3& v, double horizEps) const;
+	bool almostEquals2D(const Vect3& v, real horizEps) const;
 
 	/**
 	 * Checks if vectors are almost equal.
@@ -130,7 +131,7 @@ public:
 	 */
 	bool almostEquals(const Vect3& v, INT64FM maxUlps) const;
 
-	bool within_epsilon(const Vect3& v2, double epsilon) const;
+	bool within_epsilon(const Vect3& v2, real epsilon) const;
 
 	/**
 	 * Vector addition.
@@ -161,7 +162,7 @@ public:
 	 *
 	 * @return the vector scalar multiplication of <code>this</code> vector and <code>k</code>.
 	 */
-	Vect3  operator * (const double k) const;
+	Vect3  operator * (const real k) const;
 
 	/**
 	 * Dot product.
@@ -170,7 +171,7 @@ public:
 	 *
 	 * @return the dot product of <code>this</code> vector and <code>v</code>.
 	 */
-	double operator * (const Vect3& v) const; // Dot product
+	real operator * (const Vect3& v) const; // Dot product
 
 	/** Exact equality */
 	bool operator == (const Vect3& v) const;
@@ -187,7 +188,7 @@ public:
 	 * @return the scalar multiplication <code>this</code> vector and <code>k</code>, followed by an
 	 * addition to vector <code>v</code>.
 	 */
-	Vect3  ScalAdd(const double k, const Vect3& v) const;
+	Vect3  ScalAdd(const real k, const Vect3& v) const;
 
 	/**
 	 * Addition and scalar multiplication.  Compute: <code>this + k*v</code>;
@@ -197,7 +198,7 @@ public:
 	 * 
 	 * @return the addition of <code>this</code> vector to <code>v</code> scaled by <code>k</code>.
 	 */
-	Vect3 AddScal(double k, const Vect3& v) const;
+	Vect3 AddScal(real k, const Vect3& v) const;
 
 
 	/**
@@ -220,14 +221,14 @@ public:
 	 * @param t    time
 	 * @return the new position
 	 */
-	Vect3 linear(const Vect3& v, double t) const;
+	Vect3 linear(const Vect3& v, real t) const;
 
 	/** Calculates position after moving distance d in the direction "track"
 	 * @param track   the direction
 	 * @param d       distance
 	 * @return the new position (horizontal only)
 	 */
-	Vect3 linearByDist2D(double track, double d) const;
+	Vect3 linearByDist2D(real track, real d) const;
 
 	/**
 	 * Make a unit vector from the current vector.  If it is a zero vector, then a copy is returned.
@@ -278,7 +279,7 @@ public:
 	 *
 	 * @return the vector scalar multiplication of <code>this</code> vector and <code>k</code>.
 	 */
-	Vect3  Scal(double k) const;
+	Vect3  Scal(real k) const;
 
 	/**
 	 * Dot product.
@@ -289,7 +290,7 @@ public:
 	 *
 	 * @return the dot product of <code>this</code> vector and (<code>x</code>,<code>y</code>,<code>z</code>).
 	 */
-	double dot(const double x, const double y, const double z) const;
+	real dot(const real x, const real y, const real z) const;
 
 	/**
 	 * Dot product.
@@ -298,29 +299,29 @@ public:
 	 *
 	 * @return the dot product of <code>this</code> vector and <code>v</code>.
 	 */
-	double dot(const Vect3& v) const;
+	real dot(const Vect3& v) const;
 
 	/**
 	 * Square.
 	 *
 	 * @return the dot product of <code>this</code> vector with itself.
 	 */
-	double sqv() const;
+	real sqv() const;
 
 	/**
 	 * Norm.
 	 *
 	 * @return the norm of of <code>this</code> vector.
 	 */
-	double norm() const;
+	real norm() const;
 
-	double det2D(const Vect3& v) const;
+	real det2D(const Vect3& v) const;
 
-	double dot2D(const Vect3& v) const;
+	real dot2D(const Vect3& v) const;
 
-	double sqv2D() const;
+	real sqv2D() const;
 
-	double norm2D() const;
+	real norm2D() const;
 
 	Vect3 Hat2D() const;
 
@@ -331,17 +332,17 @@ public:
 	 * @return the cylindrical distance of <code>this</code>. The cylindrical distance is
 	 * 1 when <code>this</code> is at the boundaries of the cylinder.
 	 */
-	double cyl_norm(const double d, const double h) const;
+	real cyl_norm(const real d, const real h) const;
 
 	/** The horizontal distance between this vector and the given vector, essentially same as v.Sub(w).vect2().norm()
 	 * @param w vector
 	 * @return horizontal distance */
-	double distanceH(const Vect3& w) const;
+	real distanceH(const Vect3& w) const;
 
 	/** The vertical distance between this vector and the given vector, essentially same as v.z - w.z
 	 * @param w vector
 	 * @return vertical distance */
-	double distanceV(const Vect3& w) const;
+	real distanceV(const Vect3& w) const;
 
 	/** A string representation of this vector */
 	std::string toString() const;
@@ -373,7 +374,7 @@ public:
 	 * @param vi velocity of two
 	 * @return time of closest point of approach
 	 */
-	static double tcpa(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi);
+	static real tcpa(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi);
 
 	/**
 	 * Check if the current vector is valid

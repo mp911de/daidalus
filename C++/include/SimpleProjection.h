@@ -12,6 +12,7 @@
 
 #ifndef SIMPLEPROJECTION_H_
 #define SIMPLEPROJECTION_H_
+#include "Real.h"
 
 #include "LatLonAlt.h"
 #include "Vect3.h"
@@ -39,9 +40,9 @@ namespace larcfm {
  */
   class SimpleProjection {
   private:
-    double projLat;
-    double projLon;
-    double projAlt;
+    real projLat;
+    real projLon;
+    real projAlt;
     bool projNorth;
  
   public:
@@ -61,7 +62,7 @@ namespace larcfm {
 	 * @param lon longitude of reference point
 	 * @param alt altitude of reference point
 	 */
-    SimpleProjection(double lat, double lon, double alt);
+    SimpleProjection(real lat, real lon, real alt);
     
     /** Destructor */
     ~SimpleProjection() {}
@@ -70,17 +71,17 @@ namespace larcfm {
     SimpleProjection makeNew(const LatLonAlt& lla) const;
     
     /** Return a new projection with the given reference point */
-    SimpleProjection makeNew(double lat, double lon, double alt) const;
+    SimpleProjection makeNew(real lat, real lon, real alt) const;
     
 	/** 
 	 * Given an ownship latitude and desired accuracy, what is the longest distance to conflict this projection will support? [m] 
 	 */
-    double conflictRange(double latitude, double accuracy) const;
+    real conflictRange(real latitude, real accuracy) const;
     
 	/**
 	 *  What is the maximum effective horizontal range of this projection? [m] 
 	 */
-    double maxRange() const;
+    real maxRange() const;
 
 	/** Get the projection point for this projection */
 	LatLonAlt getProjectionPoint() const;
@@ -104,7 +105,7 @@ namespace larcfm {
 	Vect3 projectPoint(const Position& sip) const;
 
     /** Return a LatLonAlt value corresponding to the given Euclidean position */
-    LatLonAlt inverse(const Vect2& xy, double alt) const;
+    LatLonAlt inverse(const Vect2& xy, real alt) const;
     
     /** Return a LatLonAlt value corresponding to the given Euclidean position */
     LatLonAlt inverse(const Vect3& xyz) const; 
@@ -152,7 +153,7 @@ namespace larcfm {
 	 * @param lon1 longitude of second point
 	 * @return point in projected space
 	 */
-    static Vect2 projectXY(double lat0, double lon0, double lat1, double lon1);
+    static Vect2 projectXY(real lat0, real lon0, real lat1, real lon1);
     
 	/**
 	 * This method performs a particular projection from a spherical Earth
@@ -192,7 +193,7 @@ namespace larcfm {
 	 * @param north true, if north pole
 	 * @return geodetic position
 	 */
-    static LatLonAlt polar_inverse(const Vect2& v, double alt, bool north);
+    static LatLonAlt polar_inverse(const Vect2& v, real alt, bool north);
 
   };
 
@@ -204,7 +205,7 @@ namespace larcfm {
   /**
    * \deprecated {Used SimpleProjection:: version.}
    * Invert a projection, using the pole as a reference point. */
-  LatLonAlt polar_inverse(const Vect2& v, double alt, bool north);
+  LatLonAlt polar_inverse(const Vect2& v, real alt, bool north);
   
 }
 

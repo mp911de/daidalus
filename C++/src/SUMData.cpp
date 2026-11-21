@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "SUMData.h"
 #include "Units.h"
 #include "Util.h"
@@ -14,16 +15,16 @@ namespace larcfm {
 
 
 SUMData::SUMData() {
-    s_err_ = 0.0;
-    v_err_ = 0.0;
-    s_EW_std_ = 0.0;
-    s_NS_std_ = 0.0;
-    s_EN_std_ = 0.0;
-    sz_std_ = 0.0;
-    v_EW_std_ = 0.0;
-    v_NS_std_ = 0.0;
-    v_EN_std_ = 0.0;
-    vz_std_ = 0.0;
+    s_err_ = real(0.0);
+    v_err_ = real(0.0);
+    s_EW_std_ = real(0.0);
+    s_NS_std_ = real(0.0);
+    s_EN_std_ = real(0.0);
+    sz_std_ = real(0.0);
+    v_EW_std_ = real(0.0);
+    v_NS_std_ = real(0.0);
+    v_EN_std_ = real(0.0);
+    vz_std_ = real(0.0);
 }
 
 SUMData::SUMData(const SUMData& sum) {
@@ -35,67 +36,67 @@ const SUMData& SUMData::EMPTY() {
   return tmp;
 }
 
-double SUMData::get_s_EW_std() const {
+real SUMData::get_s_EW_std() const {
     return s_EW_std_;
 }
 
-double SUMData::get_s_EW_std(const std::string& u) const {
+real SUMData::get_s_EW_std(const std::string& u) const {
     return Units::to(u,s_EW_std_);
 }
 
-double SUMData::get_s_NS_std() const {
+real SUMData::get_s_NS_std() const {
     return s_NS_std_;
 }
 
-double SUMData::get_s_NS_std(const std::string& u) const {
+real SUMData::get_s_NS_std(const std::string& u) const {
     return Units::to(u,s_NS_std_);
 }
 
-double SUMData::get_s_EN_std() const {
+real SUMData::get_s_EN_std() const {
     return s_EN_std_;
 }
 
-double SUMData::get_s_EN_std(const std::string& u) const {
+real SUMData::get_s_EN_std(const std::string& u) const {
     return Units::to(u,s_EN_std_);
 }
 
-double SUMData::get_sz_std() const {
+real SUMData::get_sz_std() const {
     return sz_std_;
 }
 
-double SUMData::get_sz_std(const std::string& u) const {
+real SUMData::get_sz_std(const std::string& u) const {
     return Units::to(u,sz_std_);
 }
 
-double SUMData::get_v_EW_std() const {
+real SUMData::get_v_EW_std() const {
     return v_EW_std_;
 }
 
-double SUMData::get_v_EW_std(const std::string& u) const {
+real SUMData::get_v_EW_std(const std::string& u) const {
     return Units::to(u,v_EW_std_);
 }
 
-double SUMData::get_v_NS_std() const {
+real SUMData::get_v_NS_std() const {
     return v_NS_std_;
 }
 
-double SUMData::get_v_NS_std(const std::string& u) const {
+real SUMData::get_v_NS_std(const std::string& u) const {
     return Units::to(u,v_NS_std_);
 }
 
-double SUMData::get_v_EN_std() const {
+real SUMData::get_v_EN_std() const {
     return v_EN_std_;
 }
 
-double SUMData::get_v_EN_std(const std::string& u) const {
+real SUMData::get_v_EN_std(const std::string& u) const {
     return Units::to(u,v_EN_std_);
 }
 
-double SUMData::get_vz_std() const {
+real SUMData::get_vz_std() const {
     return vz_std_;
 }
 
-double SUMData::get_vz_std(const std::string& u) const {
+real SUMData::get_vz_std(const std::string& u) const {
     return Units::to(u,vz_std_);
 }
 
@@ -112,17 +113,17 @@ void SUMData::set(const SUMData& sum) {
     vz_std_ = sum.vz_std_;
 }
 
-double SUMData::eigen_value_bound(double var1, double var2, double cov) {
-    double varAve = (var1 + var2)/2.0;
-    double det = var1*var2 - Util::sq(cov);
-    double temp1 = Util::sqrt_safe(varAve * varAve - det);
+real SUMData::eigen_value_bound(real var1, real var2, real cov) {
+    real varAve = (var1 + var2)/real(2.0);
+    real det = var1*var2 - Util::sq(cov);
+    real temp1 = Util::sqrt_safe(varAve * varAve - det);
     return varAve + temp1;
 }
 
 /**
  * In PVS: covariance@h_pos_uncertainty and covariance@h_vel_uncertainty, but in Java they are not multiplied by the z-score yet.
  */
-double SUMData::horizontal_uncertainty(double x_std, double y_std, double xy_std) {
+real SUMData::horizontal_uncertainty(real x_std, real y_std, real xy_std) {
     return Util::sqrt_safe(eigen_value_bound(Util::sq(x_std),Util::sq(y_std),Util::sign(xy_std)*Util::sq(xy_std)));
 }
 
@@ -131,7 +132,7 @@ double SUMData::horizontal_uncertainty(double x_std, double y_std, double xy_std
  * s_NS_std: North/South position standard deviation in internal units
  * s_EN_std: East/North position standard deviation in internal units
  */
-void SUMData::setHorizontalPositionUncertainty(double s_EW_std, double s_NS_std, double s_EN_std) {
+void SUMData::setHorizontalPositionUncertainty(real s_EW_std, real s_NS_std, real s_EN_std) {
     s_EW_std_ = s_EW_std;
     s_NS_std_ = s_NS_std;
     s_EN_std_ = s_EN_std;
@@ -141,7 +142,7 @@ void SUMData::setHorizontalPositionUncertainty(double s_EW_std, double s_NS_std,
 /**
  * sz_std : Vertical position standard deviation in internal units
  */
-void SUMData::setVerticalPositionUncertainty(double sz_std) {
+void SUMData::setVerticalPositionUncertainty(real sz_std) {
     sz_std_ = sz_std;
 }
 
@@ -150,7 +151,7 @@ void SUMData::setVerticalPositionUncertainty(double sz_std) {
  * v_NS_std: North/South velocity standard deviation in internal units
  * v_EN_std: East/North velocity standard deviation in internal units
  */
-void SUMData::setHorizontalVelocityUncertainty(double v_EW_std, double v_NS_std,  double v_EN_std) {
+void SUMData::setHorizontalVelocityUncertainty(real v_EW_std, real v_NS_std,  real v_EN_std) {
     v_EW_std_ = v_EW_std;
     v_NS_std_ = v_NS_std;
     v_EN_std_ = v_EN_std;
@@ -160,7 +161,7 @@ void SUMData::setHorizontalVelocityUncertainty(double v_EW_std, double v_NS_std,
 /**
  * vz_std : Vertical speed standard deviation in internal units
  */
-void SUMData::setVerticalSpeedUncertainty(double vz_std) {
+void SUMData::setVerticalSpeedUncertainty(real vz_std) {
     vz_std_ = vz_std;
 }
 
@@ -168,43 +169,43 @@ void SUMData::setVerticalSpeedUncertainty(double vz_std) {
  * Set all uncertainties to 0
  */
 void SUMData::resetUncertainty() {
-    s_err_ = 0.0;
-    v_err_ = 0.0;
-    s_EW_std_ = 0.0;
-    s_NS_std_ = 0.0;
-    s_EN_std_ = 0.0;
-    sz_std_ = 0.0;
-    v_EW_std_ = 0.0;
-    v_NS_std_ = 0.0;
-    v_EN_std_ = 0.0;
-    vz_std_ = 0.0;
+    s_err_ = real(0.0);
+    v_err_ = real(0.0);
+    s_EW_std_ = real(0.0);
+    s_NS_std_ = real(0.0);
+    s_EN_std_ = real(0.0);
+    sz_std_ = real(0.0);
+    v_EW_std_ = real(0.0);
+    v_NS_std_ = real(0.0);
+    v_EN_std_ = real(0.0);
+    vz_std_ = real(0.0);
 }
 
 /**
  * @return Horizontal position rrror
  */
-double SUMData::getHorizontalPositionError() const {
+real SUMData::getHorizontalPositionError() const {
     return s_err_;
 }
 
 /**
  * @return vertical position error
  */
-double SUMData::getVerticalPositionError() const {
+real SUMData::getVerticalPositionError() const {
     return sz_std_;
 }
 
 /**
  Set Horizontal speed error
  */
-double SUMData::getHorizontalSpeedError() const {
+real SUMData::getHorizontalSpeedError() const {
     return v_err_;
 }
 
 /**
  * @return Vertical speed error
  */
-double SUMData::getVerticalSpeedError() const {
+real SUMData::getVerticalSpeedError() const {
     return vz_std_;
 }
 
@@ -212,7 +213,7 @@ double SUMData::getVerticalSpeedError() const {
  * Check if aircraft is using sensor uncertainty mitigation
  */
 bool SUMData::is_SUM() const {
-    return s_err_ != 0.0 || sz_std_ != 0.0 || v_err_ != 0.0 || vz_std_ != 0.0;
+    return s_err_ != real(0.0) || sz_std_ != real(0.0) || v_err_ != real(0.0) || vz_std_ != real(0.0);
 }
 
 

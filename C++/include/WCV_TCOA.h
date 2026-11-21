@@ -6,6 +6,7 @@
  */
 #ifndef WCV_TCOA_H_
 #define WCV_TCOA_H_
+#include "Real.h"
 
 #include "WCV_Vertical.h"
 
@@ -15,8 +16,8 @@ class WCV_TCOA : public WCV_Vertical {
 
 public:
 
-  virtual bool vertical_WCV(double ZTHR, double TCOA, double sz, double vz) const;
-  virtual Interval vertical_WCV_interval(double ZTHR, double TCOA, double B, double T, double sz, double vz) const;
+  virtual bool vertical_WCV(real ZTHR, real TCOA, real sz, real vz) const;
+  virtual Interval vertical_WCV_interval(real ZTHR, real TCOA, real B, real T, real sz, real vz) const;
   virtual ~WCV_TCOA() {}
 
   /**

@@ -9,6 +9,7 @@
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+#include "Real.h"
 #include "OrthographicProjection.h"
 #include "LatLonAlt.h"
 #include "GreatCircle.h"
@@ -28,23 +29,23 @@ using std::runtime_error;
 
 // Static functions
 
-Vect2 OrthographicProjection::spherical2xy(double lat, double lon) const {
-	double c = std::sin(llaRef.lat())*std::sin(lat)+std::cos(llaRef.lat())*std::cos(lat)*std::cos(lon-llaRef.lon());
+Vect2 OrthographicProjection::spherical2xy(real lat, real lon) const {
+	real c = std::sin(llaRef.lat())*std::sin(lat)+std::cos(llaRef.lat())*std::cos(lat)*std::cos(lon-llaRef.lon());
 	if (c < 0) return Vect2::INVALID();
 
-	double r = GreatCircle::spherical_earth_radius;
-	double x = r*std::cos(lat)*std::sin(lon-llaRef.lon());
-	double y = r*(std::cos(llaRef.lat())*std::sin(lat)-std::sin(llaRef.lat())*std::cos(lat)*std::cos(lon-llaRef.lon()));
+	real r = GreatCircle::spherical_earth_radius;
+	real x = r*std::cos(lat)*std::sin(lon-llaRef.lon());
+	real y = r*(std::cos(llaRef.lat())*std::sin(lat)-std::sin(llaRef.lat())*std::cos(lat)*std::cos(lon-llaRef.lon()));
 	return Vect2(x,y);
 }
 
-LatLonAlt OrthographicProjection::xy2spherical(double x, double y, double alt) const {
-	double r = GreatCircle::spherical_earth_radius;
-	double p = Util::sqrt_safe(Util::sq(x)+Util::sq(y));
-	if (Util::almost_equals(p, 0.0)) return llaRef.mkAlt(alt);
-	double c = Util::asin_safe(p/r);
-	double lat = Util::asin_safe(std::cos(c)*std::sin(llaRef.lat()) + y*std::sin(c)*std::cos(llaRef.lat())/p);
-	double lon = llaRef.lon()+Util::atan2_safe(x*std::sin(c), p*std::cos(c)*std::cos(llaRef.lat())-y*std::sin(c)*std::sin(llaRef.lat()));
+LatLonAlt OrthographicProjection::xy2spherical(real x, real y, real alt) const {
+	real r = GreatCircle::spherical_earth_radius;
+	real p = Util::sqrt_safe(Util::sq(x)+Util::sq(y));
+	if (Util::almost_equals(p, real(0.0))) return llaRef.mkAlt(alt);
+	real c = Util::asin_safe(p/r);
+	real lat = Util::asin_safe(std::cos(c)*std::sin(llaRef.lat()) + y*std::sin(c)*std::cos(llaRef.lat())/p);
+	real lon = llaRef.lon()+Util::atan2_safe(x*std::sin(c), p*std::cos(c)*std::cos(llaRef.lat())-y*std::sin(c)*std::sin(llaRef.lat()));
 	return LatLonAlt::mk(lat, lon, alt);
 
 }
@@ -57,21 +58,21 @@ OrthographicProjection::OrthographicProjection() : projAlt(0), llaRef(LatLonAlt:
 
 OrthographicProjection::OrthographicProjection(const LatLonAlt& lla) : projAlt(lla.alt()), llaRef(lla) {}
 
-OrthographicProjection::OrthographicProjection(double lat, double lon, double alt) : projAlt(alt), llaRef(LatLonAlt::mk(lat, lon, alt)) {}
+OrthographicProjection::OrthographicProjection(real lat, real lon, real alt) : projAlt(alt), llaRef(LatLonAlt::mk(lat, lon, alt)) {}
 
 OrthographicProjection OrthographicProjection::makeNew(const LatLonAlt& lla) const {
 	return OrthographicProjection(lla);
 }
 
-OrthographicProjection OrthographicProjection::makeNew(double lat, double lon, double alt) const {
+OrthographicProjection OrthographicProjection::makeNew(real lat, real lon, real alt) const {
 	return OrthographicProjection(lat, lon, alt);
 }
 
-double OrthographicProjection::conflictRange(double lat, double accuracy) const {
-	return Units::from("NM", std::floor(243.0*std::pow(Units::to("NM",std::ceil(accuracy)),1.0/3.0)));
+real OrthographicProjection::conflictRange(real lat, real accuracy) const {
+	return Units::from("NM", std::floor(real(243.0)*std::pow(Units::to("NM",std::ceil(accuracy)),real(1.0)/real(3.0))));
 }
 
-double OrthographicProjection::maxRange() const{
+real OrthographicProjection::maxRange() const{
 	return Units::from("NM", 3400);
 }
 
@@ -101,7 +102,7 @@ Vect3 OrthographicProjection::projectPoint(const Position& sip) const {
 	return project(sip);
 }
 
-LatLonAlt OrthographicProjection::inverse(const Vect2& xy, double alt) const {
+LatLonAlt OrthographicProjection::inverse(const Vect2& xy, real alt) const {
 	return xy2spherical(xy.x, xy.y, alt+projAlt);
 }
 
@@ -110,7 +111,7 @@ LatLonAlt OrthographicProjection::inverse(const Vect3& xyz) const {
 }
 
 Velocity OrthographicProjection::projectVelocity(const LatLonAlt& lla, const Velocity& v) const {
-	double timeStep = 10.0;
+	real timeStep = real(10.0);
 	LatLonAlt ll2 = GreatCircle::linear_initial(lla,v,timeStep);
 	Vect3 se = project(lla);
 	Vect3 s2 = project(ll2);
@@ -129,7 +130,7 @@ Velocity OrthographicProjection::projectVelocity(const Position& ss, const Veloc
 // The user needs to keep track of whether to translate back (i.e. whether original was LatLon())
 Velocity OrthographicProjection::inverseVelocity(const Vect3& s, const Velocity& v, bool toLatLon) const {
 	if (toLatLon) {
-		double timeStep = 10.0;
+		real timeStep = real(10.0);
 		Vect3 s2 = s.linear(v.vect3(),timeStep);
 		LatLonAlt lla1 = inverse(s);
 		LatLonAlt lla2 = inverse(s2);

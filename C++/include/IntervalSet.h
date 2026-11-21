@@ -12,6 +12,7 @@
 
 #ifndef INTERVALSET_H_
 #define INTERVALSET_H_
+#include "Real.h"
 
 #include "Interval.h"
 #include "ErrorReporter.h"
@@ -96,7 +97,7 @@ public:
 	 * @param x value
 	 * @return true, if in set
 	 * */
-	bool in(double x) const;
+	bool in(real x) const;
 
 
 	/**
@@ -128,7 +129,7 @@ public:
 	 * @param l lower bound of interval
 	 * @param u upper bound of interval
 	 */
-	void almost_add(double l, double u);
+	void almost_add(real l, real u);
 
 	/**
 	 * Add the given interval into this set. If this interval overlaps any
@@ -139,7 +140,7 @@ public:
 	 * @param u upper bound of interval
 	 * @param maxUlps units of least precision
 	 */
-	void almost_add(double l, double u, INT64FM maxUlps);
+	void almost_add(real l, real u, INT64FM maxUlps);
 
 	/**
 	 * Intersect the given IntervalSet into the current IntervalSet. Set n is
@@ -182,7 +183,7 @@ public:
 	 * @param x value
 	 * @param width space around value
 	 */
-	void removeSingle(double x, double width);
+	void removeSingle(real x, real width);
 
 	/**
 	 * Remove the single-valued interval x from this IntervalSet.  If x is
@@ -190,7 +191,7 @@ public:
 	 * 
 	 * @param x value
 	 */
-	void removeSingle(double x);
+	void removeSingle(real x);
 
 	/**
 	 * Remove all the single-valued intervals from this IntervalSet.
@@ -202,14 +203,14 @@ public:
 	 * 
 	 * @param width space around single values
 	 */
-	void sweepSingle(double width);
+	void sweepSingle(real width);
 
 	/**
 	 * Remove all breaks of less than width from this IntervalSet
 	 * 
 	 * @param width max open space to remove
 	 */
-	void sweepBreaks(double width);
+	void sweepBreaks(real width);
 
 	/** Print the contents of this IntervalSet */
 	std::string toString() const;
@@ -219,7 +220,7 @@ public:
 	std::string toString(const std::string& unit) const;
 
 private:
-	int order(double x) const;
+	int order(real x) const;
 	void insert(int i, const Interval& r);
 	void remove(int i);
 	void remove(int i, int len);

@@ -14,6 +14,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Velocity.h"
 #include "Units.h"
 #include "Util.h" 
@@ -25,16 +26,16 @@
 
 namespace larcfm {
 
-Velocity::Velocity(const double trk, const double gs, 
-		const double vx, const double vy, const double vz) : trk_(trk),
+Velocity::Velocity(const real trk, const real gs,
+		const real vx, const real vy, const real vz) : trk_(trk),
 		gs_(gs),v_(vx,vy,vz) {}
 
-Velocity::Velocity(const double vx, const double vy, const double vz) :
+Velocity::Velocity(const real vx, const real vy, const real vz) :
 	trk_(Util::atan2_safe(vx,vy)),
 	gs_(Util::sqrt_safe(vx*vx+vy*vy)),
 	v_(vx,vy,vz) {}
 
-Velocity::Velocity() : trk_(0.0),gs_(0.0),v_(Vect3::ZERO()) {}
+Velocity::Velocity() : trk_(real(0.0)),gs_(real(0.0)),v_(Vect3::ZERO()) {}
 
 bool Velocity::isZero() const {
 	return v_.isZero();
@@ -49,44 +50,44 @@ Velocity Velocity::make(const Vect3& v) {
 }
 
 Velocity Velocity::make(const Vect2& v) {
-	return Velocity(v.x,v.y,0.0);
+	return Velocity(v.x,v.y,real(0.0));
 }
 
-Velocity Velocity::mkVxyz(const double vx, const double vy, const double vz) {
+Velocity Velocity::mkVxyz(const real vx, const real vy, const real vz) {
 	return Velocity(vx,vy,vz);
 }
 
-Velocity Velocity::makeVxyz(const double vx, const double vy, const std::string& uvxy,
-		const double vz, const std::string& uvz) {
+Velocity Velocity::makeVxyz(const real vx, const real vy, const std::string& uvxy,
+		const real vz, const std::string& uvz) {
 	return Velocity(Units::from(uvxy,vx),Units::from(uvxy,vy),Units::from(uvz,vz));
 }
 
-Velocity Velocity::mkTrkGsVs(const double trk, const double gs, const double vs){
+Velocity Velocity::mkTrkGsVs(const real trk, const real gs, const real vs){
 	return Velocity(trk,gs,trkgs2vx(trk,gs),trkgs2vy(trk,gs),vs);
 }
 
-Velocity Velocity::makeTrkGsVs(const double trk, const std::string& utrk,
-		const double gs, const std::string& ugs,
-		const double vs, const std::string& uvs) {
+Velocity Velocity::makeTrkGsVs(const real trk, const std::string& utrk,
+		const real gs, const std::string& ugs,
+		const real vs, const std::string& uvs) {
 	return mkTrkGsVs(Units::from(utrk,trk), Units::from(ugs,gs),Units::from(uvs,vs));
 }
 
-Velocity Velocity::mkVel(const Vect3& p1,const Vect3& p2, double speed) {
+Velocity Velocity::mkVel(const Vect3& p1,const Vect3& p2, real speed) {
 	return make(p2.Sub(p1).Hat().Scal(speed));
 }
 
-double Velocity::track(const Vect3& p1,const Vect3& p2) {
+real Velocity::track(const Vect3& p1,const Vect3& p2) {
 	return Util::atan2_safe(p2.x()-p1.x(),p2.y()-p1.y());
 }
 
 Velocity Velocity::Neg() const {
-	return Velocity(to_pi(trk_+M_PI),gs_,-v_.x(),-v_.y(),-v_.z());
+	return Velocity(to_pi(trk_+real(M_PI)),gs_,-v_.x(),-v_.y(),-v_.z());
 }
 
 Velocity Velocity::Add(const Vect3& v) const {
     if (Util::almost_equals(v_.x(),-v.x()) && Util::almost_equals(v_.y(),-v.y())) {
         // Set to zero but maintain the original track
-		return Velocity(trk_,0.0,0.0,0.0,v_.z()+v.z());
+		return Velocity(trk_,real(0.0),real(0.0),real(0.0),v_.z()+v.z());
     }
     return mkVxyz(v_.x()+v.x(),v_.y()+v.y(),v_.z()+v.z());
 }
@@ -94,7 +95,7 @@ Velocity Velocity::Add(const Vect3& v) const {
 Velocity Velocity::Sub(const Vect3& v) const {
     if (Util::almost_equals(v_.x(),v.x()) && Util::almost_equals(v_.y(),v.y())) {
         // Set to zero but maintain the original track
-		return Velocity(trk_,0.0,0.0,0.0,v_.z()-v.z());
+		return Velocity(trk_,real(0.0),real(0.0),real(0.0),v_.z()-v.z());
     }
     return mkVxyz(v_.x()-v.x(),v_.y()-v.y(),v_.z()-v.z());
 }
@@ -107,37 +108,37 @@ Vect2 Velocity::Hat2D() const {
 	return Vect2(std::sin(trk_),std::cos(trk_));
 }
 
-Velocity Velocity::genVel(const Vect3& p1, const Vect3& p2, double dt) {
+Velocity Velocity::genVel(const Vect3& p1, const Vect3& p2, real dt) {
 	return make(p2.Sub(p1).Scal(1/dt));
 }
 
-Velocity Velocity::mkAddTrk(double atrk) const {
-	double s = sin(atrk);
-	double c = cos(atrk);
+Velocity Velocity::mkAddTrk(real atrk) const {
+	real s = std::sin(atrk);
+	real c = std::cos(atrk);
     return Velocity(to_pi(trk_+atrk),gs_,v_.x()*c+v_.y()*s,-v_.x()*s+v_.y()*c,v_.z());
 }
 
-double Velocity::trkgs2vx(double trk, double gs) {
-	return gs * sin(trk);
+real Velocity::trkgs2vx(real trk, real gs) {
+	return gs * std::sin(trk);
 }
 
-double Velocity::trkgs2vy(double trk, double gs) {
-	return gs * cos(trk);
+real Velocity::trkgs2vy(real trk, real gs) {
+	return gs * std::cos(trk);
 }
 
-Vect2 Velocity::trkgs2v(double trk, double gs) {
+Vect2 Velocity::trkgs2v(real trk, real gs) {
 	return Vect2(trkgs2vx(trk,gs), trkgs2vy(trk,gs));
 }
 
-double Velocity::angle() const {
-	return to_pi(M_PI/2.0-trk_);
+real Velocity::angle() const {
+	return to_pi(real(M_PI)/real(2.0)-trk_);
 }
 
-double Velocity::angle(const std::string& uangle) const {
+real Velocity::angle(const std::string& uangle) const {
 	return Units::to(uangle,angle());
 }
 
-double Velocity::track(const std::string& utrk) const {
+real Velocity::track(const std::string& utrk) const {
 	return Units::to(utrk,trk_);
 }
 
@@ -147,7 +148,7 @@ double Velocity::track(const std::string& utrk) const {
  *
  * @return the compass angle [rad]
  */
-double Velocity::compassAngle() const {
+real Velocity::compassAngle() const {
 	return to_2pi(trk_);
 }
 
@@ -159,30 +160,30 @@ double Velocity::compassAngle() const {
  *
  *  @return the compass angle [u]
  */
-double Velocity::compassAngle(const std::string& u) const {
+real Velocity::compassAngle(const std::string& u) const {
 	return Units::to(u,compassAngle());
 }
 
-double Velocity::groundSpeed(const std::string& ugs) const {
+real Velocity::groundSpeed(const std::string& ugs) const {
 	return Units::to(ugs,gs_);
 }
 
-double Velocity::vs() const {
+real Velocity::vs() const {
 	return v_.z();
 }
 
-double Velocity::verticalSpeed(const std::string& uvs) const {
+real Velocity::verticalSpeed(const std::string& uvs) const {
 	return Units::to(uvs,v_.z());
 }
 
-bool Velocity::compare(const Velocity& v, double maxTrk, double maxGs, double maxVs) const {
+bool Velocity::compare(const Velocity& v, real maxTrk, real maxGs, real maxVs) const {
 	if (Util::turnDelta(v.trk(),trk()) > maxTrk) return false;
 	if (std::abs(v.gs() - gs()) > maxGs) return false;
 	if (std::abs(v.vs() - vs()) > maxVs) return false;
 	return true;
 }
 
-bool Velocity::compare(const Velocity& v, double horizDelta, double vertDelta) const {
+bool Velocity::compare(const Velocity& v, real horizDelta, real vertDelta) const {
 	return std::abs(v_.z()-v.z()) <= vertDelta && vect2().Sub(v.vect2()).norm() <= horizDelta;
 }
 
@@ -201,7 +202,7 @@ const Velocity& Velocity::INVALID() {
  * @param trk track angle [rad]
  * @return new velocity
  */
-Velocity Velocity::mkTrk(double trk) const {
+Velocity Velocity::mkTrk(real trk) const {
 	return mkTrkGsVs(trk, gs_,v_.z());
 }
 
@@ -211,7 +212,7 @@ Velocity Velocity::mkTrk(double trk) const {
  * @param u units
  * @return new velocity
  */
-Velocity Velocity::mkTrk(double trk, const std::string& u) const {
+Velocity Velocity::mkTrk(real trk, const std::string& u) const {
 	return mkTrk(Units::from(u,trk));
 }
 
@@ -220,12 +221,12 @@ Velocity Velocity::mkTrk(double trk, const std::string& u) const {
  * @param gs [m/s]
  * @return
  */
-Velocity Velocity::mkGs(double ags) const {
+Velocity Velocity::mkGs(real ags) const {
 	if (ags < 0) {
 		return INVALID();
 	}
-   	if (gs_ > 0.0) {
-    	double scal = ags/gs_;
+        if (gs_ > real(0.0)) {
+        real scal = ags/gs_;
     	return Velocity(trk_,ags,v_.x()*scal,v_.y()*scal,v_.z());
     }
     return mkTrkGsVs(trk_,ags,v_.z());  
@@ -237,7 +238,7 @@ Velocity Velocity::mkGs(double ags) const {
  * @param u unit
  * @return
  */
-Velocity Velocity::mkGs(double ags, const std::string& u) const {
+Velocity Velocity::mkGs(real ags, const std::string& u) const {
 	return mkGs(Units::from(u,ags));
 }
 
@@ -247,7 +248,7 @@ Velocity Velocity::mkGs(double ags, const std::string& u) const {
  * @param vs [m/s]
  * @return
  */
-Velocity Velocity::mkVs(double vs) const {
+Velocity Velocity::mkVs(real vs) const {
 	return Velocity(trk_,gs_,v_.x(), v_.y(),vs);
 }
 
@@ -257,13 +258,13 @@ Velocity Velocity::mkVs(double vs) const {
  * @param u units
  * @return
  */
-Velocity Velocity::mkVs(double vs, const std::string& u) const {
+Velocity Velocity::mkVs(real vs, const std::string& u) const {
 	return mkVs(Units::from(u,vs));
 }
 
-Velocity Velocity::zeroSmallVs(double threshold) const {
+Velocity Velocity::zeroSmallVs(real threshold) const {
 	if (std::abs(v_.z()) < threshold) {
-		return mkVs(0.0);
+		return mkVs(real(0.0));
 	}
 	return Velocity(trk_,gs_,v_.x(),v_.y(),v_.z());
 }

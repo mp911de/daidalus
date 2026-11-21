@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Units.h"
 #include "WCVTable.h"
 #include "format.h"
@@ -14,7 +15,7 @@
 namespace larcfm {
 
 WCVTable::WCVTable() {
-  DTHR = Units::from("nmi",0.66);
+  DTHR = Units::from("nmi",real(0.66));
   ZTHR = Units::from("ft",450);
   TTHR = 35; // [s]
   TCOA = 0;  // [s]
@@ -24,7 +25,7 @@ WCVTable::WCVTable() {
   units_["WCV_TCOA"] = "s";
 }
 
-WCVTable::WCVTable(double dthr, double zthr, double tthr, double tcoa) {
+WCVTable::WCVTable(real dthr, real zthr, real tthr, real tcoa) {
   DTHR = std::abs(dthr);
   ZTHR = std::abs(zthr);
   TTHR = std::abs(tthr);
@@ -38,8 +39,8 @@ WCVTable::WCVTable(double dthr, double zthr, double tthr, double tcoa) {
 /**
  * Table containing specified values (specified units)
  */
-WCVTable::WCVTable(double dthr, const std::string& udthr, double zthr, const std::string& uzthr,
-    double tthr, const std::string& utthr, double tcoa, const std::string& utcoa) {
+WCVTable::WCVTable(real dthr, const std::string& udthr, real zthr, const std::string& uzthr,
+    real tthr, const std::string& utthr, real tcoa, const std::string& utcoa) {
   DTHR = Units::from(udthr,std::abs(dthr));
   ZTHR = Units::from(uzthr,std::abs(zthr));
   TTHR = Units::from(utthr,std::abs(tthr));
@@ -57,7 +58,7 @@ WCVTable::~WCVTable() { }
  * TTHR=35s, TCOA=0.
  */
 const WCVTable& WCVTable::DO_365_Phase_I_preventive() {
-  static WCVTable preventive(0.66,"nmi",700,"ft",35,"s",0,"s");
+  static WCVTable preventive(real(0.66),"nmi",700,"ft",35,"s",0,"s");
   return preventive;
 }
 
@@ -93,7 +94,7 @@ const WCVTable& WCVTable::DO_365_DWC_Non_Coop() {
  * TTHR=35s, TCOA=20.
  */
 const WCVTable& WCVTable::Buffered_Phase_I_preventive() {
-  static WCVTable preventive(1.0,"nmi",750,"ft",35,"s",20,"s");
+  static WCVTable preventive(real(1.0),"nmi",750,"ft",35,"s",20,"s");
   return preventive;
 }
 
@@ -102,67 +103,67 @@ const WCVTable& WCVTable::Buffered_Phase_I_preventive() {
  * TTHR=35s, TCOA=20.
  */
 const WCVTable& WCVTable::Buffered_DWC_Phase_I() {
-  static WCVTable dwc(1.0,"nmi",450,"ft",35,"s",20,"s");
+  static WCVTable dwc(real(1.0),"nmi",450,"ft",35,"s",20,"s");
   return dwc;
 }
 
-double WCVTable::getDTHR() const {
+real WCVTable::getDTHR() const {
   return DTHR;
 }
-double WCVTable::getDTHR(const std::string& u) const {
+real WCVTable::getDTHR(const std::string& u) const {
   return Units::to(u,DTHR);
 }
 
-double WCVTable::getZTHR() const {
+real WCVTable::getZTHR() const {
   return ZTHR;
 }
-double WCVTable::getZTHR(const std::string& u) const {
+real WCVTable::getZTHR(const std::string& u) const {
   return Units::to(u,ZTHR);
 }
 
-double WCVTable::getTTHR() const {
+real WCVTable::getTTHR() const {
   return TTHR;
 }
-double WCVTable::getTTHR(const std::string& u) const {
+real WCVTable::getTTHR(const std::string& u) const {
   return Units::to(u,TTHR);
 }
 
-double WCVTable::getTCOA() const {
+real WCVTable::getTCOA() const {
   return TCOA;
 }
-double WCVTable::getTCOA(const std::string& u) const {
+real WCVTable::getTCOA(const std::string& u) const {
   return Units::to(u,TCOA);
 }
 
-void WCVTable::setDTHR(double val) {
+void WCVTable::setDTHR(real val) {
   DTHR = std::abs(val);
 }
 
-void WCVTable::setDTHR(double val, const std::string& u) {
+void WCVTable::setDTHR(real val, const std::string& u) {
   setDTHR(Units::from(u,val));
   units_["WCV_DTHR"] = u;
 }
 
-void WCVTable::setZTHR(double val) {
+void WCVTable::setZTHR(real val) {
   ZTHR = std::abs(val);
 }
-void WCVTable::setZTHR(double val, const std::string& u) {
+void WCVTable::setZTHR(real val, const std::string& u) {
   setZTHR(Units::from(u,val));
   units_["WCV_ZTHR"] = u;
 }
 
-void WCVTable::setTTHR(double val) {
+void WCVTable::setTTHR(real val) {
   TTHR =std::abs(val);
 }
-void WCVTable::setTTHR(double val, const std::string& u) {
+void WCVTable::setTTHR(real val, const std::string& u) {
   setTTHR(Units::from(u,val));
   units_["WCV_TTHR"] = u;
 }
 
-void WCVTable::setTCOA(double val) {
+void WCVTable::setTCOA(real val) {
   TCOA = std::abs(val);
 }
-void WCVTable::setTCOA(double val, const std::string& u) {
+void WCVTable::setTCOA(real val, const std::string& u) {
   setTCOA(Units::from(u,val));
   units_["WCV_TCOA"] = u;
 }

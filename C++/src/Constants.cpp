@@ -11,6 +11,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Constants.h"
 //#include "UnitSymbols.h"
 
@@ -20,16 +21,16 @@ const std::string Constants::version = larcfm::FormalATM_version;							// event
 const std::string Constants::build_date = __DATE__;
 const std::string Constants::build_time = __TIME__;
 
-const double Constants::GPS_LIMIT_HORIZONTAL = larcfm::FormalATM_GPS_LIMIT_HORIZONTAL; 	// eventually Units::from(_ft, 25.0);
-const double Constants::GPS_LIMIT_VERTICAL = larcfm::FormalATM_GPS_LIMIT_VERTICAL; 		// eventually Units::from(_ft, 25.0);
-const double Constants::TIME_LIMIT_EPSILON = larcfm::FormalATM_TIME_LIMIT_EPSILON; 		// eventually Units::from(_s, 1.0);
-const double Constants::NO_TIME_LIMIT_EPSILON = FormalATM_NO_TIME_LIMIT_EPSILON;
-const double Constants::NO_TIME = FormalATM_NO_TIME;
+const real Constants::GPS_LIMIT_HORIZONTAL = larcfm::FormalATM_GPS_LIMIT_HORIZONTAL; 	// eventually Units::from(_ft, 25.0);
+const real Constants::GPS_LIMIT_VERTICAL = larcfm::FormalATM_GPS_LIMIT_VERTICAL; 		// eventually Units::from(_ft, 25.0);
+const real Constants::TIME_LIMIT_EPSILON = larcfm::FormalATM_TIME_LIMIT_EPSILON; 		// eventually Units::from(_s, 1.0);
+const real Constants::NO_TIME_LIMIT_EPSILON = FormalATM_NO_TIME_LIMIT_EPSILON;
+const real Constants::NO_TIME = FormalATM_NO_TIME;
 
-double Constants::HORIZONTAL_ACCURACY = 1E-7;  // Constants::GPS_LIMIT_HORIZONTAL;
-double Constants::VERTICAL_ACCURACY   = 1E-7; //Constants::GPS_LIMIT_VERTICAL;
-double Constants::HORIZONTAL_ACCURACY_RAD = Units::to("NM", Constants::HORIZONTAL_ACCURACY) * M_PI / (180.0 * 60.0);
-double Constants::TIME_ACCURACY       = 1E-7; // Constants::TIME_LIMIT_EPSILON;
+real Constants::HORIZONTAL_ACCURACY = real(1E-7);  // Constants::GPS_LIMIT_HORIZONTAL;
+real Constants::VERTICAL_ACCURACY   = real(1E-7); //Constants::GPS_LIMIT_VERTICAL;
+real Constants::HORIZONTAL_ACCURACY_RAD = Units::to("NM", Constants::HORIZONTAL_ACCURACY) * real(M_PI) / (real(180.0) * real(60.0));
+real Constants::TIME_ACCURACY       = real(1E-7); // Constants::TIME_LIMIT_EPSILON;
 
 int  Constants::OUTPUT_PRECISION = 6;
 bool Constants::TRAILING_ZEROS = true;
@@ -41,39 +42,39 @@ const std::string Constants::wsPatternParens = "() \t,;";
 const std::string Constants::wsPatternBraces = "[] \t,;";
 
 
-void Constants::set_time_accuracy(double acc) {
-  if (acc > 0.0) {
+void Constants::set_time_accuracy(real acc) {
+  if (acc > real(0.0)) {
     TIME_ACCURACY = acc;
   }
 }
 
-void Constants::set_horizontal_accuracy(double acc) {
-  if (acc > 0.0) {
+void Constants::set_horizontal_accuracy(real acc) {
+  if (acc > real(0.0)) {
     HORIZONTAL_ACCURACY = acc;
-    HORIZONTAL_ACCURACY_RAD = Units::to("NM", acc) * M_PI / (180.0 * 60.0);
+    HORIZONTAL_ACCURACY_RAD = Units::to("NM", acc) * real(M_PI) / (real(180.0) * real(60.0));
     //HORIZONTAL_ACCURACY_RAD = GreatCircle.angle_from_distance(acc);
   }
 }
 
-void Constants::set_vertical_accuracy(double acc) {
-  if ( acc > 0.0) {
+void Constants::set_vertical_accuracy(real acc) {
+  if ( acc > real(0.0)) {
     VERTICAL_ACCURACY = acc;
   }
 }
 
-double Constants::get_horizontal_accuracy() {
+real Constants::get_horizontal_accuracy() {
   return HORIZONTAL_ACCURACY;
 }
 
-double Constants::get_vertical_accuracy() {
+real Constants::get_vertical_accuracy() {
   return VERTICAL_ACCURACY;
 }
 
-double Constants::get_latlon_accuracy() {
+real Constants::get_latlon_accuracy() {
   return HORIZONTAL_ACCURACY_RAD;
 }
 
-double Constants::get_time_accuracy() {
+real Constants::get_time_accuracy() {
   return TIME_ACCURACY;
 }
 
@@ -100,78 +101,78 @@ bool Constants::get_trailing_zeros() {
 	return TRAILING_ZEROS;
 }
 
-bool Constants::almost_equals_time(double t1, double t2) {
+bool Constants::almost_equals_time(real t1, real t2) {
   return Util::within_epsilon(t1,t2,TIME_ACCURACY);
 }
 
-bool Constants::almost_equals_xy(double x1, double y1, double x2, double y2) {
+bool Constants::almost_equals_xy(real x1, real y1, real x2, real y2) {
   return Util::within_epsilon(sq(x1-x2)+sq(y1-y2),sq(HORIZONTAL_ACCURACY));
 }
 
-bool Constants::almost_equals_distance(double d) {
+bool Constants::almost_equals_distance(real d) {
   return Util::within_epsilon(d, HORIZONTAL_ACCURACY);
 }
 
-bool Constants::almost_equals_radian(double d1, double d2) {
+bool Constants::almost_equals_radian(real d1, real d2) {
   return Util::within_epsilon(d1, d2, HORIZONTAL_ACCURACY_RAD);
 }
 
-bool Constants::almost_equals_radian(double d) {
+bool Constants::almost_equals_radian(real d) {
   return Util::within_epsilon(d, HORIZONTAL_ACCURACY_RAD);
 }
 
-bool Constants::almost_equals_alt(double a1, double a2) {
+bool Constants::almost_equals_alt(real a1, real a2) {
   return Util::within_epsilon(a1, a2, VERTICAL_ACCURACY);
 }
 
 	//*********************************************
 	// deprecated functions:
 
-void set_time_accuracy(double acc) {
+void set_time_accuracy(real acc) {
 	Constants::set_time_accuracy(acc);
 }
 
-void set_horizontal_accuracy(double acc) {
+void set_horizontal_accuracy(real acc) {
 	Constants::set_horizontal_accuracy(acc);
 }
 
-void set_vertical_accuracy(double acc) {
+void set_vertical_accuracy(real acc) {
 	Constants::set_vertical_accuracy(acc);
 }
 
-double get_horizontal_accuracy() {
+real get_horizontal_accuracy() {
 	return Constants::get_horizontal_accuracy();
 }
 
-double get_vertical_accuracy() {
+real get_vertical_accuracy() {
 	return Constants::get_vertical_accuracy();
 }
 
-double get_time_accuracy() {
+real get_time_accuracy() {
 	return Constants::get_time_accuracy();
 }
 	
-bool almost_equals_time(double t1, double t2) {
+bool almost_equals_time(real t1, real t2) {
 	  return Constants::almost_equals_time(t1,t2);
 }
 
-bool almost_equals_xy(double x1, double y1, double x2, double y2) {
+bool almost_equals_xy(real x1, real y1, real x2, real y2) {
 	  return Constants::almost_equals_xy(x1,y1,x2,y2);
 }
 
-bool almost_equals_distance(double d) {
+bool almost_equals_distance(real d) {
 	 return Constants::almost_equals_distance(d);
 }
 
-bool almost_equals_radian(double d1, double d2) {
+bool almost_equals_radian(real d1, real d2) {
 	  return Constants::almost_equals_radian(d1,d2);
 }
 
-bool almost_equals_radian(double d) {
+bool almost_equals_radian(real d) {
 	  return Constants::almost_equals_radian(d);
 }
 	
-bool almost_equals_alt(double a1, double a2) {
+bool almost_equals_alt(real a1, real a2) {
 	  return Constants::almost_equals_alt(a1,a2);
 }
 }

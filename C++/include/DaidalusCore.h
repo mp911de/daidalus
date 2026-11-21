@@ -6,6 +6,7 @@
  */
 #ifndef DAIDALUSBANDSCORE_H_
 #define DAIDALUSBANDSCORE_H_
+#include "Real.h"
 
 #include "CriteriaCore.h"
 #include "UrgencyStrategy.h"
@@ -37,7 +38,7 @@ public:
   std::vector<TrafficState> traffic;
   /* Kinematic bands parameters */
   /* Current time */
-  double current_time;
+  real current_time;
   /* Wind vector in TO direction */
   Vect3 wind_vector;
   /* Kinematic bands parameters */
@@ -95,7 +96,7 @@ public:
 
   explicit DaidalusCore(const Alerter& alerter);
 
-  DaidalusCore(const Detection3D& det, double T);
+  DaidalusCore(const Detection3D& det, real T);
 
   /**
    *  Clear ownship and traffic data from this object.
@@ -168,32 +169,32 @@ public:
   /**
    * Returns actual minimum horizontal separation for recovery bands in internal units.
    */
-  double minHorizontalRecovery() const;
+  real minHorizontalRecovery() const;
 
   /**
    * Returns actual minimum vertical separation for recovery bands in internal units.
    */
-  double minVerticalRecovery() const;
+  real minVerticalRecovery() const;
 
-  void set_ownship_state(const std::string& id, const Position& pos, const Velocity& vel, const Velocity& airvel, double time);
+  void set_ownship_state(const std::string& id, const Position& pos, const Velocity& vel, const Velocity& airvel, real time);
 
   // Return 0-based index in traffic list (-1 if aircraft doesn't exist)
   int find_traffic_state(const std::string& id) const;
 
   // Return 0-based index in traffic list where aircraft was added. Return -1 if
   // nothing is done (e.g., id is the same as ownship's)
-  int set_traffic_state(const std::string& id, const Position& pos, const Velocity& vel, double time);
+  int set_traffic_state(const std::string& id, const Position& pos, const Velocity& vel, real time);
 
   void reset_ownship(int idx);
 
   // idx is 0-based index in traffic list
   bool remove_traffic(int idx);
 
-  void set_ownship_airvelocity(double heading, double airspeed);
+  void set_ownship_airvelocity(real heading, real airspeed);
   
   void set_wind_velocity(const Vect3& wind);
 
-  bool linear_projection(double offset);
+  bool linear_projection(real offset);
 
   bool has_ownship() const;
 

@@ -9,6 +9,7 @@
  *
  */
 
+#include "Real.h"
 #include <algorithm>
 #include "DaidalusFileWalker.h"
 
@@ -120,14 +121,14 @@ void DaidalusFileWalker::resetWind() {
   wind_ = Velocity::INVALID();
 }
 
-double DaidalusFileWalker::firstTime() const {
+real DaidalusFileWalker::firstTime() const {
   if (!times_.empty()) {
     return times_[0];
   }
   return PINFINITY;
 }
 
-double DaidalusFileWalker::lastTime() const {
+real DaidalusFileWalker::lastTime() const {
   if (!times_.empty()) {
     return times_[times_.size()-1];
   }
@@ -138,7 +139,7 @@ int DaidalusFileWalker::getIndex() const {
   return index_;
 }
 
-double DaidalusFileWalker::getTime() const {
+real DaidalusFileWalker::getTime() const {
   if (0 <= index_ && index_ < static_cast<int>(times_.size())) {
     return times_[index_];
   } else {
@@ -154,7 +155,7 @@ bool DaidalusFileWalker::atEnd() const {
   return index_ >=0 && index_ == static_cast<int>(times_.size());
 }
 
-bool DaidalusFileWalker::goToTime(double t) {
+bool DaidalusFileWalker::goToTime(real t) {
   return goToTimeStep(indexOfTime(t));
 }
 
@@ -188,7 +189,7 @@ void DaidalusFileWalker::goPrev() {
   }
 }
 
-int DaidalusFileWalker::indexOfTime(double t) const {
+int DaidalusFileWalker::indexOfTime(real t) const {
   int i = -1;
   if (t >= firstTime() && t <= lastTime()) {
     i = 0;
@@ -201,7 +202,7 @@ int DaidalusFileWalker::indexOfTime(double t) const {
   return i;
 }
 
-ParameterData DaidalusFileWalker::extraColumnsToParameters(double time, const std::string& ac_name) {
+ParameterData DaidalusFileWalker::extraColumnsToParameters(real time, const std::string& ac_name) {
   ParameterData pd;
   for (std::vector<std::string>::const_iterator col_ptr = columns_.begin(); col_ptr != columns_.end(); ++col_ptr) {
     if (sr_.hasExtraColumnData(time, ac_name,*col_ptr)) {
@@ -226,46 +227,46 @@ void DaidalusFileWalker::readExtraColumns(Daidalus& daa, int ac_idx, bool read_w
 			daa.setParameterData(pcol);
       // Read wind unless is overriden 
 			if (pcol.contains("heading") && pcol.contains("airspeed") && read_wind) {
-				double heading = pcol.getValue("heading");
-				double airspeed = pcol.getValue("airspeed");
+				real heading = pcol.getValue("heading");
+				real airspeed = pcol.getValue("airspeed");
 				daa.setOwnshipAirVelocity(heading,airspeed);
 			}
 		}   
     if (pcol.contains("alerter")) {
       daa.setAlerterIndex(ac_idx,pcol.getInt("alerter"));
     }
-    double s_EW_std = 0.0;
+    real s_EW_std = real(0.0);
     if (pcol.contains("s_EW_std")) {
       s_EW_std = pcol.getValue("s_EW_std");
     }
-    double s_NS_std = 0.0;
+    real s_NS_std = real(0.0);
     if (pcol.contains("s_NS_std")) {
       s_NS_std = pcol.getValue("s_NS_std");
     }
-    double s_EN_std = 0.0;
+    real s_EN_std = real(0.0);
     if (pcol.contains("s_EN_std")) {
       s_EN_std = pcol.getValue("s_EN_std");
     }
     daa.setHorizontalPositionUncertainty(ac_idx,s_EW_std,s_NS_std,s_EN_std);
-    double sz_std = 0.0;
+    real sz_std = real(0.0);
     if (pcol.contains("sz_std")) {
       sz_std = pcol.getValue("sz_std");
     }
     daa.setVerticalPositionUncertainty(ac_idx,sz_std);
-    double v_EW_std = 0.0;
+    real v_EW_std = real(0.0);
     if (pcol.contains("v_EW_std")) {
       v_EW_std = pcol.getValue("v_EW_std");
     }
-    double v_NS_std = 0.0;
+    real v_NS_std = real(0.0);
     if (pcol.contains("v_NS_std")) {
       v_NS_std = pcol.getValue("v_NS_std");
     }
-    double v_EN_std = 0.0;
+    real v_EN_std = real(0.0);
     if (pcol.contains("v_EN_std")) {
       v_EN_std = pcol.getValue("v_EN_std");
     }
     daa.setHorizontalVelocityUncertainty(ac_idx,v_EW_std,v_NS_std,v_EN_std);
-    double vz_std = 0.0;
+    real vz_std = real(0.0);
     if (pcol.contains("vz_std")) {
       vz_std = pcol.getValue("vz_std");
     }

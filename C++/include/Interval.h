@@ -12,6 +12,7 @@
 
 #ifndef INTERVAL_H_
 #define INTERVAL_H_
+#include "Real.h"
 
 #include <string>
 #include <vector>
@@ -33,9 +34,9 @@ public:
 	typedef std::vector<Interval>::size_type nat;
 
 	/** The lower bound of this interval */
-	double low;
+	real low;
 	/** The upper bound of this interval */
-	double up;
+	real up;
 
 	/** An empty interval. */
 	static const Interval EMPTY;
@@ -45,7 +46,7 @@ public:
 	 * @param lb lower bound of the region
 	 * @param ub upper bound of the region
 	 */
-	Interval(double lb, double ub);
+	Interval(real lb, real ub);
 	/** Construct an empty interval */
 	Interval();
 
@@ -76,40 +77,40 @@ public:
 	 * @param width width of interval
 	 * @return true if single
 	 * */
-	bool isSingle(double width) const;
+	bool isSingle(real width) const;
 
 	/** Is the element in this closed/closed interval?
 	 * @param x value
 	 * @return true if value in interval
 	 * */
-	bool in(double x) const;
+	bool in(real x) const;
 	/** Is the element in this closed/closed interval?
 	 * @param x value
 	 * @return true if value in interval
 	 * */
-	bool inCC(double x) const;
+	bool inCC(real x) const;
 	/** Is the element in this closed/open interval?
 	 * @param x value
 	 * @return true if value in interval
 	 * */
-	bool inCO(double x) const;
+	bool inCO(real x) const;
 	/** Is the element in this open/closed interval?
 	 * @param x value
 	 * @return true if value in interval
 	 * */
-	bool inOC(double x) const;
+	bool inOC(real x) const;
 	/** Is the element in this open/open interval?
 	 * @param x value
 	 * @return true if value in interval
 	 * */
-	bool inOO(double x) const;
+	bool inOO(real x) const;
 	/** Is the element (almost) in this interval, where close/open conditions are given as parameters
 	 * @param x   value
 	 * @param lb_close lower bound
 	 * @param ub_close  upper bound
 	 * @return true if in interval
 	 * */
-	bool almost_in(double x, bool lb_close, bool ub_close) const;
+	bool almost_in(real x, bool lb_close, bool ub_close) const;
 	/** Is the element (almost) in this interval, where close/open conditions are given as parameters
 	 * @param x value
 	 * @param lb_close lower bound
@@ -117,7 +118,7 @@ public:
 	 * @param maxUlps tolerance
 	 * @return true if value in interval
 	 * */
-	bool almost_in(double x, bool lb_close, bool ub_close, INT64FM maxUlps) const;
+	bool almost_in(real x, bool lb_close, bool ub_close, INT64FM maxUlps) const;
 
 	/**
 	 * Does the given Interval overlap with this Interval.  Intervals that only

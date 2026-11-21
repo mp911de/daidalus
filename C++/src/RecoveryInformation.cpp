@@ -4,6 +4,7 @@
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+#include "Real.h"
 #include "format.h"
 #include "string_util.h"
 #include "RecoveryInformation.h"
@@ -16,7 +17,7 @@
 namespace larcfm {
 
 
-RecoveryInformation::RecoveryInformation(double t, int nfactor, double hs, double vs) {
+RecoveryInformation::RecoveryInformation(real t, int nfactor, real hs, real vs) {
   time_ = t;
   nfactor_ = nfactor;
   horizontal_distance_ = hs;
@@ -34,42 +35,42 @@ int RecoveryInformation::nFactor() const {
 /**
  * @return Time to recovery in seconds
  */
-double RecoveryInformation::timeToRecovery() const {
+real RecoveryInformation::timeToRecovery() const {
   return time_;
 }
 
 /**
  * @return Time to recovery in given units
  */
-double RecoveryInformation::timeToRecovery(const std::string& u) const {
+real RecoveryInformation::timeToRecovery(const std::string& u) const {
   return Units::to(u,time_);
 }
 
 /**
  * @return Recovery horizontal distance in internal units, i.e., [m]
  */
-double RecoveryInformation::recoveryHorizontalDistance() const {
+real RecoveryInformation::recoveryHorizontalDistance() const {
   return horizontal_distance_;
 }
 
 /**
  * @return Recovery horizontal distance in given units
  */
-double RecoveryInformation::recoveryHorizontalDistance(const std::string& u) const {
+real RecoveryInformation::recoveryHorizontalDistance(const std::string& u) const {
   return Units::to(u,horizontal_distance_);
 }
 
 /**
  * @return Recovery vertical distance in internal units, i.e., [m]
  */
-double RecoveryInformation::recoveryVerticalDistance() const {
+real RecoveryInformation::recoveryVerticalDistance() const {
   return vertical_distance_;
 }
 
 /**
  * @return Recovery vertical distance in given units
  */
-double RecoveryInformation::recoveryVerticalDistance(const std::string& u) const {
+real RecoveryInformation::recoveryVerticalDistance(const std::string& u) const {
   return Units::to(u,vertical_distance_);
 }
 

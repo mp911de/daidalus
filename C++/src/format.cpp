@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "format.h"
 #include "Vect2.h"
 #include "Vect3.h"
@@ -47,17 +48,17 @@ string Fmul(unsigned long v) {
 }
 
 // remove negative zeros
-inline double fm_nz(double v, int precision) {
-	if (v < 0.0 && ceil(v*pow(10.0,precision)-0.5) == 0.0)
-		return 0.0;
-	return v+0.0; // This removes actual negative zeros
+inline real fm_nz(real v, int precision) {
+	if (v < real(0.0) && std::ceil(v*std::pow(real(10.0),real(precision))-real(0.5)) == real(0.0))
+		return real(0.0);
+	return v+real(0.0); // This removes actual negative zeros
 }
 
-string Fm2z(double v) {
+string Fm2z(real v) {
 	std::ostringstream s;
 	if (v < 0) {
 		s << "-";
-		v *= -1.0;
+		v *= -real(1.0);
 	} else {
 		s << "+";
 	}
@@ -69,7 +70,7 @@ string Fm2z(double v) {
 	return s.str();
 }
 
-string Fm3z(double v) {
+string Fm3z(real v) {
 	std::ostringstream s;
 	s.width(3);
 	s.precision(0);
@@ -78,51 +79,51 @@ string Fm3z(double v) {
 	return s.str();
 }
 
-string Fm0(double v) {
+string Fm0(real v) {
 	return FmPrecision(v,0);
 }
 
-string Fm1(double v) {
+string Fm1(real v) {
 	return FmPrecision(v,1);
 }
 
-string Fm2(double v) {
+string Fm2(real v) {
 	return FmPrecision(v,2);
 }
 
-string Fm3(double v) {
+string Fm3(real v) {
 	return FmPrecision(v,3);
 }
 
-string Fm4(double v) {
+string Fm4(real v) {
 	return FmPrecision(v,4);
 }
 
-string Fm6(double v) {
+string Fm6(real v) {
 	return FmPrecision(v,6);
 }
 
-string Fm8(double v) {
+string Fm8(real v) {
 	return FmPrecision(v,8);
 }
 
-string Fm12(double v) {
+string Fm12(real v) {
 	return FmPrecision(v,12);
 }
 
-string Fm16(double v) {
+string Fm16(real v) {
 	return FmPrecision(v,16);
 }
 
-string FmPrecision(double v) {
+string FmPrecision(real v) {
 	return FmPrecision(v, Constants::get_output_precision());
 }
 
-string FmPrecision(double v, int precision) {
+string FmPrecision(real v, int precision) {
   return FmPrecision(v, precision, Constants::get_trailing_zeros());
 }
 
-string FmPrecision(double v, int precision, bool includeTrailingZeros) {
+string FmPrecision(real v, int precision, bool includeTrailingZeros) {
 	if (ISNAN(v)) {
 		return "NaN";
 	}
@@ -180,7 +181,7 @@ string FmPair(const std::pair<int,int>& v) {
 	return "("+Fm0(v.first)+","+Fm0(v.second)+")";
 }
 
-string FmPair(const std::pair<double,double>& v) {
+string FmPair(const std::pair<real,real>& v) {
 	return "("+Fm6(v.first)+","+Fm6(v.second)+")";
 }
 
@@ -188,7 +189,7 @@ string FmTriple(const Triple<int,int,int>& v) {
 	return "("+Fm0(v.first)+","+Fm0(v.second)+","+Fm0(v.third)+")";
 }
 
-string FmTriple(const Triple<double,double,double>& v) {
+string FmTriple(const Triple<real,real,real>& v) {
 	return "("+Fm6(v.first)+","+Fm6(v.second)+","+Fm6(v.third)+")";
 }
 
@@ -201,7 +202,7 @@ string Fobj(const std::vector<int>& v) {
 	return s+"]";
 }
 
-string Fobj(const std::vector<double>& v) {
+string Fobj(const std::vector<real>& v) {
 	string s = "[";
 	for (unsigned int i = 0; i < v.size(); i++) {
 		s += Fm4(v[i]);
@@ -229,7 +230,7 @@ string Fobj(const std::vector<std::pair<int,int> >& v) {
 	return s+"]";
 }
 
-string Fobj(const std::vector<std::pair<double,double> >& v) {
+string Fobj(const std::vector<std::pair<real,real> >& v) {
 	string s = "[";
 	for (unsigned int i = 0; i < v.size(); i++) {
 		s += FmPair(v[i]);
@@ -247,7 +248,7 @@ string Fobj(const std::vector<Triple<int,int,int> >& v) {
 	return s+"]";
 }
 
-string Fobj(const std::vector<Triple<double,double,double> >& v) {
+string Fobj(const std::vector<Triple<real,real,real> >& v) {
 	string s = "[";
 	for (unsigned int i = 0; i < v.size(); i++) {
 		s += FmTriple(v[i]);
@@ -289,26 +290,26 @@ string Fobj(const std::map<std::string,int>& v) {
 	return s+"]";
 }
 
-string Fobj(const std::map<double,double>& v) {
+string Fobj(const std::map<real,real>& v) {
 	string s = "[";
-	for (std::map<double,double>::const_iterator it = v.begin(); it != v.end(); ++it) {
+	for (std::map<real,real>::const_iterator it = v.begin(); it != v.end(); ++it) {
 		s += Fm4(it->first) +"->"+Fm4(it->second)+", ";
 	}
 	return s+"]";
 }
 
-string Fobj(const std::map<double,std::string>& v) {
+string Fobj(const std::map<real,std::string>& v) {
 	string s = "[";
-	for (std::map<double,std::string>::const_iterator it = v.begin(); it != v.end(); ++it) {
+	for (std::map<real,std::string>::const_iterator it = v.begin(); it != v.end(); ++it) {
 		s += Fm4(it->first) +"->"+it->second+", ";
 	}
 	return s+"]";
 }
 
 
-string Fobj(const std::map<std::string,double>& v) {
+string Fobj(const std::map<std::string,real>& v) {
 	string s = "[";
-	for (std::map<std::string,double>::const_iterator it = v.begin(); it != v.end(); ++it) {
+	for (std::map<std::string,real>::const_iterator it = v.begin(); it != v.end(); ++it) {
 		s += it->first +"->"+Fm4(it->second)+", ";
 	}
 	return s+"]";
@@ -342,7 +343,7 @@ string Farray(int const v[], int sz) {
 /**
  * Print double array
  */
-string Farray(double const v[], int sz) {
+string Farray(real const v[], int sz) {
 	string s = "";
 	for (int i = 0; i < sz; i++) {
 		s += Fm4(v[i]);
@@ -437,11 +438,11 @@ std::vector<std::string> toStringList(const Vect3& v, const string& unitx, const
 	return ret;
 }
 
-string double2PVS(double val) {
+string double2PVS(real val) {
 	return double2PVS(val,Constants::get_output_precision());
 }
 
-string double2PVS(double val, int precision) {
+string double2PVS(real val, int precision) {
 	return FmPrecision(val,precision)+"::ereal";
 }
 

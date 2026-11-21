@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "DaidalusAltBands.h"
 #include "Velocity.h"
 #include "Position.h"
@@ -26,23 +27,23 @@ bool DaidalusAltBands::do_recovery(const DaidalusParameters& parameters) const {
   return parameters.isEnabledRecoveryAltitudeBands();
 }
 
-double DaidalusAltBands::get_step(const DaidalusParameters& parameters) const {
+real DaidalusAltBands::get_step(const DaidalusParameters& parameters) const {
   return parameters.getAltitudeStep();
 }
 
-double DaidalusAltBands::get_min(const DaidalusParameters& parameters) const {
+real DaidalusAltBands::get_min(const DaidalusParameters& parameters) const {
   return parameters.getMinAltitude();
 }
 
-double DaidalusAltBands::get_max(const DaidalusParameters& parameters) const {
+real DaidalusAltBands::get_max(const DaidalusParameters& parameters) const {
   return parameters.getMaxAltitude();
 }
 
-double DaidalusAltBands::get_min_rel(const DaidalusParameters& parameters) const {
+real DaidalusAltBands::get_min_rel(const DaidalusParameters& parameters) const {
   return parameters.getBelowRelativeAltitude();
 }
 
-double DaidalusAltBands::get_max_rel(const DaidalusParameters& parameters) const {
+real DaidalusAltBands::get_max_rel(const DaidalusParameters& parameters) const {
   return parameters.getAboveRelativeAltitude();
 }
 
@@ -57,21 +58,21 @@ bool DaidalusAltBands::instantaneous_bands(const DaidalusParameters& parameters)
       parameters.getVerticalAcceleration() == 0;
 }
 
-double DaidalusAltBands::own_val(const TrafficState& ownship) const {
+real DaidalusAltBands::own_val(const TrafficState& ownship) const {
   return ownship.positionXYZ().alt();
 }
 
-double DaidalusAltBands::time_step(const DaidalusParameters& parameters, const TrafficState& ownship) const {
+real DaidalusAltBands::time_step(const DaidalusParameters& parameters, const TrafficState& ownship) const {
   return 1;
 }
 
-std::pair<Vect3, Vect3> DaidalusAltBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, double time, bool dir, int target_step, bool instantaneous) const {
-  double target_alt = get_min_val_()+target_step*get_step(parameters);
+std::pair<Vect3, Vect3> DaidalusAltBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, real time, bool dir, int target_step, bool instantaneous) const {
+  real target_alt = get_min_val_()+target_step*get_step(parameters);
   std::pair<Position,Velocity> posvel;
   if (instantaneous) {
     posvel = std::pair<Position, Velocity>(ownship.positionXYZ().mkZ(target_alt),ownship.velocityXYZ().mkVs(0));
   } else {
-    double tsqj = ProjectedKinematics::vsLevelOutTime(ownship.positionXYZ(),ownship.velocityXYZ(),parameters.getVerticalRate(),
+    real tsqj = ProjectedKinematics::vsLevelOutTime(ownship.positionXYZ(),ownship.velocityXYZ(),parameters.getVerticalRate(),
         target_alt,parameters.getVerticalAcceleration())+time_step(parameters,ownship);
     if (time <= tsqj) {
       posvel = ProjectedKinematics::vsLevelOut(ownship.positionXYZ(), ownship.velocityXYZ(), time, parameters.getVerticalRate(), target_alt, parameters.getVerticalAcceleration());
@@ -84,29 +85,29 @@ std::pair<Vect3, Vect3> DaidalusAltBands::trajectory(const DaidalusParameters& p
 }
 
 // In PVS: alt_bands@conflict_free_traj_step
-bool DaidalusAltBands::conflict_free_traj_step(const Detection3D& conflict_det, const Detection3D& recovery_det, double B, double T,
+bool DaidalusAltBands::conflict_free_traj_step(const Detection3D& conflict_det, const Detection3D& recovery_det, real B, real T,
     const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, int target_step, bool instantaneous) const {
   bool trajdir = true;
   if (instantaneous) {
-    return no_CD_future_traj(conflict_det,recovery_det,B,T,trajdir,0.0,parameters,ownship,traffic,target_step,instantaneous);
+    return no_CD_future_traj(conflict_det,recovery_det,B,T,trajdir,real(0.0),parameters,ownship,traffic,target_step,instantaneous);
   } else {
-    double tstep = time_step(parameters,ownship);
-    double target_alt = get_min_val_()+target_step*get_step(parameters);
-    Tuple5<double,double,double,double,double> tsqj = Kinematics::vsLevelOutTimes(ownship.positionXYZ().alt(),ownship.velocityXYZ().vs(),
+    real tstep = time_step(parameters,ownship);
+    real target_alt = get_min_val_()+target_step*get_step(parameters);
+    Tuple5<real,real,real,real,real> tsqj = Kinematics::vsLevelOutTimes(ownship.positionXYZ().alt(),ownship.velocityXYZ().vs(),
         parameters.getVerticalRate(),target_alt,parameters.getVerticalAcceleration(),-parameters.getVerticalAcceleration(),true);
-    double tsqj1 = tsqj.first;
-    double tsqj2 = tsqj.second;
-    double tsqj3 = tsqj.third+tstep;
+    real tsqj1 = tsqj.first;
+    real tsqj2 = tsqj.second;
+    real tsqj3 = tsqj.third+tstep;
     for (int i=0; i<=std::floor(tsqj1/tstep);++i) {
-      double tsi = i*tstep;
+      real tsi = i*tstep;
       if ((B <= tsi && LOS_at(conflict_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous)) ||
           (recovery_det.isValid() && 0 <= tsi && tsi <= B &&
               LOS_at(recovery_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous))) {
         return false;
       }
     }
-    double tsk1 = Util::max(tsqj1,0.0);
-    double time_horizon_1 = parameters.isEnabledBandsAddTimeToManeuver() ? T : T+tsk1;
+    real tsk1 = Util::max(tsqj1,real(0.0));
+    real time_horizon_1 = parameters.isEnabledBandsAddTimeToManeuver() ? T : T+tsk1;
     if ((tsqj2 >= B &&
         CD_future_traj(conflict_det,B,std::min(time_horizon_1,tsqj2),trajdir,tsk1,parameters,ownship,traffic,target_step,instantaneous)) ||
         (recovery_det.isValid() && tsqj2 >= 0 &&
@@ -114,22 +115,22 @@ bool DaidalusAltBands::conflict_free_traj_step(const Detection3D& conflict_det, 
       return false;
     }
     for (int i=(int)std::ceil(tsqj2/tstep); i<=std::floor(tsqj3/tstep);++i) {
-      double tsi = i*tstep;
+      real tsi = i*tstep;
       if ((B <= tsi && LOS_at(conflict_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous)) ||
           (recovery_det.isValid() && 0 <= tsi && tsi <= B &&
               LOS_at(recovery_det,trajdir,tsi,parameters,ownship,traffic,target_step,instantaneous))) {
         return false;
       }
     }
-    double tsk3 = Util::max(tsqj3,0.0);
-    double time_horizon_3 = parameters.isEnabledBandsAddTimeToManeuver() ? T : T+tsk3;
+    real tsk3 = Util::max(tsqj3,real(0.0));
+    real time_horizon_3 = parameters.isEnabledBandsAddTimeToManeuver() ? T : T+tsk3;
     return no_CD_future_traj(conflict_det,recovery_det,B,time_horizon_3,trajdir,tsk3,parameters,ownship,traffic,target_step,instantaneous);
   }
 }
 
 // In PVS: alt_bands@alt_bands_generic
 void DaidalusAltBands::alt_bands_generic(std::vector<Integerval>& l,
-    const Detection3D& conflict_det, const Detection3D& recovery_det, double B, double T,
+    const Detection3D& conflict_det, const Detection3D& recovery_det, real B, real T,
     int maxup, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool instantaneous) const {
   int d = -1; // Set to the first index with no conflict
   for (int k = 0; k <= maxup; ++k) {
@@ -148,7 +149,7 @@ void DaidalusAltBands::alt_bands_generic(std::vector<Integerval>& l,
 }
 
 void DaidalusAltBands::none_bands(IntervalSet& noneset, const Detection3D& conflict_det, const Detection3D& recovery_det,
-    int epsh, int epsv, double B, double T, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic) const {
+    int epsh, int epsv, real B, real T, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic) const {
   int maxup = (int)std::floor((get_max_val_()-get_min_val_())/get_step(parameters))+1;
   std::vector<Integerval> altint;
   alt_bands_generic(altint,conflict_det,recovery_det,B,T,maxup,parameters,ownship,traffic,instantaneous_bands(parameters));
@@ -156,19 +157,19 @@ void DaidalusAltBands::none_bands(IntervalSet& noneset, const Detection3D& confl
 }
 
 bool DaidalusAltBands::any_red(const Detection3D& conflict_det, const Detection3D& recovery_det,
-    int epsh, int epsv, double B, double T, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic) const {
+    int epsh, int epsv, real B, real T, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic) const {
   return first_band_alt_generic(conflict_det,recovery_det,B,T,parameters,ownship,traffic,true,false,instantaneous_bands(parameters)) >= 0 ||
       first_band_alt_generic(conflict_det,recovery_det,B,T,parameters,ownship,traffic,false,false,instantaneous_bands(parameters)) >= 0;
 }
 
 bool DaidalusAltBands::all_red(const Detection3D& conflict_det, const Detection3D& recovery_det,
-    int epsh, int epsv, double B, double T, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic) const {
+    int epsh, int epsv, real B, real T, const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic) const {
   return first_band_alt_generic(conflict_det,recovery_det,B,T,parameters,ownship,traffic,true,true,instantaneous_bands(parameters)) < 0 &&
       first_band_alt_generic(conflict_det,recovery_det,B,T,parameters,ownship,traffic,false,true,instantaneous_bands(parameters)) < 0;
 }
 
 int DaidalusAltBands::first_nat(int mini, int maxi, bool dir, const Detection3D& conflict_det, const Detection3D& recovery_det,
-    double B, double T,  const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool green, bool instantaneous) const {
+    real B, real T,  const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool green, bool instantaneous) const {
   while (mini <= maxi) {
     if (dir && green == conflict_free_traj_step(conflict_det,recovery_det,B,T,parameters,ownship,traffic,mini,instantaneous)) {
       return mini;
@@ -188,7 +189,7 @@ int DaidalusAltBands::first_nat(int mini, int maxi, bool dir, const Detection3D&
 }
 
 int DaidalusAltBands::first_band_alt_generic(const Detection3D& conflict_det, const Detection3D& recovery_det,
-    double B, double T,
+    real B, real T,
     const DaidalusParameters& parameters, const TrafficState& ownship, const TrafficState& traffic, bool dir, bool green, bool instantaneous) const {
   int upper = (int)(dir ? std::floor((get_max_val_()-get_min_val_())/get_step(parameters))+1 :
       std::floor((ownship.positionXYZ().alt()-get_min_val_())/get_step(parameters)));
@@ -200,7 +201,7 @@ int DaidalusAltBands::first_band_alt_generic(const Detection3D& conflict_det, co
   }
 }
 
-double DaidalusAltBands::max_delta_resolution(const DaidalusParameters& parameters) const {
+real DaidalusAltBands::max_delta_resolution(const DaidalusParameters& parameters) const {
   return parameters.getPersistencePreferredAltitudeResolution();
 }
 

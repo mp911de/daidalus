@@ -4,6 +4,7 @@
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+#include "Real.h"
 #include "IndexLevelT.h"
 #include "format.h"
 
@@ -14,7 +15,7 @@
 namespace larcfm {
 
 
-IndexLevelT::IndexLevelT(int idx, int lvl, double th) {
+IndexLevelT::IndexLevelT(int idx, int lvl, real th) {
   index = idx;
   level = lvl;
   time_horizon = th;

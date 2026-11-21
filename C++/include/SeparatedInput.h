@@ -12,6 +12,7 @@
 
 #ifndef SEPARATEDINPUT_H
 #define SEPARATEDINPUT_H
+#include "Real.h"
 
 #include "Units.h"
 #include "ErrorLog.h"
@@ -245,7 +246,7 @@ namespace larcfm {
 	 * @param i column index
 	 * @return value of column
 	 */
-    double getColumn(int i) const;
+    real getColumn(int i) const;
 
 	/** 
 	 * Returns the value of the given column (as a double) in internal units.  If 
@@ -255,7 +256,7 @@ namespace larcfm {
 	 * @param default_unit unit, if none is specified
 	 * @return value of column
 	 */
-	double getColumn(int i, const std::string& default_unit) const;
+	real getColumn(int i, const std::string& default_unit) const;
 
 
 	/**
@@ -265,7 +266,7 @@ namespace larcfm {
 	 * @param defaultValue this is the value returned if there is some error
 	 * @return value of column
 	 */
-	double getColumn(int i, double defaultValue, bool verbose) const;
+	real getColumn(int i, real defaultValue, bool verbose) const;
 
     /**
      * Reads a line of the input.  The first call to readLine will read the column headings, units, etc.
@@ -325,11 +326,11 @@ namespace larcfm {
 
     std::vector<std::string> header_str;    // header line raw string
     std::vector<std::string> units_str;     // Units type
-    std::vector<double> units_factor;       // Units conversion value
+    std::vector<real> units_factor;       // Units conversion value
     std::vector<std::string> line_str;      // raw line
     std::vector<int> width_int;        // The width of columns
 
-    double getUnitFactor(int i) const;
+    real getUnitFactor(int i) const;
     bool process_units(const std::string& str);
     bool process_preamble(const std::string& str);
     void process_line(const std::string& str);

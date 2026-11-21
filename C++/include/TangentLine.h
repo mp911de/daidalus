@@ -16,6 +16,7 @@
 
 #ifndef TANGENTLINE_H_
 #define TANGENTLINE_H_
+#include "Real.h"
 
 #include "Vect2.h"
 
@@ -27,7 +28,7 @@ public:
   /** Construct a tangent line */
   TangentLine();
   /** Construct a tangent line */
-  TangentLine(const Vect2& s, const double D, const int eps);
+  TangentLine(const Vect2& s, const real D, const int eps);
   /** Is the tangent line undefined? */
   bool undef() const;
   /** Has horizontal criterion been met? */
@@ -36,7 +37,7 @@ public:
   int  get_eps() const;
 
   /** Q function (relative tangent line) */
-  static Vect2 Q(const Vect2& s, const double D, const int eps);
+  static Vect2 Q(const Vect2& s, const real D, const int eps);
 
 private:
   int eps;

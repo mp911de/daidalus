@@ -6,6 +6,7 @@
  */
 #ifndef WCV_TAUMOD_H_
 #define WCV_TAUMOD_H_
+#include "Real.h"
 
 #include "Vect3.h"
 #include "Velocity.h"
@@ -71,9 +72,9 @@ public:
    */
   static const WCV_TAUMOD& Buffered_DWC_Phase_I();
 
-  virtual double horizontal_tvar(const Vect2& s, const Vect2& v) const;
+  virtual real horizontal_tvar(const Vect2& s, const Vect2& v) const;
 
-  virtual LossData horizontal_WCV_interval(double T, const Vect2& s, const Vect2& v) const ;
+  virtual LossData horizontal_WCV_interval(real T, const Vect2& s, const Vect2& v) const ;
 
   virtual Detection3D* make() const;
 
@@ -86,12 +87,12 @@ public:
 
   virtual bool contains(const Detection3D& cd) const;
 
-  static Position TAU_center(const Position& po, const Velocity& v, double TTHR, double T);
+  static Position TAU_center(const Position& po, const Velocity& v, real TTHR, real T);
 
-  static double TAU_radius(const Velocity& v, double DTHR, double TTHR);
+  static real TAU_radius(const Velocity& v, real DTHR, real TTHR);
 
   virtual void hazard_zone_far_end(std::vector<Position>& haz,
-      const Position& po, const Velocity& v, const Vect3& pu, double T) const;
+      const Position& po, const Velocity& v, const Vect3& pu, real T) const;
 
 };
 

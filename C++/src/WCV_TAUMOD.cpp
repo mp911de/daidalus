@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "WCV_TAUMOD.h"
 #include "WCV_TCPA.h"
 #include "WCV_TCOA.h"
@@ -91,24 +92,24 @@ const WCV_TAUMOD& WCV_TAUMOD::Buffered_DWC_Phase_I() {
   return dwc;
 }
 
-double WCV_TAUMOD::horizontal_tvar(const Vect2& s, const Vect2& v) const {
+real WCV_TAUMOD::horizontal_tvar(const Vect2& s, const Vect2& v) const {
   // Time variable is Modified Tau
-  double taumod = -1;
-  double sdotv = s.dot(v);
+  real taumod = -1;
+  real sdotv = s.dot(v);
   if (sdotv < 0)
     return (Util::sq(getDTHR())-s.sqv())/sdotv;
   return taumod;
 }
 
-LossData WCV_TAUMOD::horizontal_WCV_interval(double T, const Vect2& s, const Vect2& v) const {
-  double time_in = T;
-  double time_out = 0;
-  double sqs = s.sqv();
-  double sdotv = s.dot(v);
-  double sqD = Util::sq(getDTHR());
-  double a = v.sqv();
-  double b = 2*sdotv+getTTHR()*v.sqv();
-  double c = sqs+getTTHR()*sdotv-sqD;
+LossData WCV_TAUMOD::horizontal_WCV_interval(real T, const Vect2& s, const Vect2& v) const {
+  real time_in = T;
+  real time_out = 0;
+  real sqs = s.sqv();
+  real sdotv = s.dot(v);
+  real sqD = Util::sq(getDTHR());
+  real a = v.sqv();
+  real b = 2*sdotv+getTTHR()*v.sqv();
+  real c = sqs+getTTHR()*sdotv-sqD;
   if (Util::almost_equals(a,0) && sqs <= sqD) { // [CAM] Changed from == to almost_equals to mitigate numerical problems
     time_in = 0;
     time_out = T;
@@ -119,12 +120,12 @@ LossData WCV_TAUMOD::horizontal_WCV_interval(double T, const Vect2& s, const Vec
     time_out = Util::min(T,Horizontal::Theta_D(s,v,1,getDTHR()));
     return LossData(time_in,time_out);
   }
-  double discr = Util::sq(b)-4*a*c;
+  real discr = Util::sq(b)-4*a*c;
   if (sdotv >= 0 || discr < 0)
     return LossData(time_in,time_out);
-  double t = (-b - std::sqrt(discr))/(2*a);
+  real t = (-b - std::sqrt(discr))/(2*a);
   if (Horizontal::Delta(s, v,getDTHR()) >= 0 && t <= T) {
-    time_in = Util::max(0.0,t);
+    time_in = Util::max(real(0.0),t);
     time_out = Util::min(T, Horizontal::Theta_D(s,v,1,getDTHR()));
   }
   return LossData(time_in,time_out);
@@ -153,24 +154,24 @@ bool WCV_TAUMOD::contains(const Detection3D& cd) const {
   return false;
 }
 
-Position WCV_TAUMOD::TAU_center(const Position& po, const Velocity& v, double TTHR, double T) {
-  Vect3 nv = v.vect3().Scal(0.5*TTHR+T);
+Position WCV_TAUMOD::TAU_center(const Position& po, const Velocity& v, real TTHR, real T) {
+  Vect3 nv = v.vect3().Scal(real(0.5)*TTHR+T);
   return po.linear(Velocity::make(nv),1);
 }
 
-double WCV_TAUMOD::TAU_radius(const Velocity& v, double DTHR, double TTHR) {
-  double inside = Util::sq(DTHR) + 0.25*Util::sq(TTHR)*v.vect3().sqv2D();
+real WCV_TAUMOD::TAU_radius(const Velocity& v, real DTHR, real TTHR) {
+  real inside = Util::sq(DTHR) + real(0.25)*Util::sq(TTHR)*v.vect3().sqv2D();
   return Util::sqrt_safe(inside);
 }
 
 void WCV_TAUMOD::hazard_zone_far_end(std::vector<Position>& haz,
-    const Position& po, const Velocity& v, const Vect3& pu, double T) const {
+    const Position& po, const Velocity& v, const Vect3& pu, real T) const {
   Vect3 vD = pu.Scal(getDTHR());
-  Vect3 vC = v.vect3().Scal(0.5*getTTHR());     // TAUMOD Center (relative)
+  Vect3 vC = v.vect3().Scal(real(0.5)*getTTHR());     // TAUMOD Center (relative)
   Vect3 vDC = vC.Sub(vD); // Far end point opposite to -vD (vC-relative);
   Vect3 nvDC = vC.Add(vD); // Far end point opposite to vD (vC-relative);
-  double sqa = vDC.sqv2D();
-  double alpha = Util::atan2_safe(vDC.det2D(nvDC)/sqa,vDC.dot2D(nvDC)/sqa);
+  real sqa = vDC.sqv2D();
+  real alpha = Util::atan2_safe(vDC.det2D(nvDC)/sqa,vDC.dot2D(nvDC)/sqa);
   Velocity velDC = Velocity::make(vDC);
   CDCylinder::circular_arc(haz,TAU_center(po,v,getTTHR(),T),velDC,alpha,true);
 }

@@ -10,6 +10,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "SimpleProjection.h"
 #include "LatLonAlt.h"
 #include "GreatCircle.h"
@@ -26,32 +27,32 @@ namespace larcfm {
     using std::endl;
     using std::runtime_error;
   
-    static const double tranLat = Units::from("deg", 85.0);
+    static const real tranLat = Units::from("deg", real(85.0));
     
     
     SimpleProjection::SimpleProjection() :
-      projLat(0.0),
-      projLon(0.0),
-      projAlt(0.0),
+      projLat(real(0.0)),
+      projLon(real(0.0)),
+      projAlt(real(0.0)),
       projNorth(false) {}
     
     SimpleProjection::SimpleProjection(const LatLonAlt& lla) :
         projLat(lla.lat()),
         projLon(lla.lon()),
         projAlt(lla.alt()),
-        projNorth(projLat >= 0.0) {}
+        projNorth(projLat >= real(0.0)) {}
     
-    SimpleProjection::SimpleProjection(double lat, double lon, double alt) :
+    SimpleProjection::SimpleProjection(real lat, real lon, real alt) :
         projLat(lat),
         projLon(lon),
         projAlt(alt),
-        projNorth(projLat >= 0.0) {}
+        projNorth(projLat >= real(0.0)) {}
     
     SimpleProjection SimpleProjection::makeNew(const LatLonAlt& lla) const {
       return SimpleProjection(lla);
     }
 
-    SimpleProjection SimpleProjection::makeNew(double lat, double lon, double alt) const {
+    SimpleProjection SimpleProjection::makeNew(real lat, real lon, real alt) const {
       return SimpleProjection(lat, lon, alt);
     }
 
@@ -59,15 +60,15 @@ namespace larcfm {
 //      return SimpleProjection(projLat, projLon, projAlt);
 //    }
   
-    double SimpleProjection::conflictRange(double lat, double accuracy) const {
-      double degs = Units::to("deg",lat);
-      if (accuracy < Units::from("nm", 0.1)) { //0.01 -- 35 nm - 3 nm
+    real SimpleProjection::conflictRange(real lat, real accuracy) const {
+      real degs = Units::to("deg",lat);
+      if (accuracy < Units::from("nm", real(0.1))) { //0.01 -- 35 nm - 3 nm
         if (degs < 30) {
           return Units::from("nm",10);
         } else {
           return Units::from("nm",5);
         }
-      } else if (accuracy < Units::from("nm", 0.5)) {  // 0.1 nm -- 185 nm - 4 nm
+      } else if (accuracy < Units::from("nm", real(0.5))) {  // 0.1 nm -- 185 nm - 4 nm
         if (degs < 20) {
           return Units::from("nm", 40);
         } else if (degs < 50) {
@@ -94,8 +95,8 @@ namespace larcfm {
       }
     }
     
-    double SimpleProjection::maxRange() const{
-      return std::numeric_limits<double>::max();
+    real SimpleProjection::maxRange() const{
+      return std::numeric_limits<real>::max();
     }
     
     LatLonAlt SimpleProjection::getProjectionPoint() const {
@@ -109,20 +110,20 @@ namespace larcfm {
     Vect2 SimpleProjection::polar_xy(const LatLonAlt& lla, bool north) {
        	int sgn = 1;
     	if (! north) sgn = -1;
-        double a = sgn*Units::from("deg",90.0) - lla.lat();
-    	double r = std::abs(GreatCircle::distance_from_angle(a,0.0));
+        real a = sgn*Units::from("deg",real(90.0)) - lla.lat();
+        real r = std::abs(GreatCircle::distance_from_angle(a,real(0.0)));
     	//f.pln("^^ polarXY: a = "+Units::to("deg",a)+" r = "+Units::to("nm",r));
-    	return Vect2(r*sin(lla.lon()),r*cos(lla.lon()));
+        return Vect2(r*std::sin(lla.lon()),r*std::cos(lla.lon()));
     }
     
-    LatLonAlt SimpleProjection::polar_inverse(const Vect2& v, double alt, bool north) {
-    	double lon = to_pi(v.compassAngle());
-    	double d = v.norm();
-    	double a = GreatCircle::angle_from_distance(d,0.0);
+    LatLonAlt SimpleProjection::polar_inverse(const Vect2& v, real alt, bool north) {
+        real lon = to_pi(v.compassAngle());
+        real d = v.norm();
+        real a = GreatCircle::angle_from_distance(d,real(0.0));
     	//f.pln("^^ polarLL: a = "+Units::to("deg",a)+" d = "+Units::to("nm",d));
     	int sgn = 1;
     	if (! north) sgn = -1;
-    	double lat = sgn*(Units::from("deg",90.0) - a);
+        real lat = sgn*(Units::from("deg",real(90.0)) - a);
     	//f.pln("^^ polarLL: lat = "+Units::to("deg",lat)+" lon = "+Units::to("deg",lon));
     	return LatLonAlt::mk(lat,lon,alt);
     }
@@ -153,12 +154,12 @@ namespace larcfm {
     	return project(sip);
     }
 
-    LatLonAlt SimpleProjection::inverse(const Vect2& xy, double alt) const {
+    LatLonAlt SimpleProjection::inverse(const Vect2& xy, real alt) const {
       if (std::abs(projLat) >  tranLat)
     		return polar_inverse(xy, alt + projAlt, projNorth);
     	else {
-           double a = xy.compassAngle();
-           double d = xy.norm();
+           real a = xy.compassAngle();
+           real d = xy.norm();
     	   LatLonAlt origin = LatLonAlt::mk(projLat,projLon,alt + projAlt);
            return GreatCircle::linear_initial(origin,a,d);
     	}
@@ -169,7 +170,7 @@ namespace larcfm {
     }
     
   Velocity SimpleProjection::projectVelocity(const LatLonAlt& lla, const Velocity& v) const {
-    double timeStep = 10.0;
+    real timeStep = real(10.0);
     LatLonAlt ll2 = GreatCircle::linear_initial(lla,v,timeStep);
     Vect3 se = project(lla);
     Vect3 s2 = project(ll2);
@@ -190,7 +191,7 @@ namespace larcfm {
   // The user needs to keep track of whether to translate back (i.e. whether original was LatLon())
   Velocity SimpleProjection::inverseVelocity(const Vect3& s, const Velocity& v, bool toLatLon) const {
     if (toLatLon) {
-      double timeStep = 10.0;
+      real timeStep = real(10.0);
       Vect3 s2 = s.linear(v.vect3(),timeStep);
       LatLonAlt lla1 = inverse(s);
       LatLonAlt lla2 = inverse(s2);
@@ -218,35 +219,35 @@ namespace larcfm {
    }
 
 
-  Vect2 SimpleProjection::projectXY(double lat0, double lon0, double lat1, double lon1) {
-    double ad = GreatCircle::angular_distance(lat0, lon0, lat1, lon1);
+  Vect2 SimpleProjection::projectXY(real lat0, real lon0, real lat1, real lon1) {
+    real ad = GreatCircle::angular_distance(lat0, lon0, lat1, lon1);
 //std::cout << "SimpleProjection::projectXY ad=" << Fm16(ad) << std::endl;;
     if (Constants::almost_equals_radian(ad)) {
       // If the two points are about 1 meter apart, then count them as the
       // same.
-      return Vect2(0.0, 0.0);
+      return Vect2(real(0.0), real(0.0));
     }
 
-    LatLonAlt p0 = LatLonAlt::mk(lat0, lon0, 0.0);
-    LatLonAlt p1 = LatLonAlt::mk(lat1, lon1, 0.0);
+    LatLonAlt p0 = LatLonAlt::mk(lat0, lon0, real(0.0));
+    LatLonAlt p1 = LatLonAlt::mk(lat1, lon1, real(0.0));
 
-    double a;
-    if (Constants::almost_equals_radian(ad / 2.0)) {
+    real a;
+    if (Constants::almost_equals_radian(ad / real(2.0))) {
       // The two points are about 2 meters apart, so skip the midpoint
       a = GreatCircle::initial_course(p0, p1);
 //std::cout << "SimpleProjection::projectXY a(1)=" << Fm16(a) << std::endl;;
     } else {
-      LatLonAlt mid = GreatCircle::interpolate(p0, p1, 0.5);
+      LatLonAlt mid = GreatCircle::interpolate(p0, p1, real(0.5));
       a = GreatCircle::initial_course(mid, p1);
 //std::cout << "SimpleProjection::projectXY mid=" << mid.toString15() << std::endl;;
 //std::cout << "SimpleProjection::projectXY p1 =" << p1.toString15() << std::endl;;
 //std::cout << "SimpleProjection::projectXY a(2)=" << Fm16(a) << std::endl;;
     }
-    double d = GreatCircle::distance_from_angle(ad,0.0);
+    real d = GreatCircle::distance_from_angle(ad,real(0.0));
 //std::cout << "SimpleProjection::projectXY d=" << d << std::endl;;
 //std::cout << "SimpleProjection::projectXY sin(a)=" << sin(a) << std::endl;;
 //std::cout << "SimpleProjection::projectXY cos(a)=" << cos(a) << std::endl;;
-    return Vect2(d * sin(a), d * cos(a));
+    return Vect2(d * std::sin(a), d * std::cos(a));
   }
 
   Vect3 SimpleProjection::projectXYZ(const LatLonAlt& p0, const LatLonAlt& p1) {
@@ -262,7 +263,7 @@ namespace larcfm {
   	return SimpleProjection::polar_xy(lla, north);
   }
 
-  LatLonAlt polar_inverse(const Vect2& v, double alt, bool north) {
+  LatLonAlt polar_inverse(const Vect2& v, real alt, bool north) {
   	return SimpleProjection::polar_inverse(v, alt, north);
   }
 

@@ -12,6 +12,7 @@
 
 #ifndef ORTHOGRAPHICPROJECTION_H_
 #define ORTHOGRAPHICPROJECTION_H_
+#include "Real.h"
 
 #include "LatLonAlt.h"
 #include "Vect3.h"
@@ -42,7 +43,7 @@ namespace larcfm {
  */
   class OrthographicProjection {
   private:
-    double projAlt;
+    real projAlt;
     LatLonAlt llaRef;
     /**
      * Transforms a lat/lon position to a point on in R3 (on a sphere)
@@ -51,8 +52,8 @@ namespace larcfm {
      * @param lon Longitude
      * @return point in R2
      */
-    Vect2 spherical2xy(double lat, double lon) const;
-    LatLonAlt xy2spherical(double x, double y, double alt) const;
+    Vect2 spherical2xy(real lat, real lon) const;
+    LatLonAlt xy2spherical(real x, real y, real alt) const;
 
 
   public:
@@ -72,7 +73,7 @@ namespace larcfm {
      * @param lon longitude of reference point
      * @param alt altitude of reference point
      */
-    OrthographicProjection(double lat, double lon, double alt);
+    OrthographicProjection(real lat, real lon, real alt);
     
     /** Destructor */
     ~OrthographicProjection() {}
@@ -81,17 +82,17 @@ namespace larcfm {
     OrthographicProjection makeNew(const LatLonAlt& lla) const;
     
     /** Return a new projection with the given reference point */
-    OrthographicProjection makeNew(double lat, double lon, double alt) const;
+    OrthographicProjection makeNew(real lat, real lon, real alt) const;
     
 	/** 
 	 * Given an ownship latitude and desired accuracy, what is the longest distance to conflict this projection will support? [m] 
 	 */
-    double conflictRange(double latitude, double accuracy) const;
+    real conflictRange(real latitude, real accuracy) const;
     
 	/**
 	 *  What is the maximum effective horizontal range of this projection? [m] 
 	 */
-    double maxRange() const;
+    real maxRange() const;
 
 	/** Get the projection point for this projection */
 	LatLonAlt getProjectionPoint() const;
@@ -109,7 +110,7 @@ namespace larcfm {
 	Vect3 projectPoint(const Position& sip) const;
     
     /** Return a LatLonAlt value corresponding to the given Euclidean position */
-    LatLonAlt inverse(const Vect2& xy, double alt) const;
+    LatLonAlt inverse(const Vect2& xy, real alt) const;
     
     /** Return a LatLonAlt value corresponding to the given Euclidean position */
     LatLonAlt inverse(const Vect3& xyz) const; 

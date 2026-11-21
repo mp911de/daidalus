@@ -8,6 +8,7 @@
 
 #ifndef NODETECTOR_H_
 #define NODETECTOR_H_
+#include "Real.h"
 
 #include "Detection3D.h"
 
@@ -30,7 +31,7 @@ public:
  
   virtual ~NoDetector() {}
 
-  virtual ConflictData conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const {
+  virtual ConflictData conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
     ConflictData cd;
     return cd;
   }

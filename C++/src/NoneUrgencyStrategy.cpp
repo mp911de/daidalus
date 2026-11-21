@@ -11,6 +11,7 @@
  *
  */
 
+#include "Real.h"
 #include "NoneUrgencyStrategy.h"
 
 namespace larcfm {
@@ -18,7 +19,7 @@ namespace larcfm {
 /**
  * @return -1, which is not a valid aircraft index
  */
-int NoneUrgencyStrategy::mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, double T) const {
+int NoneUrgencyStrategy::mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, real T) const {
   (void)ownship; //bypass unused parameter warning (needed for interface)
   (void)traffic; //bypass unused parameter warning (needed for interface)
   (void)T; //bypass unused parameter warning (needed for interface)

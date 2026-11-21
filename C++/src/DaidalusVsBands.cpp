@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "DaidalusVsBands.h"
 #include "Velocity.h"
 #include "Position.h"
@@ -26,23 +27,23 @@ bool DaidalusVsBands::do_recovery(const DaidalusParameters& parameters) const {
   return parameters.isEnabledRecoveryVerticalSpeedBands();
 }
 
-double DaidalusVsBands::get_step(const DaidalusParameters& parameters) const {
+real DaidalusVsBands::get_step(const DaidalusParameters& parameters) const {
   return parameters.getVerticalSpeedStep();
 }
 
-double DaidalusVsBands::get_min(const DaidalusParameters& parameters) const {
+real DaidalusVsBands::get_min(const DaidalusParameters& parameters) const {
   return parameters.getMinVerticalSpeed();
 }
 
-double DaidalusVsBands::get_max(const DaidalusParameters& parameters) const {
+real DaidalusVsBands::get_max(const DaidalusParameters& parameters) const {
   return parameters.getMaxVerticalSpeed();
 }
 
-double DaidalusVsBands::get_min_rel(const DaidalusParameters& parameters) const {
+real DaidalusVsBands::get_min_rel(const DaidalusParameters& parameters) const {
   return parameters.getBelowRelativeVerticalSpeed();
 }
 
-double DaidalusVsBands::get_max_rel(const DaidalusParameters& parameters) const {
+real DaidalusVsBands::get_max_rel(const DaidalusParameters& parameters) const {
   return parameters.getAboveRelativeVerticalSpeed();
 }
 
@@ -53,24 +54,24 @@ void DaidalusVsBands::set_special_configuration(const DaidalusParameters& parame
 }
 
 bool DaidalusVsBands::instantaneous_bands(const DaidalusParameters& parameters) const {
-  return parameters.getVerticalAcceleration() == 0.0;
+  return parameters.getVerticalAcceleration() == real(0.0);
 }
 
-double DaidalusVsBands::own_val(const TrafficState& ownship) const {
+real DaidalusVsBands::own_val(const TrafficState& ownship) const {
   return ownship.velocityXYZ().vs();
 }
 
-double DaidalusVsBands::time_step(const DaidalusParameters& parameters, const TrafficState& ownship) const {
+real DaidalusVsBands::time_step(const DaidalusParameters& parameters, const TrafficState& ownship) const {
   // This function is never called when vertical acceleration is zero
-  return parameters.getVerticalAcceleration() == 0.0 ? 0.0 : get_step(parameters)/parameters.getVerticalAcceleration();
+  return parameters.getVerticalAcceleration() == real(0.0) ? real(0.0) : get_step(parameters)/parameters.getVerticalAcceleration();
 }
 
-std::pair<Vect3, Vect3> DaidalusVsBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, double time, bool dir, int target_step, bool instantaneous) const {
+std::pair<Vect3, Vect3> DaidalusVsBands::trajectory(const DaidalusParameters& parameters, const TrafficState& ownship, real time, bool dir, int target_step, bool instantaneous) const {
   std::pair<Position,Velocity> posvel;
-  if (time == 0.0 && target_step == 0.0) {
+  if (time == real(0.0) && target_step == real(0.0)) {
     return std::pair<Vect3, Vect3>(ownship.get_s(),ownship.get_v());
   } else if (instantaneous_bands(parameters)) {
-    double vs = ownship.velocityXYZ().vs()+(dir?1:-1)*target_step*get_step(parameters);
+    real vs = ownship.velocityXYZ().vs()+(dir?1:-1)*target_step*get_step(parameters);
     posvel = std::pair<Position, Velocity>(ownship.positionXYZ(),ownship.velocityXYZ().mkVs(vs));
   } else {
     posvel = ProjectedKinematics::vsAccel(ownship.positionXYZ(),ownship.velocityXYZ(),time,(dir?1:-1)*parameters.getVerticalAcceleration());
@@ -78,7 +79,7 @@ std::pair<Vect3, Vect3> DaidalusVsBands::trajectory(const DaidalusParameters& pa
   return std::pair<Vect3, Vect3>(ownship.pos_to_s(posvel.first),ownship.vel_to_v(posvel.first,posvel.second));
 }
 
-double DaidalusVsBands::max_delta_resolution(const DaidalusParameters& parameters) const {
+real DaidalusVsBands::max_delta_resolution(const DaidalusParameters& parameters) const {
   return parameters.getPersistencePreferredVerticalSpeedResolution();
 }
 

@@ -12,6 +12,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Vertical.h"
 #include "Horizontal.h"
 #include <limits>
@@ -21,7 +22,7 @@ namespace larcfm {
 
 Vertical::Vertical() : z(NaN), udef(true) {}
 
-Vertical::Vertical(const double vz) : z(vz), udef(false) {}
+Vertical::Vertical(const real vz) : z(vz), udef(false) {}
 
 bool Vertical::operator == (const Vertical& v) const {  // strict equality
   return ! udef && ! v.udef && z==v.z;
@@ -36,7 +37,7 @@ const Vertical& Vertical::NoVerticalSolution() {
   return v;
 }
 
-Vertical Vertical::add_this(const double vz) {
+Vertical Vertical::add_this(const real vz) {
   if (!udef) {
     z += vz;
   }
@@ -47,27 +48,27 @@ bool Vertical::undef() const {
   return udef;
 }
 
-bool Vertical::almost_vertical_los(const double sz, const double H) {
-  double absz = std::abs(sz);
+bool Vertical::almost_vertical_los(const real sz, const real H) {
+  real absz = std::abs(sz);
   return !Util::almost_equals(absz,H) && absz < H;
 }
 
 // Computes times when sz,vz intersects rectangle of half height H
 // eps = -1 : larcfm::Entry
 // eps =  1 : larcfm::Exit
-double Vertical::Theta_H(const double sz, const double vz, const int eps, const double H) {
+real Vertical::Theta_H(const real sz, const real vz, const int eps, const real H) {
   if (vz == 0) return NaN;
   return (eps*sign(vz)*H-sz)/vz;
 }
 
-double Vertical::time_coalt(double sz, double vz) {
+real Vertical::time_coalt(real sz, real vz) {
   if (sz == 0) return 0;
   if (vz == 0) return NaN;
   return -sz/vz;
 }
 
 /* Vertical miss distance within lookahead time */
-double Vertical::vmd(double sz, double vz, double T) {
+real Vertical::vmd(real sz, real vz, real T) {
   if (sz*vz < 0) {
     // aircraft are vertically converging
     if (time_coalt(sz,vz) <= T) {
@@ -79,15 +80,15 @@ double Vertical::vmd(double sz, double vz, double T) {
   return std::abs(sz);
 }
 
-Vertical vs_at(const double sz, const double t,
-    const int eps, const double H) {
+Vertical vs_at(const real sz, const real t,
+    const int eps, const real H) {
   if (t == 0)
     return Vertical::NoVerticalSolution();
   return Vertical((eps*H-sz)/t);
 }
 
-Vertical vs_only(const Vect3& s, const Vect2& v, const double t,
-    const int eps, const double D, const double H) {
+Vertical vs_only(const Vect3& s, const Vect2& v, const real t,
+    const int eps, const real D, const real H) {
 
   const Vect2& s2 = s.vect2();
 
@@ -105,7 +106,7 @@ Vertical vs_only(const Vect3& s, const Vect2& v, const double t,
  * eps determines the bottom, i.e.,-1, or top, i.e., 1, circle.
  */
 Vertical Vertical::vs_circle(const Vect3& s, const Vect3& vo, const Vect3& vi,
-    const int eps, const double D, const double H) {
+    const int eps, const real D, const real H) {
 
   const Vect2& s2 = s.vect2();
   const Vect2& vo2 = vo.vect2();
@@ -119,19 +120,19 @@ Vertical Vertical::vs_circle(const Vect3& s, const Vect3& vo, const Vect3& vi,
   return NoVerticalSolution();
 }
 
-Vertical Vertical::vs_circle_at(const double sz, const double viz,
-    const double t, const int eps, const int dir, const double H) {
+Vertical Vertical::vs_circle_at(const real sz, const real viz,
+    const real t, const int eps, const int dir, const real H) {
   if (t > 0 && dir*eps*sz <= dir*H)
     return vs_at(sz,t,eps,H).add_this(viz);
   return NoVerticalSolution();
 }
 
 Vertical Vertical::vs_los_recovery(const Vect3& s, const Vect3& vo, const Vect3& vi,
-    const double H, const double t, int epsv) {
+    const real H, const real t, int epsv) {
   if (t <= 0)
     return NoVerticalSolution();
   Vect3 v = vo-vi;
-  double nvz = (epsv*H - s.z())/t;
+  real nvz = (epsv*H - s.z())/t;
   if (s.z()*v.z() >= 0 && std::abs(v.z()) >= std::abs(nvz))
     return Vertical(vo.z());
   else

@@ -15,12 +15,13 @@
  * is true, then there is a conflict.
  */
 
+#include "Real.h"
 #include "LossData.h"
 #include "format.h"
 
 namespace larcfm {
 
-LossData::LossData(double tin, double tout) : time_in(tin), time_out(tout) {
+LossData::LossData(real tin, real tout) : time_in(tin), time_out(tout) {
 }
 
 LossData::LossData() : time_in(PINFINITY), time_out(NINFINITY) {
@@ -35,7 +36,7 @@ const LossData& EMPTY() {
  * Returns true if loss
  */
 bool LossData::loss() const {
-	return time_in <= 0.0;
+	return time_in <= real(0.0);
 }
 
 /**
@@ -48,7 +49,7 @@ bool LossData::conflict() const {
 /**
  * Returns true if predicted loss occurs before t in seconds
  */
-bool LossData::conflictBefore(double t) const {
+bool LossData::conflictBefore(real t) const {
 	return // Zero is special since loss intervals are cut at 0
 			(time_in == 0 || Util::almost_less(time_in,t)) &&
 			Util::almost_less(time_in,time_out);
@@ -57,28 +58,28 @@ bool LossData::conflictBefore(double t) const {
 /**
  * Returns true if predicted loss last more than thr in seconds
  */
-bool LossData::conflictLastMoreThan(double thr) const {
+bool LossData::conflictLastMoreThan(real thr) const {
 	return conflict() && (time_out - time_in >= thr);
 }
 
 /**
  * DEPRECATED -- Use conflictLastMoreThan instead
  */
-bool LossData::conflict(double thr) const {
+bool LossData::conflict(real thr) const {
 	return conflictLastMoreThan(thr);
 }
 
 /**
  * Returns time to first loss in seconds.
  */
-double LossData::getTimeIn() const {
+real LossData::getTimeIn() const {
 	return conflict() ? time_in : PINFINITY;
 }
 
 /**
  * Returns time to last loss in seconds.
  */
-double LossData::getTimeOut() const {
+real LossData::getTimeOut() const {
 	return conflict() ? time_out : NINFINITY;
 }
 

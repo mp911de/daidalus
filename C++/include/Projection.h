@@ -11,6 +11,7 @@
 
 #ifndef PROJECTION_H_
 #define PROJECTION_H_
+#include "Real.h"
 
 #include "EuclideanProjection.h"
 #include "LatLonAlt.h"
@@ -53,7 +54,7 @@ class Projection {
 	   * @param alt altitude of reference point
 	   * @return new projection
 	   */
-	   static EuclideanProjection createProjection(double lat, double lon, double alt);
+	   static EuclideanProjection createProjection(real lat, real lon, real alt);
 	  /**
 	   * Returns a new projection for the current type with the given reference point.
 	   * 
@@ -105,7 +106,7 @@ class Projection {
 	   * @param accuracy - desired accuracy (allowable error) [m]
 	   * @return the maximum length of a trajectory segment at the given latitude that preserves the desired accuracy.
 	   */
-	   static double projectionConflictRange(double lat, double accuracy);
+	   static real projectionConflictRange(real lat, real accuracy);
 
 	  /**
 	   * This is a range about which the projection will completely break down and start producing nonsensical answers.
@@ -114,7 +115,7 @@ class Projection {
 	   * 
 	   * @return maximum range for the projection (in meters).	
 	   */
-	   static double projectionMaxRange();
+	   static real projectionMaxRange();
 
 
 	   /**
@@ -145,7 +146,7 @@ class Projection {
     * \deprecated {Use Projection:: version.}
     * Returns a new projection for the current type with the given reference point.
     */
-   EuclideanProjection getProjection(double lat, double lon, double alt);
+   EuclideanProjection getProjection(real lat, real lon, real alt);
    /**
     * \deprecated {Use Projection:: version.}
     * Returns a new projection for the current type with the given reference point.
@@ -166,7 +167,7 @@ class Projection {
     * @param accuracy - desired accuracy (allowable error) [m]
     * @return the maximum length of a trajectory segment at the given latitude that preserves the desired accuracy.
     */
-   double projectionConflictRange(double lat, double accuracy);
+   real projectionConflictRange(real lat, real accuracy);
 
    /**
     * \deprecated {Use Projection:: version.}
@@ -176,7 +177,7 @@ class Projection {
     * 
     * @return maximum range for the projection
     */
-   double projectionMaxRange();
+   real projectionMaxRange();
      
 
    /**

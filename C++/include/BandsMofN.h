@@ -9,6 +9,7 @@
 
 #ifndef BANDSMOFN_H_
 #define BANDSMOFN_H_
+#include "Real.h"
 
 #include <vector>
 #include "MofN.h"
@@ -20,11 +21,11 @@ namespace larcfm {
 class BandsMofN {
 
 public:
-  double val;
+  real val;
   MofN colors_left;
   MofN colors_right;
   BandsMofN(const ColorValue& cv, int m, int n);
-  BandsMofN(double value, const MofN& mofn);
+  BandsMofN(real value, const MofN& mofn);
   BandsRegion::Region left_m_of_n(BandsRegion::Region region);
   BandsRegion::Region right_m_of_n(BandsRegion::Region region);
   bool same_colors() const;

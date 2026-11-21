@@ -9,6 +9,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "BandsHysteresis.h"
 #include "DaidalusParameters.h"
 
@@ -18,10 +19,10 @@ namespace larcfm {
  * Creates an empty object
  */
 BandsHysteresis::BandsHysteresis():
-    mod_(0.0),
-    mod2_(0.0),
-    hysteresis_time_(0.0),
-    persistence_time_(0.0),
+    mod_(real(0.0)),
+    mod2_(real(0.0)),
+    hysteresis_time_(real(0.0)),
+    persistence_time_(real(0.0)),
     bands_persistence_(false),
     last_time_(NaN),
     m_(0),
@@ -39,16 +40,16 @@ BandsHysteresis::BandsHysteresis():
     nfactor_up_(0),
     nfactor_low_(0) {}
 
-void BandsHysteresis::setMod(double mod) {
+void BandsHysteresis::setMod(real mod) {
   mod_ = mod;
-  mod2_ = mod/2.0;
+  mod2_ = mod/real(2.0);
 }
 
 /*
  * Sets hysteresis and persistence time
  */
-void BandsHysteresis::initialize(double hysteresis_time,
-    double persistence_time, bool bands_persistence,
+void BandsHysteresis::initialize(real hysteresis_time,
+    real persistence_time, bool bands_persistence,
     int m, int n) {
   hysteresis_time_ = hysteresis_time;
   persistence_time_ = persistence_time;
@@ -57,7 +58,7 @@ void BandsHysteresis::initialize(double hysteresis_time,
   n_ = n;
 }
 
-double BandsHysteresis::getLastTime() const {
+real BandsHysteresis::getLastTime() const {
   return last_time_;
 }
 
@@ -65,19 +66,19 @@ bool BandsHysteresis::getLastPreferredDirection() const {
   return preferred_dir_;
 }
 
-double BandsHysteresis::getLastResolutionLow() const {
+real BandsHysteresis::getLastResolutionLow() const {
   return resolution_low_;
 }
 
-double BandsHysteresis::getLastResolutionUp() const {
+real BandsHysteresis::getLastResolutionUp() const {
   return resolution_up_;
 }
 
-double BandsHysteresis::getRawResolutionLow() const {
+real BandsHysteresis::getRawResolutionLow() const {
   return raw_low_;
 }
 
-double BandsHysteresis::getRawResolutionUp() const {
+real BandsHysteresis::getRawResolutionUp() const {
   return raw_up_;
 }
 
@@ -122,7 +123,7 @@ void BandsHysteresis::reset() {
  * Reset object if current time is older than hysteresis time with
  * respect to last time. This method update last_time
  */
-void BandsHysteresis::resetIfCurrentTime(double current_time) {
+void BandsHysteresis::resetIfCurrentTime(real current_time) {
   if (ISNAN(last_time_) ||
       current_time <= last_time_ ||
       current_time-last_time_ > hysteresis_time_) {
@@ -205,7 +206,7 @@ void BandsHysteresis::conflict_region_persistence(const std::vector<BandsRange>&
 }
 
 // Implement persistence logic for bands
-int BandsHysteresis::bandsPersistence(std::vector<BandsRange>& ranges, std::vector<ColorValue>& lcvs, bool recovery, double val) {
+int BandsHysteresis::bandsPersistence(std::vector<BandsRange>& ranges, std::vector<ColorValue>& lcvs, bool recovery, real val) {
   if (hysteresis_time_ > 0 && persistence_time_ > 0 && bands_persistence_) {
     // last_time is never NaN
     if (ISFINITE(conflict_region_low_) && ISFINITE(conflict_region_up_)) {
@@ -276,7 +277,7 @@ bool BandsHysteresis::contiguous_resolution_region(const std::vector<BandsRange>
 
 // Returns true if a is to the left of b (modulo mod). If mod is 0, this is the same a < b
 // Note that, by definition, if a is almost equal to b, then a is to the left of b.
-bool BandsHysteresis::to_the_left(double a, double b) const {
+bool BandsHysteresis::to_the_left(real a, real b) const {
   if (Util::almost_equals(a,b,DaidalusParameters::ALMOST_)) {
     return true;
   }
@@ -288,8 +289,8 @@ bool BandsHysteresis::to_the_left(double a, double b) const {
 }
 
 void BandsHysteresis::resolutionsHysteresis(const std::vector<BandsRange>& ranges,
-    BandsRegion::Region corrective_region, double delta, int nfactor,
-    double val, int idx_l, int idx_u) {
+    BandsRegion::Region corrective_region, real delta, int nfactor,
+    real val, int idx_l, int idx_u) {
   // last_time is never NaN
   if (hysteresis_time_ <= 0 || ISNAN(time_of_dir_) ||
       last_time_ <= time_of_dir_ || delta <= 0) {
@@ -346,7 +347,7 @@ void BandsHysteresis::resolutionsHysteresis(const std::vector<BandsRange>& range
   }
 }
 
-void BandsHysteresis::switch_dir(bool dir, double nfactor) {
+void BandsHysteresis::switch_dir(bool dir, real nfactor) {
   preferred_dir_ = dir;
   time_of_dir_ = last_time_;
   if (nfactor <= nfactor_low_) {
@@ -357,7 +358,7 @@ void BandsHysteresis::switch_dir(bool dir, double nfactor) {
   }
 }
 
-void BandsHysteresis::preferredDirectionHysteresis(double delta, double nfactor, double val) {
+void BandsHysteresis::preferredDirectionHysteresis(real delta, real nfactor, real val) {
   if (!ISFINITE(raw_up_) && !ISFINITE(raw_low_)) {
     time_of_dir_ = NaN;
     preferred_dir_ = false;
@@ -370,8 +371,8 @@ void BandsHysteresis::preferredDirectionHysteresis(double delta, double nfactor,
       switch_dir(true,nfactor);
     }
   } else {
-    double mod_up = Util::safe_modulo(raw_up_-val,mod_);
-    double mod_down = Util::safe_modulo(val-raw_low_,mod_);
+    real mod_up = Util::safe_modulo(raw_up_-val,mod_);
+    real mod_down = Util::safe_modulo(val-raw_low_,mod_);
     bool actual_dir = Util::almost_leq(mod_up,mod_down,DaidalusParameters::ALMOST_);
     if (hysteresis_time_ <= 0 || ISNAN(time_of_dir_) ||
         last_time_ < time_of_dir_ || delta <= 0) {
@@ -401,7 +402,7 @@ bool BandsHysteresis::is_up_from_corrective_region(BandsRegion::Region correctiv
 }
 
 void BandsHysteresis::bandsHysteresis(const std::vector<BandsRange>& ranges,
-    BandsRegion::Region corrective_region, double delta, int nfactor, double val, int idx) {
+    BandsRegion::Region corrective_region, real delta, int nfactor, real val, int idx) {
   raw_low_ = NaN;
   raw_up_ = NaN;
   int idx_l = idx;

@@ -9,6 +9,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "ErrorLog.h"
 #include "DaidalusParameters.h"
 #include "format.h"
@@ -118,7 +119,7 @@ void ErrorLog::setSizeLimit(int sz) {
  * Checks if a value is positive and, in that case, returns true. Otherwise,
  * adds an error message and returns false.
  */
-bool ErrorLog::isPositive(const std::string& method, double val) {
+bool ErrorLog::isPositive(const std::string& method, real val) {
 	if (val > 0) return true;
 	addError("["+method+"] Value "+Fm4(val)+" is non positive");
 	return false;
@@ -128,7 +129,7 @@ bool ErrorLog::isPositive(const std::string& method, double val) {
  * Checks if a value is non negative and, in that case, returns true. Otherwise,
  * adds an error message and returns false.
  */
-bool ErrorLog::isNonNegative(const std::string& method, double val) {
+bool ErrorLog::isNonNegative(const std::string& method, real val) {
 	if (val >= 0) return true;
 	addError("["+method+"] Value "+Fm4(val)+" is negative");
 	return false;
@@ -138,7 +139,7 @@ bool ErrorLog::isNonNegative(const std::string& method, double val) {
  * Checks if a value is non positive and, in that case, returns true. Otherwise,
  * adds an error message and returns false.
  */
-bool ErrorLog::isNonPositive(const std::string& method, double val) {
+bool ErrorLog::isNonPositive(const std::string& method, real val) {
 	if (val <= 0) return true;
 	addError("["+method+"] Value "+Fm4(val)+" is positive");
 	return false;
@@ -148,7 +149,7 @@ bool ErrorLog::isNonPositive(const std::string& method, double val) {
  * Checks if a value is less than value in internal units. Otherwise,
  * adds an error message and returns false.
  */
-bool ErrorLog::isLessThan(const std::string& method, double val, double thr) {
+bool ErrorLog::isLessThan(const std::string& method, real val, real thr) {
 	if (val < thr) return true;
 	addError("["+method+"] Value "+Fm4(val)+" is greater or equal than "+Fm4(thr));
 	return false;
@@ -158,7 +159,7 @@ bool ErrorLog::isLessThan(const std::string& method, double val, double thr) {
  * Checks if a value is between lb and ub. Otherwise, adds an error message
  * and returns false.
  */
-bool ErrorLog::isBetween(const std::string& method, double val, double lb, double ub) {
+bool ErrorLog::isBetween(const std::string& method, real val, real lb, real ub) {
 	if (lb <= val && val <= ub) return true;
 	addError("["+method+"] Value "+Fm4(val)+" is not between "+Fm4(lb)+" and "+Fm4(ub));
 	return false;

@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "ColorValue.h"
 
 #include "DaidalusParameters.h"
@@ -13,7 +14,7 @@
 namespace larcfm {
 
 
-ColorValue::ColorValue(BandsRegion::Region l, double v, BandsRegion::Region r) {
+ColorValue::ColorValue(BandsRegion::Region l, real v, BandsRegion::Region r) {
   val = v;
   color_left = l;
   color_right = r;
@@ -44,7 +45,7 @@ std::string ColorValue::listToString(const std::vector<ColorValue>& l) {
  * Initial list is has two color values: (unknown,min,int_color) and
  * (int_color,max,unknown).
  */
-void ColorValue::init(std::vector<ColorValue>& l, double min, double max, BandsRegion::Region int_color) {
+void ColorValue::init(std::vector<ColorValue>& l, real min, real max, BandsRegion::Region int_color) {
   init(l,min,max,min,max,int_color);
 }
 
@@ -54,7 +55,7 @@ void ColorValue::init(std::vector<ColorValue>& l, double min, double max, BandsR
  * (unknown,min_val,int_color),(int_color,max_val,unknown), and
  * (unknown,max,unknown).
  */
-void ColorValue::init(std::vector<ColorValue>& l, double min, double max, double min_val, double max_val, BandsRegion::Region int_color) {
+void ColorValue::init(std::vector<ColorValue>& l, real min, real max, real min_val, real max_val, BandsRegion::Region int_color) {
   l.clear();
   if (Util::almost_less(min,min_val,DaidalusParameters::ALMOST_)) {
     l.push_back(ColorValue(BandsRegion::UNKNOWN,min,BandsRegion::UNKNOWN));
@@ -70,7 +71,7 @@ void ColorValue::init(std::vector<ColorValue>& l, double min, double max, double
  * Initialize a list of color values with two color values:
  * (int_color,0,int_color), (int_color,mod,int_color)
  */
-void ColorValue::init_with_mod(std::vector<ColorValue>& l, double mod, BandsRegion::Region int_color) {
+void ColorValue::init_with_mod(std::vector<ColorValue>& l, real mod, BandsRegion::Region int_color) {
   l.clear();
   l.push_back(ColorValue(int_color,0,int_color));
   l.push_back(ColorValue(int_color,mod,int_color));
@@ -85,7 +86,7 @@ void ColorValue::init_with_mod(std::vector<ColorValue>& l, double mod, BandsRegi
  * If min > max: Initial list is has four color values: (unknown,0,int_color),
  * (int_color,max,unknown), (unknown,min,int_color), and (int_color,mod,unknown).
  */
-void ColorValue::init_with_mod(std::vector<ColorValue>& l, double min, double max, double mod, BandsRegion::Region int_color) {
+void ColorValue::init_with_mod(std::vector<ColorValue>& l, real min, real max, real mod, BandsRegion::Region int_color) {
   if (mod > 0 && Util::almost_equals(Util::modulo(max-min,mod),0,DaidalusParameters::ALMOST_)) {
     init_with_mod(l,mod,int_color);
   } else {
@@ -115,7 +116,7 @@ void ColorValue::init_with_mod(std::vector<ColorValue>& l, double min, double ma
  * List l has been initialized and it's not empty. The bound l(0).val <= lb < ub <= l(n-1).val, where
  * n is the length of l. This function inserts (lb,ub) with the interior color int_color.
  */
-void ColorValue::insert(std::vector<ColorValue>& l, double lb, double ub, BandsRegion::Region int_color) {
+void ColorValue::insert(std::vector<ColorValue>& l, real lb, real ub, BandsRegion::Region int_color) {
   if (l.empty() || Util::almost_geq(lb,ub,DaidalusParameters::ALMOST_) ||
       Util::almost_leq(ub,l.at(0).val,DaidalusParameters::ALMOST_) ||
       Util::almost_geq(lb,l.at(l.size()-1).val,DaidalusParameters::ALMOST_)) {
@@ -183,7 +184,7 @@ void ColorValue::insert(std::vector<ColorValue>& l, double lb, double ub, BandsR
  * List l has been initialized and it's not empty. Insert with mod logic. lb doesn't have to be
  * less than up
  */
-void ColorValue::insert_with_mod(std::vector<ColorValue>& l, double lb, double ub, double mod, BandsRegion::Region int_color) {
+void ColorValue::insert_with_mod(std::vector<ColorValue>& l, real lb, real ub, real mod, BandsRegion::Region int_color) {
   if (lb < ub) {
     insert(l,lb,ub,int_color);
   } else if (mod > 0){
@@ -199,8 +200,8 @@ void ColorValue::insert_with_mod(std::vector<ColorValue>& l, double lb, double u
  *  The DAIDALUS core banding algorithm computes a none set for each bands region.
  */
 void ColorValue::insertNoneSetToColorValues(std::vector<ColorValue>& l, const IntervalSet& none_set, BandsRegion::Region bg_color) {
-  double min = l.at(0).val;
-  double max = l.at(l.size()-1).val;
+  real min = l.at(0).val;
+  real max = l.at(l.size()-1).val;
   for (int i=0; i < none_set.size();i++) {
     insert(l, min, none_set.getInterval(i).low, bg_color);
     min = none_set.getInterval(i).up;
@@ -224,7 +225,7 @@ void ColorValue::insertRecoverySetToColorValues(std::vector<ColorValue>& l, cons
  * Return region given value in a list of color values. If the value is one of the color points,
  * return the smallest color according to orderOfConflictRegion.
  */
-BandsRegion::Region ColorValue::region_of(const std::vector<ColorValue>& l, double val) {
+BandsRegion::Region ColorValue::region_of(const std::vector<ColorValue>& l, real val) {
   // In this function is important that RECOVERY and NONE both have the order 0,
   // since they represent close intervals.
   // For that reason, orderOfConflictRegion is used instead of orderOfRegion

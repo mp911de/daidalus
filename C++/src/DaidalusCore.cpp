@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "DaidalusCore.h"
 #include "DaidalusDirBands.h"
 #include "DaidalusHsBands.h"
@@ -49,7 +50,7 @@ DaidalusCore::DaidalusCore(const Alerter& alerter)
   stale();
 }
 
-DaidalusCore::DaidalusCore(const Detection3D& det, double T)
+DaidalusCore::DaidalusCore(const Detection3D& det, real T)
 : ownship()
 , traffic()
 , current_time(0)
@@ -330,8 +331,8 @@ bool DaidalusCore::bands_for(int region) {
 /**
  * Returns actual minimum horizontal separation for recovery bands in internal units.
  */
-double DaidalusCore::minHorizontalRecovery() const {
-  double min_horizontal_recovery = parameters.getMinHorizontalRecovery();
+real DaidalusCore::minHorizontalRecovery() const {
+  real min_horizontal_recovery = parameters.getMinHorizontalRecovery();
   if (min_horizontal_recovery > 0)
     return min_horizontal_recovery;
   int sl = !has_ownship() ? 3 : Util::max(3,TCASTable::TCASII_RA().getSensitivityLevel(ownship.altitude()));
@@ -341,15 +342,15 @@ double DaidalusCore::minHorizontalRecovery() const {
 /**
  * Returns actual minimum vertical separation for recovery bands in internal units.
  */
-double DaidalusCore::minVerticalRecovery() const {
-  double min_vertical_recovery = parameters.getMinVerticalRecovery();
+real DaidalusCore::minVerticalRecovery() const {
+  real min_vertical_recovery = parameters.getMinVerticalRecovery();
   if (min_vertical_recovery > 0)
     return min_vertical_recovery;
   int sl = !has_ownship() ? 3 : Util::max(3,TCASTable::TCASII_RA().getSensitivityLevel(ownship.altitude()));
   return TCASTable::TCASII_RA().getZTHR(sl);
 }
 
-void DaidalusCore::set_ownship_state(const std::string& id, const Position& pos, const Velocity& vel, const Velocity& airvel, double time) {
+void DaidalusCore::set_ownship_state(const std::string& id, const Position& pos, const Velocity& vel, const Velocity& airvel, real time) {
   traffic.clear();
   ownship = TrafficState::makeOwnship(id,pos,vel,airvel);
   wind_vector = ownship.windVector();
@@ -369,11 +370,11 @@ int DaidalusCore::find_traffic_state(const std::string& id) const {
 
 // Return 0-based index in traffic list where aircraft was added. Return -1 if
 // nothing is done (e.g., id is the same as ownship's)
-int DaidalusCore::set_traffic_state(const std::string& id, const Position& pos, const Velocity& vel, double time) {
+int DaidalusCore::set_traffic_state(const std::string& id, const Position& pos, const Velocity& vel, real time) {
   if (ownship.isValid() && equals(ownship.getId(),id)) {
     return -1;
   }
-  double dt = current_time-time;
+  real dt = current_time-time;
   Position pt = dt == 0 ? pos : pos.linear(vel,dt);
   TrafficState ac = ownship.makeIntruder(id,pt,vel);
   if (ac.isValid()) {
@@ -419,7 +420,7 @@ bool DaidalusCore::remove_traffic(int idx) {
   return false;
 }
 
-void DaidalusCore::set_ownship_airvelocity(double heading, double airspeed) {
+void DaidalusCore::set_ownship_airvelocity(real heading, real airspeed) {
 	if (has_ownship()) {
 		ownship.setAirVelocity(Velocity::mkTrkGsVs(heading,airspeed,ownship.verticalSpeed()));
 		wind_vector = ownship.windVector();
@@ -443,7 +444,7 @@ void DaidalusCore::set_wind_velocity(const Vect3& wind) {
   stale();
 }
 
-bool DaidalusCore::linear_projection(double offset) {
+bool DaidalusCore::linear_projection(real offset) {
   if (offset != 0 && has_ownship()) {
     ownship = ownship.linearProjection(offset);
     for (int i = 0; i < static_cast<int>(traffic.size()); ++i) {
@@ -538,8 +539,8 @@ int DaidalusCore::horizontal_hazard_zone(std::vector<Position>& haz, int idx, in
  * Put in tiov_ the time interval of violation for given region
  */
 void DaidalusCore::conflict_aircraft(int conflict_region) {
-  double tin  = PINFINITY;
-  double tout = NINFINITY;
+  real tin  = PINFINITY;
+  real tout = NINFINITY;
   // Iterate on all traffic aircraft
   for (int ac = 0; ac < static_cast<int>(traffic.size()); ++ac) {
     const TrafficState& intruder = traffic[ac];
@@ -553,14 +554,14 @@ void DaidalusCore::conflict_aircraft(int conflict_region) {
         const Detection3D& detector =  alerter.getLevel(alert_level).getCoreDetection();
         if (detector.isValid()) {
           std::map<std::string,HysteresisData>::iterator alerting_hysteresis_ptr = alerting_hysteresis_acs_.find(intruder.getId());
-          double alerting_time = alerter.getLevel(alert_level).getAlertingTime();
+          real alerting_time = alerter.getLevel(alert_level).getAlertingTime();
           if (alerting_hysteresis_ptr != alerting_hysteresis_acs_.end() &&
               !ISNAN(alerting_hysteresis_ptr->second.getInitTime()) &&
               alerting_hysteresis_ptr->second.getInitTime() < current_time &&
               alerting_hysteresis_ptr->second.getLastValue() == alert_level) {
             alerting_time = alerter.getLevel(alert_level).getEarlyAlertingTime();
           }
-          ConflictData det = detector.conflictDetectionWithTrafficState(ownship,intruder,0.0,parameters.getLookaheadTime());
+          ConflictData det = detector.conflictDetectionWithTrafficState(ownship,intruder,real(0.0),parameters.getLookaheadTime());
           if (det.conflict()) {
             if (det.conflictBefore(alerting_time)) {
               acs_conflict_bands_[conflict_region].push_back(IndexLevelT(ac,alert_level,parameters.getLookaheadTime()));
@@ -682,7 +683,7 @@ bool DaidalusCore::check_alerting_thresholds(const Alerter& alerter, int alert_l
   if (athr.isValid()) {
     const Detection3D& detector = athr.getCoreDetection();
     std::map<std::string,HysteresisData>::iterator alerting_hysteresis_ptr = alerting_hysteresis_acs_.find(intruder.getId());
-    double alerting_time = alerter.getLevel(alert_level).getAlertingTime();
+    real alerting_time = alerter.getLevel(alert_level).getAlertingTime();
     if (alerting_hysteresis_ptr != alerting_hysteresis_acs_.end() &&
         !ISNAN(alerting_hysteresis_ptr->second.getLastTime()) &&
         alerting_hysteresis_ptr->second.getLastTime() < current_time &&
@@ -691,7 +692,7 @@ bool DaidalusCore::check_alerting_thresholds(const Alerter& alerter, int alert_l
     }
     int epsh = epsilonH(false,intruder);
     int epsv = epsilonV(false,intruder);
-    ConflictData det = detector.conflictDetectionWithTrafficState(ownship,intruder,0.0,parameters.getLookaheadTime());
+    ConflictData det = detector.conflictDetectionWithTrafficState(ownship,intruder,real(0.0),parameters.getLookaheadTime());
     if (det.conflictBefore(alerting_time)) {
       return true;
     }

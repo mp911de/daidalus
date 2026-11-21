@@ -9,6 +9,7 @@
 
 #ifndef DAAFORMATTER_H_
 #define DAAFORMATTER_H_
+#include "Real.h"
 
 namespace larcfm {
 
@@ -26,7 +27,7 @@ public:
     static const DAAFormatter& DefaultDAAFormatter();
 
     std::string formattedTrafficState(const TrafficState& ac, const bool header, 
-        const DaidalusParameters& params, const double time) const;
+        const DaidalusParameters& params, const real time) const;
 
     std::string toString() const;
 

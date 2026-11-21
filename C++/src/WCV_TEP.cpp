@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "WCV_TEP.h"
 #include "WCV_TAUMOD.h"
 #include "WCV_TCPA.h"
@@ -34,22 +35,22 @@ const WCV_TEP& WCV_TEP::A_WCV_TEP() {
   return dwc;
 }
 
-double WCV_TEP::horizontal_tvar(const Vect2& s, const Vect2& v) const {
+real WCV_TEP::horizontal_tvar(const Vect2& s, const Vect2& v) const {
   // Time variable is Modified Tau
-  double TEP = -1;
-  double sdotv = s.dot(v);
+  real TEP = -1;
+  real sdotv = s.dot(v);
   if (sdotv < 0)
     return (Util::sq(getDTHR())-s.sqv())/sdotv;
   return TEP;
 }
 
-LossData WCV_TEP::horizontal_WCV_interval(double T, const Vect2& s, const Vect2& v) const {
-  double time_in = T;
-  double time_out = 0;
-  double sqs = s.sqv();
-  double sqv = v.sqv();
-  double sdotv = s.dot(v);
-  double sqD = Util::sq(getDTHR());
+LossData WCV_TEP::horizontal_WCV_interval(real T, const Vect2& s, const Vect2& v) const {
+  real time_in = T;
+  real time_out = 0;
+  real sqs = s.sqv();
+  real sqv = v.sqv();
+  real sdotv = s.dot(v);
+  real sqD = Util::sq(getDTHR());
   if (Util::almost_equals(sqv,0) && sqs <= sqD) { // [CAM] Changed from == to almost_equals to mitigate numerical problems
     time_in = 0;
     time_out = T;
@@ -64,10 +65,10 @@ LossData WCV_TEP::horizontal_WCV_interval(double T, const Vect2& s, const Vect2&
   }
   if (sdotv > 0 || Horizontal::Delta(s,v,getDTHR()) < 0)
     return LossData(time_in,time_out);
-  double tep = Horizontal::Theta_D(s,v,-1,getDTHR());
+  real tep = Horizontal::Theta_D(s,v,-1,getDTHR());
   if (tep-getTTHR() > T)
     return LossData(time_in,time_out);
-  time_in = Util::max(0.0,tep-getTTHR());
+  time_in = Util::max(real(0.0),tep-getTTHR());
   time_out = Util::min(T,Horizontal::Theta_D(s,v,1,getDTHR()));
   return LossData(time_in,time_out);
 }
@@ -97,7 +98,7 @@ bool WCV_TEP::contains(const Detection3D& cd) const {
 }
 
 void WCV_TEP::hazard_zone_far_end(std::vector<Position>& haz,
-    const Position& po, const Velocity& v, const Vect3& pu, double T) const {
+    const Position& po, const Velocity& v, const Vect3& pu, real T) const {
   CDCylinder::circular_arc(haz,po.linear(v,getTTHR()+T),
       Velocity::make(pu.Scal(-getDTHR())),Pi,true);
 }

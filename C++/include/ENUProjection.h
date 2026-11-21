@@ -12,6 +12,7 @@
 
 #ifndef ENUPROJECTION_H_
 #define ENUPROJECTION_H_
+#include "Real.h"
 
 #include "LatLonAlt.h"
 #include "Vect3.h"
@@ -37,7 +38,7 @@ namespace larcfm {
  */
   class ENUProjection {
   private:
-    double projAlt;
+    real projAlt;
     Vect3 ref;
     LatLonAlt llaRef;
  
@@ -58,7 +59,7 @@ namespace larcfm {
      * @param lon longitude of reference point
      * @param alt altitude of reference point
      */
-    ENUProjection(double lat, double lon, double alt);
+    ENUProjection(real lat, real lon, real alt);
     
     /** Destructor */
     ~ENUProjection() {}
@@ -67,17 +68,17 @@ namespace larcfm {
     ENUProjection makeNew(const LatLonAlt& lla) const;
     
     /** Return a new projection with the given reference point */
-    ENUProjection makeNew(double lat, double lon, double alt) const;
+    ENUProjection makeNew(real lat, real lon, real alt) const;
     
 	/** 
 	 * Given an ownship latitude and desired accuracy, what is the longest distance to conflict this projection will support? [m] 
 	 */
-    double conflictRange(double latitude, double accuracy) const;
+    real conflictRange(real latitude, real accuracy) const;
     
 	/**
 	 *  What is the maximum effective horizontal range of this projection? [m] 
 	 */
-    double maxRange() const;
+    real maxRange() const;
 
 	/** Get the projection point for this projection */
 	LatLonAlt getProjectionPoint() const;
@@ -95,7 +96,7 @@ namespace larcfm {
 	Vect3 projectPoint(const Position& sip) const;
     
     /** Return a LatLonAlt value corresponding to the given Euclidean position */
-    LatLonAlt inverse(const Vect2& xy, double alt) const;
+    LatLonAlt inverse(const Vect2& xy, real alt) const;
     
     /** Return a LatLonAlt value corresponding to the given Euclidean position */
     LatLonAlt inverse(const Vect3& xyz) const; 

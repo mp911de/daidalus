@@ -11,6 +11,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Util.h"
 #include "Units.h"
 #include "Constants.h"
@@ -20,6 +21,7 @@
 #include "format.h"
 #include "string_util.h"
 #include <stdexcept>
+#include <type_traits>
 #if defined(_MSC_VER)
 #include <regex>
 #else
@@ -34,31 +36,31 @@ namespace larcfm {
 using std::string;
 using std::vector;
 
-static const double twopi = 2*Pi;
+static const real twopi = 2*Pi;
 
 
-bool Util::almost_less(double a, double b) {
+bool Util::almost_less(real a, real b) {
 	if (almost_equals(a, b)) {
 		return false;
 	}
 	return a < b;
 }
 
-bool Util::almost_less(double a, double b, INT64FM maxUlps) {
+bool Util::almost_less(real a, real b, INT64FM maxUlps) {
 	if (almost_equals(a, b, maxUlps)) {
 		return false;
 	}
 	return a < b;
 }
 
-bool Util::almost_greater(double a, double b) {
+bool Util::almost_greater(real a, real b) {
 	if (almost_equals(a, b)) {
 		return false;
 	}
 	return a > b;
 }
 
-bool Util::almost_greater(double a, double b, INT64FM maxUlps) {
+bool Util::almost_greater(real a, real b, INT64FM maxUlps) {
 	if (almost_equals(a, b, maxUlps)) {
 		return false;
 	}
@@ -66,35 +68,35 @@ bool Util::almost_greater(double a, double b, INT64FM maxUlps) {
 }
 
 
-bool Util::almost_geq(double a, double b, INT64FM maxUlps) {
+bool Util::almost_geq(real a, real b, INT64FM maxUlps) {
 	return a >= b || almost_equals(a, b, maxUlps);
 }
 
-bool Util::almost_geq(double a, double b) {
+bool Util::almost_geq(real a, real b) {
 	return almost_geq(a, b, PRECISION_DEFAULT);
 }
 
-bool Util::almost_leq(double a, double b, INT64FM maxUlps) {
+bool Util::almost_leq(real a, real b, INT64FM maxUlps) {
 	return a <= b || almost_equals(a, b, maxUlps);
 }
 
-bool Util::almost_leq(double a, double b) {
+bool Util::almost_leq(real a, real b) {
 	return almost_leq(a, b, PRECISION_DEFAULT);
 }
 
-// This assumes that a INT64FM is 64 bits, same as a double
-bool Util::almost_equals(double a, double b, INT64FM maxUlps) {
+// This assumes that a INT64FM has the bits of a real, see Real.h
+bool Util::almost_equals(real a, real b, INT64FM maxUlps) {
 	if (a == b) { // if two numbers are equal, then the are almost_equal
 		return true;
 	}
 
 	// special case of comparing to zero.
-	if (a == 0.0 || b == 0.0) {
-		double comp = 1.0e-13;  // should correspond to PRECISION_DEFAULT;
-		if (maxUlps == PRECISION5) comp = 1.0e-5;
-		if (maxUlps == PRECISION7) comp = 1.0e-7;
-		if (maxUlps == PRECISION9) comp = 1.0e-9;
-		if (maxUlps == PRECISION13) comp = 1.0e-13;
+	if (a == real(0.0) || b == real(0.0)) {
+		real comp = REAL_ZERO13;  // should correspond to PRECISION_DEFAULT;
+		if (maxUlps == PRECISION5) comp = REAL_ZERO5;
+		if (maxUlps == PRECISION7) comp = REAL_ZERO7;
+		if (maxUlps == PRECISION9) comp = REAL_ZERO9;
+		if (maxUlps == PRECISION13) comp = REAL_ZERO13;
 		if (std::abs(a) < comp && std::abs(b) < comp) {
 			return true;
 		}
@@ -126,29 +128,24 @@ bool Util::almost_equals(double a, double b, INT64FM maxUlps) {
 	if (bInt < 0)
 		bInt = HIGH_BIT - bInt;
 
-	INT64FM intDiff = llabs(aInt - bInt); // This is valid because IEEE-754
-	// doubles are required to be
-	// lexically ordered
-
-	if (intDiff <= maxUlps) {
-		return true;
-	}
-
-	return false;
+	// Opposite signs can put the distance outside the signed integer range.
+	typedef std::make_unsigned<INT64FM>::type bits;
+	const bits distance = aInt >= bInt ? bits(aInt) - bits(bInt) : bits(bInt) - bits(aInt);
+	return maxUlps >= 0 && distance <= bits(maxUlps);
 }
 
 
-// This assumes that a INT64FM is 64 bits, same as a double
-bool Util::almost_equals(double a, double b) {
+// This assumes that a INT64FM has the bits of a real, see Real.h
+bool Util::almost_equals(real a, real b) {
 	return almost_equals(a,b,PRECISION_DEFAULT);
 }
 
 
-bool Util::within_epsilon(double a, double b, double epsilon) {
+bool Util::within_epsilon(real a, real b, real epsilon) {
 	return std::abs(a-b) < epsilon;
 }
 
-bool Util::within_epsilon(double a, double epsilon) {
+bool Util::within_epsilon(real a, real epsilon) {
 	return std::abs(a) < epsilon;
 }
 
@@ -158,27 +155,27 @@ INT64FM Util::llabs(const INT64FM x) {
 
 
 
-double  Util::discretizeDir(double voz, double nvoz, double discreteUnits) {
+real  Util::discretizeDir(real voz, real nvoz, real discreteUnits) {
 	int sgn = -1;
 	if (nvoz >= 0) sgn = 1;
 	//double rtn =  sgn*ceil(std::abs(nvoz/discreteUnits))*discreteUnits;
-	double rtn;
+	real rtn;
 	if (sgn*nvoz >= sgn*voz)
-		rtn =  sgn*ceil(std::abs(nvoz/discreteUnits))*discreteUnits;
+		rtn =  sgn*std::ceil(std::abs(nvoz/discreteUnits))*discreteUnits;
 	else
-		rtn =  sgn*floor(std::abs(nvoz/discreteUnits))*discreteUnits;
+		rtn =  sgn*std::floor(std::abs(nvoz/discreteUnits))*discreteUnits;
 	//f.pln(" #### vsDiscretize: voz = "+Units.str("fpm",voz)+" nvoz = "+Units.str("fpm",nvoz)+" rtn = "+Units.str("fpm",rtn));
 	return rtn;
 }
 
 
 
-double Util::sq(const double x) {
+real Util::sq(const real x) {
 	return x*x;
 }
 
-double Util::sqrt_safe(const double x) {
-	return sqrt(Util::max(x,0.0));
+real Util::sqrt_safe(const real x) {
+	return std::sqrt(Util::max(x,real(0.0)));
 }
 
 ///**
@@ -210,56 +207,56 @@ double Util::sqrt_safe(const double x) {
 //      return y;
 //  }
 
-double Util::atan2_safe(const double y, const double x) {
+real Util::atan2_safe(const real y, const real x) {
 	if (y == 0 && x == 0)
 		return 0;
-	return atan2(y,x);
+	return std::atan2(y,x);
 }
 
-double Util::asin_safe(double x) {
-	return asin(Util::max(-1.0,Util::min(x,1.0)));
+real Util::asin_safe(real x) {
+	return std::asin(Util::max(-real(1.0),Util::min(x,real(1.0))));
 }
 
-double Util::acos_safe(double x) {
-	return acos(Util::max(-1.0,Util::min(x,1.0)));
+real Util::acos_safe(real x) {
+	return std::acos(Util::max(-real(1.0),Util::min(x,real(1.0))));
 }
 
-double Util::discr(const double a, const double b, const double c){
+real Util::discr(const real a, const real b, const real c){
 	return sq(b) - 4*a*c;
 }
 
-double Util::root(const double a, const double b, const double c, const int eps) {
-	if (a == 0.0 && b == 0.0)
+real Util::root(const real a, const real b, const real c, const int eps) {
+	if (a == real(0.0) && b == real(0.0))
 		return NaN;
-	else if (a == 0.0)
+	else if (a == real(0.0))
 		return -c/b;
 	else {
-		double sqb = sq(b);
-		double ac  = 4*a*c;
+		real sqb = sq(b);
+		real ac  = 4*a*c;
 		if (almost_equals(sqb,ac) || sqb > ac)
 			return (-b + eps*sqrt_safe(sqb-ac))/(2*a);
 		return NaN;
 	}
 }
 
-double Util::root2b(const double a, const double b, const double c, const int eps) {
-	if (a == 0.0 && b == 0.0)
+real Util::root2b(const real a, const real b, const real c, const int eps) {
+	if (a == real(0.0) && b == real(0.0))
 		return NaN;
-	else if (a == 0.0)
+	else if (a == real(0.0))
 		return -c/(2*b);
 	else {
-		double sqb = sq(b);
-		double ac  = a*c;
+		real sqb = sq(b);
+		real ac  = a*c;
 		if (almost_equals(sqb,ac) || sqb > ac)
 			return (-b + eps*sqrt_safe(sqb-ac))/a;
 		return NaN;
 	}
 }
 
-double Util::rootNegC(const double a, const double b, const double c) {
+real Util::rootNegC(const real a, const real b, const real c) {
 	if (a == 0) return -c / b;
-	double sqb = sq(b);
-	double ac = 4 * a * c;
+	real sqb = sq(b);
+	real ac = 4 * a * c;
 	if (almost_equals(sqb, ac) || sqb > ac)
 		return (-b + sqrt_safe(sqb - ac)) / (2 * a);
 	return -1;
@@ -277,16 +274,16 @@ int Util::sign(const int x) {
 	return -1;
 }
 
-int Util::sign(const double x) {
-	if (x >= 0.0)
+int Util::sign(const real x) {
+	if (x >= real(0.0))
 		return 1;
 	return -1;
 }
 
-int Util::signTriple(const double x) {
-	if (x > 0.0) {
+int Util::signTriple(const real x) {
+	if (x > real(0.0)) {
 		return 1;
-	} else if (x < 0.0) {
+	} else if (x < real(0.0)) {
 		return -1;
 	} else {
 		return 0;
@@ -302,7 +299,7 @@ const double& Util::min(const double& x, const double& y) {
 
 const float& Util::min(const float& x, const float& y) {
 	if (std::isnan(y)) return y;
-	if (x == 0.0 && y == 0.0 && std::signbit(y)) return y; // if y is -0, return y
+	if (x == 0.0f && y == 0.0f && std::signbit(y)) return y; // if y is -0, return y
 	return std::min(x,y);
 }
 
@@ -322,7 +319,7 @@ const double& Util::max(const double& x, const double& y) {
 
 const float& Util::max(const float& x, const float& y) {
 	if (std::isnan(y)) return y;
-	if (x == 0.0 && y == 0.0 && std::signbit(x)) return y; // if x is -0, return y
+	if (x == 0.0f && y == 0.0f && std::signbit(x)) return y; // if x is -0, return y
 	return std::max(x,y);
 }
 
@@ -341,10 +338,10 @@ const long& Util::max(const long& x, const long& y) {
  * @param mod denominator
  * @return modulo value
  */
-double Util::modulo(double val, double mod) {
-	double n = floor(val / mod);
-	double r = val - n * mod;
-	return Util::almost_equals(r,mod) ? 0.0 : r;
+real Util::modulo(real val, real mod) {
+	real n = std::floor(val / mod);
+	real r = val - n * mod;
+	return Util::almost_equals(r,mod) ? real(0.0) : r;
 }
 
 /**
@@ -355,24 +352,24 @@ double Util::modulo(double val, double mod) {
  * @param mod denominator
  * @return modulo value
  */
-double Util::safe_modulo(double val, double mod) {
+real Util::safe_modulo(real val, real mod) {
 	return mod > 0 ? modulo(val,mod) : val;
 }
 
 
 // To range [0,2*pi)
-double Util::to_2pi(double rad) {
+real Util::to_2pi(real rad) {
 	return modulo(rad,twopi);
 }
 
 // To range [0,360)
-double Util::to_360(double deg) {
+real Util::to_360(real deg) {
 	return modulo(deg,360);
 }
 
 // To range (-pi,pi]
-double Util::to_pi(double rad) {
-	double r = to_2pi(rad);
+real Util::to_pi(real rad) {
+	real r = to_2pi(rad);
 	if (r > Pi)
 		return r-twopi;
 	else {
@@ -381,8 +378,8 @@ double Util::to_pi(double rad) {
 }
 
 // to range [-pi/2, +pi/2]; continuous, thus to_pi2_cont(PI/2+eps) = PI/2-eps
-double Util::to_pi2_cont(double rad) {
-	double r = to_pi(rad);
+real Util::to_pi2_cont(real rad) {
+	real r = to_pi(rad);
 	if (r < -Pi / 2) {
 		return -Pi - r;
 	} else if (r < Pi / 2) {
@@ -394,10 +391,10 @@ double Util::to_pi2_cont(double rad) {
 
 
 // To range (-180,180]
-double Util::to_180(double deg) {
-	double d = to_360(deg);
-	if (d > 180.0)
-		return d-360.0;
+real Util::to_180(real deg) {
+	real d = to_360(deg);
+	if (d > real(180.0))
+		return d-real(360.0);
 	else {
 		return d;
 	}
@@ -410,48 +407,48 @@ bool Util::less_or_equal(const std::string& s1, const std::string& s2) {
 }
 
 
-bool Util::clockwise(double alpha, double beta) {
-	double a = to_2pi(alpha);
-	double b = to_2pi(beta);
-	if (std::abs(a-b) <= M_PI) {
+bool Util::clockwise(real alpha, real beta) {
+	real a = to_2pi(alpha);
+	real b = to_2pi(beta);
+	if (std::abs(a-b) <= real(M_PI)) {
 		return b >= a;
 	}
 	return a > b;
 }
 
-int Util::turnDir(double initTrack, double goalTrack) {
+int Util::turnDir(real initTrack, real goalTrack) {
 	if (Util::clockwise(initTrack,goalTrack)) return 1;
 	else return -1;
 }
 
 
-double Util::turnDelta(double alpha, double beta) {
-	double a = to_2pi(alpha);
-	double b = to_2pi(beta);
-	double delta = std::abs(a-b);
-	if (delta <= M_PI) {
+real Util::turnDelta(real alpha, real beta) {
+	real a = to_2pi(alpha);
+	real b = to_2pi(beta);
+	real delta = std::abs(a-b);
+	if (delta <= real(M_PI)) {
 		return delta;
 	}
-	return 2.0*M_PI - delta;
+	return real(2.0)*real(M_PI) - delta;
 }
 
-double Util::signedTurnDelta(double alpha, double beta) {
+real Util::signedTurnDelta(real alpha, real beta) {
 	return turnDir(alpha,beta)*turnDelta(alpha,beta);
 }
 
 
-double Util::turnDelta(double alpha, double beta, bool turnRight) {
+real Util::turnDelta(real alpha, real beta, bool turnRight) {
 	if (Constants::almost_equals_radian(alpha,beta)) return 0;                 // do not want 2 PI returned
 	//if (std::abs(alpha-beta) < 0.00001) return 0;                              // do not want 2 PI returned
 	bool clkWise = Util::clockwise(alpha,beta);
-	double rtn = Util::turnDelta(alpha,beta);
+	real rtn = Util::turnDelta(alpha,beta);
 	if (turnRight != clkWise)  { // go the long way around
-		rtn = 2.0 * M_PI - rtn;
+		rtn = real(2.0) * real(M_PI) - rtn;
 	}
 	return rtn;
 }
 
-double Util::turnDelta(double alpha, double beta, int dir) {
+real Util::turnDelta(real alpha, real beta, int dir) {
 	return turnDelta(alpha, beta, dir > 0);
 }
 
@@ -485,13 +482,13 @@ bool Util::is_double(const string& str) {
 }
 #endif
 
-double Util::parse_double(const string& str) {
+real Util::parse_double(const string& str) {
 	std::istringstream stream;
 	stream.str(str);
-	double d;
+	real d;
 	stream >> d;
 	if (stream.fail()) {
-		return 0.0;
+		return real(0.0);
 	}
 	return d;
 }
@@ -509,12 +506,12 @@ bool Util::is_boolean(const std::string& s) {
 /** @param degMinSec  Lat/Lon string of the form "46:55:00"  or "-111:57:00"
       @return   numbers of degrees decimal
  */
-double Util::decimalDegrees(const std::string& degMinSec) {
+real Util::decimalDegrees(const std::string& degMinSec) {
 	vector<std::string> dms = split(degMinSec,":");
-	double degrees = parse_double(dms[0]);
+	real degrees = parse_double(dms[0]);
 	int sgn = Util::sign(degrees);
-	double minutes = parse_double(dms[1]);
-	double seconds = parse_double(dms[2]);
+	real minutes = parse_double(dms[1]);
+	real seconds = parse_double(dms[2]);
 	return sgn*(std::abs(degrees) + minutes/60+ seconds/3600);
 }
 
@@ -522,9 +519,9 @@ double Util::decimalDegrees(const std::string& degMinSec) {
 /** Reads in a clock string and converts it to seconds.
  * Accepts hh:mm:ss, mm:ss, and ss.
  */
-double Util::parse_time(const string& s) {
+real Util::parse_time(const string& s) {
 	try {
-		double tm = -1.0;
+		real tm = -real(1.0);
 		string patternStr = "[:]";
 		vector<std::string> fields2 = split(s, patternStr);
 		if (fields2.size() >= 3) {
@@ -536,7 +533,7 @@ double Util::parse_time(const string& s) {
 		}
 		return tm;
 	} catch (std::runtime_error const& e) {
-		return -1.0;
+		return -real(1.0);
 	}
 }
 
@@ -545,7 +542,7 @@ double Util::parse_time(const string& s) {
  * @param t time in seconds
  * @return String of hours:mins:secs
  */
-string Util::hoursMinutesSeconds(double t) {
+string Util::hoursMinutesSeconds(real t) {
 	int hours = (int) t/3600;
 	int rem = (int) t - hours*3600;
 	int mins = rem / 60;
@@ -575,67 +572,67 @@ INT64FM llabs(const INT64FM x) {
 	return Util::llabs(x);
 }
 
-double sq(const double x) {
+real sq(const real x) {
 	return Util::sq(x);
 }
 
-double sqrt_safe(const double x) {
-	return sqrt(Util::max(x,0.0));
+real sqrt_safe(const real x) {
+	return std::sqrt(Util::max(x,real(0.0)));
 }
 
-double atan2_safe(const double y, const double x) {
+real atan2_safe(const real y, const real x) {
 	return Util::atan2_safe(y,x);
 }
 
-double asin_safe(double x) {
+real asin_safe(real x) {
 	return Util::asin_safe(x);
 }
 
-double acos_safe(double x) {
+real acos_safe(real x) {
 	return Util::acos_safe(x);
 }
 
-double discr(const double a, const double b, const double c){
+real discr(const real a, const real b, const real c){
 	return Util::discr(a,b,c);
 }
 
-double root(const double a, const double b, const double c, const int eps) {
+real root(const real a, const real b, const real c, const int eps) {
 	return Util::root(a,b,c,eps);
 }
 
-double root2b(const double a, const double b, const double c, const int eps) {
+real root2b(const real a, const real b, const real c, const int eps) {
 	return Util::root2b(a,b,c,eps);
 }
 
-int sign(const double x) {
+int sign(const real x) {
 	return Util::sign(x);
 }
 
 
 // To range [0,2*pi)
-double to_2pi(double rad) {
+real to_2pi(real rad) {
 	return Util::to_2pi(rad);
 }
 
 
 // To range [0,360)
-double to_360(double deg) {
+real to_360(real deg) {
 	return Util::to_360(deg);
 }
 
 // To range (-pi,pi]
-double to_pi(double rad) {
+real to_pi(real rad) {
 	return Util::to_pi(rad);
 }
 
 // to range [-pi/2, +pi/2]; continuous, thus to_pi2_cont(PI/2+eps) = PI/2-eps
-double to_pi2_cont(double rad) {
+real to_pi2_cont(real rad) {
 	return Util::to_pi2_cont(rad);
 }
 
 
 // To range (-180,180]
-double to_180(double deg) {
+real to_180(real deg) {
 	return Util::to_180(deg);
 }
 

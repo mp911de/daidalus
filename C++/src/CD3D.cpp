@@ -12,6 +12,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include <cmath>
 
 #include "CD3D.h"
@@ -25,23 +26,23 @@
 
 namespace larcfm {
 
-bool CD3D::LoS(const Vect3& s, const double D, const double H) {
+bool CD3D::LoS(const Vect3& s, const real D, const real H) {
   return s.vect2().sqv() < sq(D) && std::abs(s.z()) < H;
 }
 
-bool CD3D::lossOfSep(const Vect3& so, const Vect3& si, const double D, const double H) {
+bool CD3D::lossOfSep(const Vect3& so, const Vect3& si, const real D, const real H) {
   return LoS(so.Sub(si),D,H);
 }
 
 LossData CD3D::detection(const Vect3& s, const Vect3& vo, const Vect3& vi,
-    const double D, const double H, const double B, const double T) {
-  double t_in  = T+1;
-  double t_out = B;
+    const real D, const real H, const real B, const real T) {
+  real t_in  = T+1;
+  real t_out = B;
   if (B >= 0 && B < T) {
     Vect2 s2  = s.vect2();
     Vect2 vo2 = vo.vect2();
     Vect2 vi2 = vi.vect2();
-    double vz = vo.z()-vi.z();
+    real vz = vo.z()-vi.z();
     if (vo2.almostEquals(vi2) && Horizontal::almost_horizontal_los(s2,D)) {
       if (!Util::almost_equals(vo.z(),vi.z())) {
         t_in  = Util::min(Util::max(Vertical::Theta_H(s.z(),vz,larcfm::Entry,H),B),T);
@@ -52,12 +53,12 @@ LossData CD3D::detection(const Vect3& s, const Vect3& vo, const Vect3& vi,
       }
     } else {
       Vect2 v2 = vo2 - vi2;
-      if (Horizontal::Delta(s2,v2,D) > 0.0) {
-        double td1 = Horizontal::Theta_D(s2,v2,larcfm::Entry,D);
-        double td2 = Horizontal::Theta_D(s2,v2,larcfm::Exit,D);
+      if (Horizontal::Delta(s2,v2,D) > real(0.0)) {
+        real td1 = Horizontal::Theta_D(s2,v2,larcfm::Entry,D);
+        real td2 = Horizontal::Theta_D(s2,v2,larcfm::Exit,D);
         if (!Util::almost_equals(vo.z(),vi.z())) {
-          double tin  = Util::max(td1,Vertical::Theta_H(s.z(),vz,larcfm::Entry,H));
-          double tout = Util::min(td2,Vertical::Theta_H(s.z(),vz,larcfm::Exit,H));
+          real tin  = Util::max(td1,Vertical::Theta_H(s.z(),vz,larcfm::Entry,H));
+          real tout = Util::min(td2,Vertical::Theta_H(s.z(),vz,larcfm::Exit,H));
           t_in  = Util::min(Util::max(tin,B),T);
           t_out = Util::max(Util::min(tout,T),B);
         } else if (Vertical::almost_vertical_los(s.z(),H)) {
@@ -71,13 +72,13 @@ LossData CD3D::detection(const Vect3& s, const Vect3& vo, const Vect3& vi,
 }
 
 LossData CD3D::detectionActual(const Vect3& s, const Vect3& vo, const Vect3& vi,
-    const double D, const double H) {
-  double t_in  = PINFINITY;
-  double t_out = NINFINITY;
+    const real D, const real H) {
+  real t_in  = PINFINITY;
+  real t_out = NINFINITY;
   Vect2 s2  = s.vect2();
   Vect2 vo2 = vo.vect2();
   Vect2 vi2 = vi.vect2();
-  double vz = vo.z()-vi.z();
+  real vz = vo.z()-vi.z();
   if (vo2.almostEquals(vi2) && Horizontal::almost_horizontal_los(s2,D)) {
     if (!Util::almost_equals(vo.z(),vi.z())) {
       t_in  = Vertical::Theta_H(s.z(),vz,larcfm::Entry,H);
@@ -88,9 +89,9 @@ LossData CD3D::detectionActual(const Vect3& s, const Vect3& vo, const Vect3& vi,
     }
   } else {
     Vect2 v2 = vo2 - vi2;
-    if (Horizontal::Delta(s2,v2,D) > 0.0) {
-      double td1 = Horizontal::Theta_D(s2,v2,larcfm::Entry,D);
-      double td2 = Horizontal::Theta_D(s2,v2,larcfm::Exit,D);
+    if (Horizontal::Delta(s2,v2,D) > real(0.0)) {
+      real td1 = Horizontal::Theta_D(s2,v2,larcfm::Entry,D);
+      real td2 = Horizontal::Theta_D(s2,v2,larcfm::Exit,D);
       if (!Util::almost_equals(vo.z(),vi.z())) {
         t_in  = Util::max(td1,Vertical::Theta_H(s.z(),vz,larcfm::Entry,H));
         t_out = Util::min(td2,Vertical::Theta_H(s.z(),vz,larcfm::Exit,H));
@@ -104,7 +105,7 @@ LossData CD3D::detectionActual(const Vect3& s, const Vect3& vo, const Vect3& vi,
 }
 
 bool CD3D::cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi,
-    const double D, const double H, const double B, const double T) {
+    const real D, const real H, const real B, const real T) {
   if (B < 0 || B >= T) return false;
   Vect2 s2  = s.vect2();
   Vect2 vo2 = vo.vect2();
@@ -113,9 +114,9 @@ bool CD3D::cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi,
   if (Util::almost_equals(vo.z(),vi.z()) && std::abs(s.z()) < H) {
     return CD2D::cd2d(s.vect2(),vo2,vi2,D,B,T);
   }
-  double vz = vo.z() - vi.z();
-  double m1 = Util::max(-H-sign(vz)*s.z(),B*std::abs(vz));
-  double m2 = Util::min(H-sign(vz)*s.z(),T*std::abs(vz));
+  real vz = vo.z() - vi.z();
+  real m1 = Util::max(-H-sign(vz)*s.z(),B*std::abs(vz));
+  real m2 = Util::min(H-sign(vz)*s.z(),T*std::abs(vz));
   if (!Util::almost_equals(vo.z(),vi.z()) && m1 < m2) {
     return CD2D::cd2d(s2*std::abs(vz),vo2,vi2,D*std::abs(vz),m1,m2);
   } else {
@@ -123,26 +124,26 @@ bool CD3D::cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi,
   }
 }
 
-bool CD3D::cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi,  const double D, const double H, const double T) {
-  return cd3d(s,vo,vi,D,H,0.0,T);
+bool CD3D::cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi,  const real D, const real H, const real T) {
+  return cd3d(s,vo,vi,D,H,real(0.0),T);
 }
 
-bool CD3D::cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi,  const double D, const double H) {
-  return cd3d(s,vo,vi,D,H,0.0,PINFINITY);
+bool CD3D::cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi,  const real D, const real H) {
+  return cd3d(s,vo,vi,D,H,real(0.0),PINFINITY);
 }
 
-double CD3D::tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H) {
+real CD3D::tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H) {
   Vect3 v   = vo-vi;
   Vect2 s2  = s.vect2();
   Vect2 vo2 = vo.vect2();
   Vect2 vi2 = vi.vect2();
   Vect2 v2  = v.vect2();
-  double mint = 0.0;
-  double mind = s.cyl_norm(D,H);
+  real mint = real(0.0);
+  real mind = s.cyl_norm(D,H);
   if (!vo2.almostEquals(vi2)) {
-    double t = -(s2*v2)/v2.sqv();
+    real t = -(s2*v2)/v2.sqv();
     if (t > 0) {
-      double d = v.ScalAdd(t,s).cyl_norm(D,H);
+      real d = v.ScalAdd(t,s).cyl_norm(D,H);
       if (d < mind) {
         mint = t;
         mind = d;
@@ -150,22 +151,22 @@ double CD3D::tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi, const doubl
     }
   }
   if (!Util::almost_equals(vo.z(), vi.z())) {
-    double t = -s.z()/v.z();
-    if (t > 0.0) {
-      double d = v.ScalAdd(t,s).cyl_norm(D,H);
+    real t = -s.z()/v.z();
+    if (t > real(0.0)) {
+      real d = v.ScalAdd(t,s).cyl_norm(D,H);
       if (d < mind) {
         mint = t;
         mind = d;
       }
     }
   }
-  double a = v2.sqv()/sq(D) - sq(v.z()/H);
-  double b = (s2*v2)/sq(D) - (s.z()*v.z())/sq(H);
-  double c = s2.sqv()/sq(D) - sq(s.z()/H);
+  real a = v2.sqv()/sq(D) - sq(v.z()/H);
+  real b = (s2*v2)/sq(D) - (s.z()*v.z())/sq(H);
+  real c = s2.sqv()/sq(D) - sq(s.z()/H);
   for (int eps = -1; eps <= 1; eps += 2) {
-    double t = root2b(a,b,c,eps);
+    real t = root2b(a,b,c,eps);
     if (!ISNAN(t) && t > 0) {
-      double d = v.ScalAdd(t,s).cyl_norm(D,H);
+      real d = v.ScalAdd(t,s).cyl_norm(D,H);
       if (d < mind) {
         mint = t;
         mind = d;
@@ -175,14 +176,14 @@ double CD3D::tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi, const doubl
   return mint;
 }
 
-double CD3D::tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
-    const double D, const double H, const double B, const double T) {
-  double tau = tccpa(s,vo,vi,D,H);
+real CD3D::tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
+    const real D, const real H, const real B, const real T) {
+  real tau = tccpa(s,vo,vi,D,H);
   return Util::min(Util::max(B,tau),T);
 }
 
-double CD3D::tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
-    const double D, const double H, const double T) {
+real CD3D::tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
+    const real D, const real H, const real T) {
   return tccpa(s,vo,vi,D,H,0,T);
 }
 

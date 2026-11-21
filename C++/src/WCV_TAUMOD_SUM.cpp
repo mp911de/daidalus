@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "WCV_TAUMOD_SUM.h"
 #include "WCV_TCOA.h"
 #include "Horizontal.h"
@@ -16,21 +17,21 @@
 
 namespace larcfm {
 
-double WCV_TAUMOD_SUM::MinError = 0.001;
+real WCV_TAUMOD_SUM::MinError = real(0.001);
 
 void WCV_TAUMOD_SUM::initSUM() {
-  h_pos_z_score_ = 0.0;
+  h_pos_z_score_ = real(0.0);
   h_pos_z_score_enabled_ = false;
-  h_vel_z_score_min_ = 0.0;
+  h_vel_z_score_min_ = real(0.0);
   h_vel_z_score_min_enabled_ = false;
-  h_vel_z_score_max_ = 0.0;
+  h_vel_z_score_max_ = real(0.0);
   h_vel_z_score_max_enabled_ = false;
-  h_vel_z_distance_ = 0.0;
+  h_vel_z_distance_ = real(0.0);
   h_vel_z_distance_enabled_ = false;
   h_vel_z_distance_units_ = "nmi";
-  v_pos_z_score_ = 0.0;
+  v_pos_z_score_ = real(0.0);
   v_pos_z_score_enabled_ = false;
-  v_vel_z_score_ = 0.0;
+  v_vel_z_score_ = real(0.0);
   v_vel_z_score_enabled_ = false;
 }
 
@@ -131,7 +132,7 @@ WCV_TAUMOD_SUM& WCV_TAUMOD_SUM::operator=(const WCV_TAUMOD_SUM& wcv) {
 
 
 bool WCV_TAUMOD_SUM::sumof(const Vect2& v1, const Vect2& v2, const Vect2& w) const {
-  double detv2v1 = v2.det(v1);
+  real detv2v1 = v2.det(v1);
   return w.det(v1)*detv2v1>=0 && w.det(v2)*detv2v1 <=0;
 }
 
@@ -159,10 +160,10 @@ std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_pair(const Vect2& v1, const Vect2
     Vect2 avg_dir = average_direction(v2,w2);
     return std::pair<Vect2,Vect2>(avg_dir,avg_dir);
   } else {
-    double d11 = v1.dot(w1);
-    double d12 = v1.dot(w2);
-    double d21 = v2.dot(w1);
-    double d22 = v2.dot(w2);
+    real d11 = v1.dot(w1);
+    real d12 = v1.dot(w2);
+    real d21 = v2.dot(w1);
+    real d22 = v2.dot(w2);
     if (d11>=d12 && d11>=d21 && d11>=d22) {
       return std::pair<Vect2,Vect2>(v1,w1);
     } else if (d12>=d11 && d12>=d21 && d12>=d22) {
@@ -175,7 +176,7 @@ std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_pair(const Vect2& v1, const Vect2
   }
 }
 
-std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_wcv_pair_comp_init(const Vect2& s, const Vect2& v, double s_err, double v_err) const {
+std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_wcv_pair_comp_init(const Vect2& s, const Vect2& v, real s_err, real v_err) const {
   Vect2 v1 = TangentLine(s,s_err,-1);
   v1 = v1.Hat();
   Vect2 v2 = TangentLine(s,s_err,1);
@@ -189,12 +190,12 @@ std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_wcv_pair_comp_init(const Vect2& s
   return std::pair<Vect2,Vect2>(op.first.Neg(),op.second);
 }
 
-std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_wcv_pair(const Vect2& s, const Vect2& v, double s_err, double v_err, int eps1, int eps2) const {
+std::pair<Vect2,Vect2> WCV_TAUMOD_SUM::optimal_wcv_pair(const Vect2& s, const Vect2& v, real s_err, real v_err, int eps1, int eps2) const {
   std::pair<Vect2,Vect2> owpci = optimal_wcv_pair_comp_init(s,v,s_err,v_err);
   return std::pair<Vect2,Vect2>(owpci.first.Scal(s.norm()+eps1*s_err),owpci.second.Scal(v.norm()-eps2*v_err));
 }
 
-bool WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain(const Vect2& s, const Vect2& v, double s_err, double v_err) const {
+bool WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain(const Vect2& s, const Vect2& v, real s_err, real v_err) const {
   if (horizontal_WCV(s,v)) {
     return true;
   }
@@ -209,19 +210,19 @@ bool WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain(const Vect2& s, const Vect2
   return horizontal_WCV(owp.first,owp.second);
 }
 
-bool WCV_TAUMOD_SUM::vertical_WCV_uncertain(double sz, double vz, double sz_err, double vz_err) const {
+bool WCV_TAUMOD_SUM::vertical_WCV_uncertain(real sz, real vz, real sz_err, real vz_err) const {
   int ssign = Util::sign(sz);
-  double snew = sz-ssign*Util::min(sz_err,std::abs(sz));
-  double vnew = vz-ssign*vz_err;
+  real snew = sz-ssign*Util::min(sz_err,std::abs(sz));
+  real vnew = vz-ssign*vz_err;
   return getWCVVertical().vertical_WCV(getZTHR(),getTCOA(),snew,vnew);
 }
 
-bool WCV_TAUMOD_SUM::WCV_taumod_uncertain(const Vect3& s, const Vect3& v, double s_err, double sz_err, double v_err, double vz_err) const {
+bool WCV_TAUMOD_SUM::WCV_taumod_uncertain(const Vect3& s, const Vect3& v, real s_err, real sz_err, real v_err, real vz_err) const {
   return horizontal_wcv_taumod_uncertain(s.vect2(),v.vect2(),s_err,v_err) &&
       vertical_WCV_uncertain(s.z(),v.z(),sz_err,vz_err);
 }
 
-double WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain_entry(const Vect2& s, const Vect2& v, double s_err, double v_err, double T) const {
+real WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain_entry(const Vect2& s, const Vect2& v, real s_err, real v_err, real T) const {
   if (horizontal_WCV(s,v) || s.sqv()<=Util::sq(getDTHR()+s_err)) {
     return 0;
   }
@@ -244,12 +245,12 @@ double WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain_entry(const Vect2& s, con
   }
 }
 
-double WCV_TAUMOD_SUM::Theta_D_uncertain(const Vect2& s, const Vect2& v, double s_err, double v_err, int eps) const {
+real WCV_TAUMOD_SUM::Theta_D_uncertain(const Vect2& s, const Vect2& v, real s_err, real v_err, int eps) const {
   if (v.sqv() <= Util::sq(v_err)) {
     return -1;
   }
   else {
-    double rt = Util::root(v.sqv()-Util::sq(v_err),2*(s.dot(v)-v_err*(getDTHR()+s_err)),s.sqv()-Util::sq(getDTHR()+s_err),eps);
+    real rt = Util::root(v.sqv()-Util::sq(v_err),2*(s.dot(v)-v_err*(getDTHR()+s_err)),s.sqv()-Util::sq(getDTHR()+s_err),eps);
     if (ISFINITE(rt)) {
       return rt;
     }
@@ -257,7 +258,7 @@ double WCV_TAUMOD_SUM::Theta_D_uncertain(const Vect2& s, const Vect2& v, double 
   }
 }
 
-double WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain_exit(const Vect2& s, const Vect2& v,double s_err, double v_err, double T) const {
+real WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain_exit(const Vect2& s, const Vect2& v,real s_err, real v_err, real T) const {
   if (v.sqv() <= Util::sq(v_err) && s.sqv() <= Util::sq(getDTHR()+s_err)) {
     return T;
   } else if (v.sqv() <= Util::sq(v_err)) {
@@ -273,21 +274,21 @@ double WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain_exit(const Vect2& s, cons
   }
 }
 
-LossData WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain_interval(const Vect2& s, const Vect2& v,double s_err, double v_err, double T) const {
-  double entrytime = horizontal_wcv_taumod_uncertain_entry(s,v,s_err,v_err,T);
-  double exittime = horizontal_wcv_taumod_uncertain_exit(s,v,s_err,v_err,T);
+LossData WCV_TAUMOD_SUM::horizontal_wcv_taumod_uncertain_interval(const Vect2& s, const Vect2& v,real s_err, real v_err, real T) const {
+  real entrytime = horizontal_wcv_taumod_uncertain_entry(s,v,s_err,v_err,T);
+  real exittime = horizontal_wcv_taumod_uncertain_exit(s,v,s_err,v_err,T);
   if (entrytime > T || exittime < 0 || entrytime > exittime) {
     return LossData();
   }
-  return LossData(Util::max(0.0,entrytime),Util::min(T,exittime));
+  return LossData(Util::max(real(0.0),entrytime),Util::min(T,exittime));
 }
 
-LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_szpos_vzpos(double T, double minsz/*,double maxsz*/, double minvz/*, double maxvz*/) const {
+LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_szpos_vzpos(real T, real minsz/*,double maxsz*/, real minvz/*, double maxvz*/) const {
   Interval ii = getWCVVertical().vertical_WCV_interval(getZTHR(),getTCOA(),0,T,minsz,minvz);
   return LossData(ii.low,ii.up);
 }
 
-LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_szpos_vzneg(double T, double minsz,double maxsz, double minvz, double maxvz) const {
+LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_szpos_vzneg(real T, real minsz,real maxsz, real minvz, real maxvz) const {
   Interval entryint = getWCVVertical().vertical_WCV_interval(getZTHR(),getTCOA(),0,T,minsz,minvz);
   Interval exitint = getWCVVertical().vertical_WCV_interval(getZTHR(),getTCOA(),0,T,maxsz,maxvz);
   if (entryint.low > entryint.up) {
@@ -299,11 +300,11 @@ LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_szpos_vzneg(double
   }
 }
 
-LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_szpos(double T, double minsz,double maxsz, double minvz, double maxvz) const {
+LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_szpos(real T, real minsz,real maxsz, real minvz, real maxvz) const {
   bool vel_only_pos = minvz >= 0;
   bool vel_only_neg = !vel_only_pos && maxvz <= 0;
-  LossData intp = vel_only_neg ? LossData() : vertical_WCV_uncertain_full_interval_szpos_vzpos(T,minsz/*,maxsz*/,Util::max(minvz,0.0)/*,maxvz*/);
-  LossData intn = vel_only_pos ? LossData() : vertical_WCV_uncertain_full_interval_szpos_vzneg(T,minsz,maxsz,minvz,Util::min(maxvz,0.0));
+  LossData intp = vel_only_neg ? LossData() : vertical_WCV_uncertain_full_interval_szpos_vzpos(T,minsz/*,maxsz*/,Util::max(minvz,real(0.0))/*,maxvz*/);
+  LossData intn = vel_only_pos ? LossData() : vertical_WCV_uncertain_full_interval_szpos_vzneg(T,minsz,maxsz,minvz,Util::min(maxvz,real(0.0)));
   if (vel_only_pos || intn.getTimeIn() > intn.getTimeOut()) {
     return intp;
   } else if (vel_only_neg || intp.getTimeIn() > intp.getTimeOut()) {
@@ -313,11 +314,11 @@ LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_szpos(double T, do
   }
 }
 
-LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_split(double T, double minsz,double maxsz, double minvz, double maxvz) const {
+LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_split(real T, real minsz,real maxsz, real minvz, real maxvz) const {
   bool pos_only_pos = minsz >= 0;
   bool pos_only_neg = !pos_only_pos && maxsz <= 0;
-  LossData intp = pos_only_neg ? LossData() : vertical_WCV_uncertain_full_interval_szpos(T,Util::max(minsz,0.0),maxsz,minvz,maxvz);
-  LossData intn = pos_only_pos ? LossData() : vertical_WCV_uncertain_full_interval_szpos(T,-Util::min(maxsz,0.0),-minsz,-maxvz,-minvz);
+  LossData intp = pos_only_neg ? LossData() : vertical_WCV_uncertain_full_interval_szpos(T,Util::max(minsz,real(0.0)),maxsz,minvz,maxvz);
+  LossData intn = pos_only_pos ? LossData() : vertical_WCV_uncertain_full_interval_szpos(T,-Util::min(maxsz,real(0.0)),-minsz,-maxvz,-minvz);
   if (pos_only_pos || intn.getTimeIn() > intn.getTimeOut()) {
     return intp;
   } else if (pos_only_neg || intp.getTimeIn() > intp.getTimeOut()) {
@@ -327,7 +328,7 @@ LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_full_interval_split(double T, do
   }
 }
 
-LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_interval(double B, double T, double sz, double vz, double sz_err, double vz_err) const {
+LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_interval(real B, real T, real sz, real vz, real sz_err, real vz_err) const {
   LossData posint = vertical_WCV_uncertain_full_interval_split(T,sz-sz_err,sz+sz_err,vz-vz_err,vz+vz_err);
   if (posint.getTimeIn() > posint.getTimeOut() || posint.getTimeOut() < B) {
     return LossData();
@@ -336,8 +337,8 @@ LossData WCV_TAUMOD_SUM::vertical_WCV_uncertain_interval(double B, double T, dou
   }
 }
 
-LossData WCV_TAUMOD_SUM::WCV_taumod_uncertain_interval(double B, double T, const Vect3& s, const Vect3& v,
-    double s_err, double sz_err, double v_err, double vz_err) const {
+LossData WCV_TAUMOD_SUM::WCV_taumod_uncertain_interval(real B, real T, const Vect3& s, const Vect3& v,
+    real s_err, real sz_err, real v_err, real vz_err) const {
   LossData vint = vertical_WCV_uncertain_interval(B,T,s.z(),v.z(),sz_err,vz_err);
   if (vint.getTimeIn() > vint.getTimeOut()) {
     return vint; // Empty interval
@@ -352,8 +353,8 @@ LossData WCV_TAUMOD_SUM::WCV_taumod_uncertain_interval(double B, double T, const
   return  LossData(Util::max(vint.getTimeIn(),hint.getTimeIn()),Util::min(vint.getTimeOut(),hint.getTimeOut()));
 }
 
-bool WCV_TAUMOD_SUM::WCV_taumod_uncertain_detection(double B, double T, const Vect3& s, const Vect3& v,
-    double s_err, double sz_err, double v_err, double vz_err) const {
+bool WCV_TAUMOD_SUM::WCV_taumod_uncertain_detection(real B, real T, const Vect3& s, const Vect3& v,
+    real s_err, real sz_err, real v_err, real vz_err) const {
   if (B > T) {
     return false;
   }
@@ -376,18 +377,18 @@ bool WCV_TAUMOD_SUM::WCV_taumod_uncertain_detection(double B, double T, const Ve
  * @return a ConflictData object detailing the conflict
  */
 ConflictData WCV_TAUMOD_SUM::conflictDetectionWithTrafficState(const TrafficState& ownship, const TrafficState& intruder,
-    double B, double T) const {
-  double s_err = relativeHorizontalPositionError(ownship,intruder);
-  double sz_err = relativeVerticalPositionError(ownship,intruder);
-  double v_err = relativeHorizontalSpeedError(ownship,intruder,s_err);
-  double vz_err = relativeVerticalSpeedError(ownship,intruder);
+    real B, real T) const {
+  real s_err = relativeHorizontalPositionError(ownship,intruder);
+  real sz_err = relativeVerticalPositionError(ownship,intruder);
+  real v_err = relativeHorizontalSpeedError(ownship,intruder,s_err);
+  real vz_err = relativeVerticalSpeedError(ownship,intruder);
 
   Vect3 so = ownship.get_s();
   Vect3 vo = ownship.get_v();
   Vect3 si = intruder.get_s();
   Vect3 vi = intruder.get_v();
 
-  if (s_err == 0.0 && sz_err == 0.0 && v_err == 0.0 && vz_err == 0.0) {
+  if (s_err == real(0.0) && sz_err == real(0.0) && v_err == real(0.0) && vz_err == real(0.0)) {
     return conflictDetection(so,vo,si,vi,B,T);
   }
 
@@ -399,8 +400,8 @@ ConflictData WCV_TAUMOD_SUM::conflictDetectionWithTrafficState(const TrafficStat
   Vect3 s = so.Sub(si);
   Vect3 v = vo.Sub(vi);
   LossData ld = WCV_taumod_uncertain_interval(B,T,s,v,s_err,sz_err,v_err,vz_err);
-  double t_tca = (ld.getTimeIn() + ld.getTimeOut())/2.0;
-  double dist_tca = s.linear(v, t_tca).cyl_norm(getDTHR(),getZTHR());
+  real t_tca = (ld.getTimeIn() + ld.getTimeOut())/real(2.0);
+  real dist_tca = s.linear(v, t_tca).cyl_norm(getDTHR(),getZTHR());
   return ConflictData(ld,t_tca,dist_tca,s,v);
 }
 
@@ -442,33 +443,33 @@ bool WCV_TAUMOD_SUM::contains(const Detection3D& cd) const {
   return false;
 }
 
-double WCV_TAUMOD_SUM::relativeHorizontalPositionError(const TrafficState& own, const TrafficState& ac) const {
+real WCV_TAUMOD_SUM::relativeHorizontalPositionError(const TrafficState& own, const TrafficState& ac) const {
   return h_pos_z_score_*
       (own.sum().getHorizontalPositionError()+ac.sum().getHorizontalPositionError());
 }
 
-double WCV_TAUMOD_SUM::relativeVerticalPositionError(const TrafficState& own, const TrafficState& ac) const {
+real WCV_TAUMOD_SUM::relativeVerticalPositionError(const TrafficState& own, const TrafficState& ac) const {
   return v_pos_z_score_*
       (own.sum().getVerticalPositionError()+ac.sum().getVerticalPositionError());
 }
 
-double WCV_TAUMOD_SUM::weighted_z_score(double range) const {
+real WCV_TAUMOD_SUM::weighted_z_score(real range) const {
   if (range>=h_vel_z_distance_) {
     return h_vel_z_score_min_;
   } else {
-    double perc = range/h_vel_z_distance_;
+    real perc = range/h_vel_z_distance_;
     return (1-perc)*h_vel_z_score_max_+perc*h_vel_z_score_min_;
   }
 }
 
-double WCV_TAUMOD_SUM::relativeHorizontalSpeedError(const TrafficState& own, const TrafficState& ac, double s_err) const {
-  double range = own.get_s().distanceH(ac.get_s());
-  double  z_score = weighted_z_score(Util::max(range-s_err,0.0));
+real WCV_TAUMOD_SUM::relativeHorizontalSpeedError(const TrafficState& own, const TrafficState& ac, real s_err) const {
+  real range = own.get_s().distanceH(ac.get_s());
+  real  z_score = weighted_z_score(Util::max(range-s_err,real(0.0)));
   return z_score*
       (own.sum().getHorizontalSpeedError()+ac.sum().getHorizontalSpeedError());
 }
 
-double WCV_TAUMOD_SUM::relativeVerticalSpeedError(const TrafficState& own, const TrafficState& ac) const {
+real WCV_TAUMOD_SUM::relativeVerticalSpeedError(const TrafficState& own, const TrafficState& ac) const {
   return v_vel_z_score_*
       (own.sum().getVerticalSpeedError()+ac.sum().getVerticalSpeedError());
 }
@@ -543,14 +544,14 @@ void WCV_TAUMOD_SUM::set_global_SUM_parameters(const DaidalusParameters& p){
 /**
  * @return get z-score (number of standard deviations) for horizontal position
  */
-double WCV_TAUMOD_SUM::getHorizontalPositionZScore() const {
+real WCV_TAUMOD_SUM::getHorizontalPositionZScore() const {
   return h_pos_z_score_;
 }
 
 /**
  * @return set z-score (number of standard deviations) for horizontal position (non-negative value)
  */
-void WCV_TAUMOD_SUM::setHorizontalPositionZScore(double val) {
+void WCV_TAUMOD_SUM::setHorizontalPositionZScore(real val) {
   h_pos_z_score_enabled_ = true;
   h_pos_z_score_ = std::abs(val);
 }
@@ -558,14 +559,14 @@ void WCV_TAUMOD_SUM::setHorizontalPositionZScore(double val) {
 /**
  * @return get min z-score (number of standard deviations) for horizontal velocity
  */
-double WCV_TAUMOD_SUM::getHorizontalVelocityZScoreMin() const {
+real WCV_TAUMOD_SUM::getHorizontalVelocityZScoreMin() const {
   return h_vel_z_score_min_;
 }
 
 /**
  * @return set min z-score (number of standard deviations) for horizontal velocity (non-negative value)
  */
-void WCV_TAUMOD_SUM::setHorizontalVelocityZScoreMin(double val) {
+void WCV_TAUMOD_SUM::setHorizontalVelocityZScoreMin(real val) {
   h_vel_z_score_min_enabled_ = true;
   h_vel_z_score_min_ = std::abs(val);
 }
@@ -573,14 +574,14 @@ void WCV_TAUMOD_SUM::setHorizontalVelocityZScoreMin(double val) {
 /**
  * @return get max z-score (number of standard deviations) for horizontal velocity
  */
-double WCV_TAUMOD_SUM::getHorizontalVelocityZScoreMax() const {
+real WCV_TAUMOD_SUM::getHorizontalVelocityZScoreMax() const {
   return h_vel_z_score_max_;
 }
 
 /**
  * @return set max z-score (number of standard deviations) for horizontal velocity (non-negative value)
  */
-void WCV_TAUMOD_SUM::setHorizontalVelocityZScoreMax(double val) {
+void WCV_TAUMOD_SUM::setHorizontalVelocityZScoreMax(real val) {
   h_vel_z_score_max_enabled_ = true;
   h_vel_z_score_max_ = std::abs(val);
 }
@@ -588,14 +589,14 @@ void WCV_TAUMOD_SUM::setHorizontalVelocityZScoreMax(double val) {
 /**
  * @return Distance (in internal units) at which h_vel_z_score scales from min to max as range decreases
  */
-double WCV_TAUMOD_SUM::getHorizontalVelocityZDistance() const {
+real WCV_TAUMOD_SUM::getHorizontalVelocityZDistance() const {
   return h_vel_z_distance_;
 }
 
 /**
  * @return Set distance (in internal units) at which h_vel_z_score scales from min to max as range decreases
  */
-void WCV_TAUMOD_SUM::setHorizontalVelocityZDistance(double val) {
+void WCV_TAUMOD_SUM::setHorizontalVelocityZDistance(real val) {
   h_vel_z_distance_enabled_ = true;
   h_vel_z_distance_ = std::abs(val);
 }
@@ -603,14 +604,14 @@ void WCV_TAUMOD_SUM::setHorizontalVelocityZDistance(double val) {
 /**
  * @return Distance (in given units) at which h_vel_z_score scales from min to max as range decreases
  */
-double WCV_TAUMOD_SUM::getHorizontalVelocityZDistance(const std::string& u) const {
+real WCV_TAUMOD_SUM::getHorizontalVelocityZDistance(const std::string& u) const {
   return Units::to(u,h_vel_z_distance_);
 }
 
 /**
  * @return Set distance (in given units) at which h_vel_z_score scales from min to max as range decreases
  */
-void WCV_TAUMOD_SUM::setHorizontalVelocityZDistance(double val, const std::string& u) {
+void WCV_TAUMOD_SUM::setHorizontalVelocityZDistance(real val, const std::string& u) {
   setHorizontalVelocityZDistance(Units::from(u,val));
   h_vel_z_distance_units_ = u;
 }
@@ -618,14 +619,14 @@ void WCV_TAUMOD_SUM::setHorizontalVelocityZDistance(double val, const std::strin
 /**
  * @return get z-score (number of standard deviations) for vertical position
  */
-double WCV_TAUMOD_SUM::getVerticalPositionZScore() const {
+real WCV_TAUMOD_SUM::getVerticalPositionZScore() const {
   return v_pos_z_score_;
 }
 
 /**
  * @return set z-score (number of standard deviations) for vertical position (non-negative value)
  */
-void WCV_TAUMOD_SUM::setVerticalPositionZScore(double val) {
+void WCV_TAUMOD_SUM::setVerticalPositionZScore(real val) {
   v_pos_z_score_enabled_ = true;
   v_pos_z_score_ = std::abs(val);
 }
@@ -633,14 +634,14 @@ void WCV_TAUMOD_SUM::setVerticalPositionZScore(double val) {
 /**
  * @return get z-score (number of standard deviations) for vertical velocity
  */
-double WCV_TAUMOD_SUM::getVerticalSpeedZScore() const {
+real WCV_TAUMOD_SUM::getVerticalSpeedZScore() const {
   return v_vel_z_score_;
 }
 
 /**
  * @return set z-score (number of standard deviations) for vertical velocity (non-negative value)
  */
-void WCV_TAUMOD_SUM::setVerticalSpeedZScore(double val) {
+void WCV_TAUMOD_SUM::setVerticalSpeedZScore(real val) {
   v_vel_z_score_enabled_ = true;
   v_vel_z_score_ = std::abs(val);
 }

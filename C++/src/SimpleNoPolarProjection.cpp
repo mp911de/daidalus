@@ -10,6 +10,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "SimpleNoPolarProjection.h"
 #include "SimpleProjection.h"
 #include "LatLonAlt.h"
@@ -29,7 +30,7 @@ namespace larcfm {
     using std::runtime_error;
   
     SimpleNoPolarProjection::SimpleNoPolarProjection() {
-      projLat = projLon = projAlt = 0.0;
+      projLat = projLon = projAlt = real(0.0);
     }
     
     SimpleNoPolarProjection::SimpleNoPolarProjection(const LatLonAlt& lla) {
@@ -38,7 +39,7 @@ namespace larcfm {
         projAlt = lla.alt();
     }
     
-    SimpleNoPolarProjection::SimpleNoPolarProjection(double lat, double lon, double alt) {
+    SimpleNoPolarProjection::SimpleNoPolarProjection(real lat, real lon, real alt) {
         projLat = lat;
         projLon = lon;
         projAlt = alt;
@@ -48,7 +49,7 @@ namespace larcfm {
       return SimpleNoPolarProjection(lla);
     }
 
-    SimpleNoPolarProjection SimpleNoPolarProjection::makeNew(double lat, double lon, double alt) const {
+    SimpleNoPolarProjection SimpleNoPolarProjection::makeNew(real lat, real lon, real alt) const {
       return SimpleNoPolarProjection(lat, lon, alt);
     }
 
@@ -56,15 +57,15 @@ namespace larcfm {
 //      return SimpleNoPolarProjection(projLat, projLon, projAlt);
 //    }
 
-    double SimpleNoPolarProjection::conflictRange(double lat, double accuracy) const {
-      double degs = Units::to("deg",lat);
-      if (accuracy < Units::from("nm", 0.1)) { //0.01 -- 35 nm - 3 nm
+    real SimpleNoPolarProjection::conflictRange(real lat, real accuracy) const {
+      real degs = Units::to("deg",lat);
+      if (accuracy < Units::from("nm", real(0.1))) { //0.01 -- 35 nm - 3 nm
         if (degs < 30) {
           return Units::from("nm",10);
         } else {
           return Units::from("nm",5);
         }
-      } else if (accuracy < Units::from("nm", 0.5)) {  // 0.1 nm -- 185 nm - 4 nm
+      } else if (accuracy < Units::from("nm", real(0.5))) {  // 0.1 nm -- 185 nm - 4 nm
         if (degs < 20) {
           return Units::from("nm", 40);
         } else if (degs < 50) {
@@ -91,8 +92,8 @@ namespace larcfm {
       }
     }
     
-    double SimpleNoPolarProjection::maxRange() const{
-      return std::numeric_limits<double>::max();
+    real SimpleNoPolarProjection::maxRange() const{
+      return std::numeric_limits<real>::max();
     }
     
     LatLonAlt SimpleNoPolarProjection::getProjectionPoint() const {
@@ -122,9 +123,9 @@ namespace larcfm {
     	return project(sip);
     }
 
-    LatLonAlt SimpleNoPolarProjection::inverse(const Vect2& xy, double alt) const {
-           double a = xy.compassAngle();
-           double d = xy.norm();
+    LatLonAlt SimpleNoPolarProjection::inverse(const Vect2& xy, real alt) const {
+           real a = xy.compassAngle();
+           real d = xy.norm();
     	   LatLonAlt origin = LatLonAlt::mk(projLat,projLon,alt + projAlt);
            return GreatCircle::linear_initial(origin,a,d);
     }

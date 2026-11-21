@@ -12,6 +12,7 @@
 
 #ifndef GREATCIRCLE_H_
 #define GREATCIRCLE_H_
+#include "Real.h"
 
 #include "Vect2.h"
 #include "Vect3.h"
@@ -47,7 +48,7 @@ namespace larcfm {
   class GreatCircle {
   public:
 
-	static const double minDt; // small number, about machine
+	static const real minDt; // small number, about machine
 
 
 	/**
@@ -59,7 +60,7 @@ namespace larcfm {
 	 * @param h height above surface of spherical Earth
 	 * @return angular distance [radian]
 	 */
-    static double angle_from_distance(double distance, double h);
+    static real angle_from_distance(real distance, real h);
 
 
   /**
@@ -69,7 +70,7 @@ namespace larcfm {
    * mile). This value lies between the major and minor axis as defined by
    * WGS84.
    */
-  static const double spherical_earth_radius;
+  static const real spherical_earth_radius;
 
 	/**
 	 * Convert the given angle into a distance across a (spherical) Earth at
@@ -79,7 +80,7 @@ namespace larcfm {
 	 * @param h height above surface of spherical Earth
 	 * @return linear distance [m]
 	 */
-  static double distance_from_angle(double angle, double h);
+  static real distance_from_angle(real angle, real h);
 
 	/**
 	 * Compute the great circle distance in radians between the two points. The
@@ -92,7 +93,7 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return angular distance
 	 */
-  static double angular_distance(double lat1, double lon1, double lat2, double lon2);
+  static real angular_distance(real lat1, real lon1, real lat2, real lon2);
 
 	/**
 	 * Compute the great circle distance in radians between the two points. The
@@ -103,7 +104,7 @@ namespace larcfm {
 	 * @param p2 another point
 	 * @return angular distance
 	 */
-  static double angular_distance(const LatLonAlt& p1, const LatLonAlt& p2);
+  static real angular_distance(const LatLonAlt& p1, const LatLonAlt& p2);
 
 	/**
 	 * Compute the great circle distance between the two given points. The
@@ -115,7 +116,7 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return distance in meters
 	 */
-  static double distance(double lat1, double lon1, double lat2, double lon2);
+  static real distance(real lat1, real lon1, real lat2, real lon2);
 
 	/**
 	 * Compute the great circle distance between the two given points. The
@@ -125,7 +126,7 @@ namespace larcfm {
 	 * @param p2 another point
 	 * @return angular distance
 	 */
-  static double distance(const LatLonAlt& p1, const LatLonAlt& p2);
+  static real distance(const LatLonAlt& p1, const LatLonAlt& p2);
 
   
 
@@ -139,7 +140,7 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return true, if almost equals
 	 */
-  static bool almost_equals(double lat1, double lon1, double lat2, double lon2);
+  static bool almost_equals(real lat1, real lon1, real lat2, real lon2);
 
 	/**
 	 * Determines if two points are close to each other, where 'close'
@@ -152,8 +153,8 @@ namespace larcfm {
 	 * @param epsilon maximum difference in meters
 	 * @return true, if almost equals
 	 */							  
-  static bool almost_equals(double lat1, double lon1, double lat2,
-			       double lon2, double epsilon);
+  static bool almost_equals(real lat1, real lon1, real lat2,
+			       real lon2, real epsilon);
 
   static bool almostEquals(const LatLonAlt& b, const LatLonAlt& v);
 	/** Are these two LatLonAlt almost equal, where 'almost' is defined by the given distances [m]
@@ -164,8 +165,8 @@ namespace larcfm {
 	 * @param vertEps allowed difference in vertical dimension
 	 * @return true if the two are almost equals
 	 */
-  static bool almostEquals(const LatLonAlt& b, const LatLonAlt& a, double horizEps, double vertEps);
-  static bool almostEquals2D(const LatLonAlt& b, const LatLonAlt& v, double horizEps);
+  static bool almostEquals(const LatLonAlt& b, const LatLonAlt& a, real horizEps, real vertEps);
+  static bool almostEquals2D(const LatLonAlt& b, const LatLonAlt& v, real horizEps);
 	
 	/**
 	 * The initial true course (course relative to true north) at lat/long #1 on
@@ -184,7 +185,7 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return initial course
 	 */
-  static double initial_course(double lat1, double lon1, double lat2, double lon2);
+  static real initial_course(real lat1, real lon1, real lat2, real lon2);
 
 	/**
 	 * <p>The initial true course (course relative to true north) at point #1 on
@@ -201,7 +202,7 @@ namespace larcfm {
 	 * @param p2 another point
 	 * @return initial course
 	 */
-  static double initial_course(const LatLonAlt& p1, const LatLonAlt& p2);
+  static real initial_course(const LatLonAlt& p1, const LatLonAlt& p2);
 
 	/**
 	 * <p>Course of the great circle coming in from point #1 to point #2.  This
@@ -216,7 +217,7 @@ namespace larcfm {
 	 * @param p2 point #2
 	 * @return final course
 	 */
-  static double final_course(const LatLonAlt& p1, const LatLonAlt& p2);
+  static real final_course(const LatLonAlt& p1, const LatLonAlt& p2);
 
 	/**
 	 * A representative course (course relative to true north) for the entire
@@ -231,10 +232,10 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return representative course
 	 */
-  static double representative_course(double lat1, double lon1,
-				      double lat2, double lon2);
+  static real representative_course(real lat1, real lon1,
+				      real lat2, real lon2);
   
-  static double representative_course(const LatLonAlt& p1, const LatLonAlt& p2);
+  static real representative_course(const LatLonAlt& p1, const LatLonAlt& p2);
 
 	/**
 	 * Estimate the maximum latitude of the great circle defined by the 
@@ -246,10 +247,10 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return maximum latitude
 	 */
-	static double max_latitude_gc(double lat1, double lon1, double lat2, double lon2) ;
+	static real max_latitude_gc(real lat1, real lon1, real lat2, real lon2) ;
 
   private:
-	static double max_latitude_gc_course(double lat1, double trk) ;
+	static real max_latitude_gc_course(real lat1, real trk) ;
 
   public:
 	/**
@@ -260,7 +261,7 @@ namespace larcfm {
 	 * @param p2 point 2
 	 * @return maximum latitude
 	 */
-	static double max_latitude_gc(const LatLonAlt& p1, const LatLonAlt& p2);
+	static real max_latitude_gc(const LatLonAlt& p1, const LatLonAlt& p2);
 
 	/**
 	 * Estimate the minimum latitude of the great circle defined by the 
@@ -272,10 +273,10 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return minimum latitude
 	 */
-	static double min_latitude_gc(double lat1, double lon1, double lat2, double lon2);
+	static real min_latitude_gc(real lat1, real lon1, real lat2, real lon2);
 
   private:
-	static double min_latitude_gc_course(double lat1, double trk);
+	static real min_latitude_gc_course(real lat1, real trk);
 
   public:
 	/**
@@ -286,14 +287,14 @@ namespace larcfm {
 	 * @param p2 point 2
 	 * @return minimum latitude
 	 */
-	static double min_latitude_gc(const LatLonAlt& p1, const LatLonAlt& p2);
+	static real min_latitude_gc(const LatLonAlt& p1, const LatLonAlt& p2);
 
 	// Given a great circle defined by Point 1 and 2, find the longitude of where it
 	// crosses the latitude defined by lat3.
 	//
 	// from Aviation Formulary
 	// longitude sign is reversed from the formulary!
-	static double lonCross(double lat1, double lon1, double lat2, double lon2, double lat3);
+	static real lonCross(real lat1, real lon1, real lat2, real lon2, real lat3);
 
 
   
@@ -307,9 +308,9 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return maximum latitude
 	 */
-	static double max_latitude(double lat1, double lon1, double lat2, double lon2);
+	static real max_latitude(real lat1, real lon1, real lat2, real lon2);
 
-	static double max_latitude(const LatLonAlt& p1, const LatLonAlt& p2);
+	static real max_latitude(const LatLonAlt& p1, const LatLonAlt& p2);
 
 	/**
 	 * Find the minimum (southern-most) latitude of the line segment defined by the two points
@@ -321,9 +322,9 @@ namespace larcfm {
 	 * @param lon2 longitude of point 2
 	 * @return minimum latitude
 	 */
-	static double min_latitude(double lat1, double lon1, double lat2, double lon2);
+	static real min_latitude(real lat1, real lon1, real lat2, real lon2);
 
-	static double min_latitude(const LatLonAlt& p1, const LatLonAlt& p2);
+	static real min_latitude(const LatLonAlt& p1, const LatLonAlt& p2);
 
 
 	/**
@@ -350,7 +351,7 @@ namespace larcfm {
 	 * @param f decimal fraction
 	 * @return a new point between p1 and p2
 	 */
-  static LatLonAlt interpolate(const LatLonAlt& p1, const LatLonAlt& p2, double f);
+  static LatLonAlt interpolate(const LatLonAlt& p1, const LatLonAlt& p2, real f);
   
   // This is a fast but crude way of interpolating between relatively close geodesic points
 	/**
@@ -361,7 +362,7 @@ namespace larcfm {
 	 * @param f decimal fraction
 	 * @return a new point between p1 and p2
 	 */
-  static LatLonAlt interpolateEst(const LatLonAlt& p1, const LatLonAlt& p2, double f);
+  static LatLonAlt interpolateEst(const LatLonAlt& p1, const LatLonAlt& p2, real f);
 
 	/**
 	 * Find a point on the great circle route from point #1 to point #2,
@@ -380,7 +381,7 @@ namespace larcfm {
 	 * @param t time
 	 * @return end point of a linear extrapolation
 	 */
-  static LatLonAlt linear_gcgs(const LatLonAlt& p1, const LatLonAlt& p2, const Velocity& v, double t);
+  static LatLonAlt linear_gcgs(const LatLonAlt& p1, const LatLonAlt& p2, const Velocity& v, real t);
 
 	/**
 	 * Return a new location on the great circle path from p1 to p2 that is
@@ -391,7 +392,7 @@ namespace larcfm {
 	 * @param d    distance from point #1 [m]
      * @return a new position that is distance d from point #1
 	 */
-  static LatLonAlt linear_gc(const LatLonAlt& p1, const LatLonAlt& p2, double d);
+  static LatLonAlt linear_gc(const LatLonAlt& p1, const LatLonAlt& p2, real d);
 
 
 	/**
@@ -427,7 +428,7 @@ namespace larcfm {
 	 * @param t time
 	 * @return linear extrapolation along a rhumb line
 	 */
-  static LatLonAlt linear_rhumb(const LatLonAlt& s, const Velocity& v, double t);
+  static LatLonAlt linear_rhumb(const LatLonAlt& s, const Velocity& v, real t);
 
 	/**
 	 * Find a point from the given lat/lon at an angle of 'track' at a distance
@@ -462,7 +463,7 @@ namespace larcfm {
 	 * @param dist distance
 	 * @return linear extrapolation along a rhumb line
 	 */
-  static LatLonAlt linear_rhumb(const LatLonAlt& s, double track, double dist);
+  static LatLonAlt linear_rhumb(const LatLonAlt& s, real track, real dist);
 
 
 	/**
@@ -480,7 +481,7 @@ namespace larcfm {
 	 * @param firstSolution select which solution to use
 	 * @return a Triple of angles B and C, and the side c.
 	 */
-	static Triple<double,double,double> side_side_angle(double b, double a, double A, bool firstSolution);
+	static Triple<real,real,real> side_side_angle(real b, real a, real A, bool firstSolution);
 
 	/**
 	 * Solve the spherical triangle when one has a side (in angular distance), and two angles.
@@ -497,7 +498,7 @@ namespace larcfm {
 	 * @param firstSolution select which solution to use
 	 * @return a Triple of side b, angle C, and the side c.
 	 */
-	static Triple<double,double,double> side_angle_angle(double a, double A, double B, bool firstSolution);
+	static Triple<real,real,real> side_angle_angle(real a, real A, real B, bool firstSolution);
 
 	/**
 	 * This implements the spherical cosine rule to complete a triangle on the unit sphere
@@ -506,7 +507,7 @@ namespace larcfm {
 	 * @param b side b (angular distance)
 	 * @return triple of A,B,c (angle opposite a, angle opposite b, side opposite C)
 	 */
-	static Triple<double,double,double> side_angle_side(double a, double C, double b);
+	static Triple<real,real,real> side_angle_side(real a, real C, real b);
 
 	/**
 	 * This implements the supplemental (polar triangle) spherical cosine rule to complete a triangle on the unit sphere
@@ -515,9 +516,9 @@ namespace larcfm {
 	 * @param B angle B
 	 * @return triple of a,b,C (side opposite A, side opposite B, angle opposite c)
 	 */
-	static Triple<double,double,double> angle_side_angle(double A, double c, double B);
+	static Triple<real,real,real> angle_side_angle(real A, real c, real B);
 
-	static LatLonAlt intersectionSegment(double T, const LatLonAlt& so, const Velocity& vo, const LatLonAlt& si, const LatLonAlt& si2);
+	static LatLonAlt intersectionSegment(real T, const LatLonAlt& so, const Velocity& vo, const LatLonAlt& si, const LatLonAlt& si2);
 
 	/**  EXPERIMENTAL
 	 * Given two great circle segments defined by a1,a2 and b1,b2, return the intersection point that is closest a1.  
@@ -537,7 +538,7 @@ namespace larcfm {
 
 
 private:
-	static bool gauss_check(double a, double b, double c, double A, double B, double C);
+	static bool gauss_check(real a, real b, real c, real A, real B, real C);
 public:
 
 	/**
@@ -553,7 +554,7 @@ public:
 	 * @param t time
 	 * @return position that is t seconds from s going velocity v
 	 */
-  static LatLonAlt linear_initial(const LatLonAlt& s, const Velocity& v, double t);
+  static LatLonAlt linear_initial(const LatLonAlt& s, const Velocity& v, real t);
 
 	/**
 	 * Find a point from the given lat/lon ('s') with an initial 'track' angle at a distance
@@ -569,7 +570,7 @@ public:
 	 *              method returns inaccurate results.
 	 * @return a new position that is distance d from point #1
 	 */
-  static LatLonAlt linear_initial(const LatLonAlt& s, double track, double dist);
+  static LatLonAlt linear_initial(const LatLonAlt& s, real track, real dist);
 
 	/**
 	 * <p>This function forms a great circle from p1 to p2, then computes 
@@ -583,7 +584,7 @@ public:
 	 * @param offCircle the point to measure the cross track distance
 	 * @return the signed cross track distance [m]
 	 */
-  static double cross_track_distance(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& offCircle);
+  static real cross_track_distance(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& offCircle);
 
 	/**
 	 * Determines if the three points are on the same great circle.
@@ -606,7 +607,7 @@ public:
     static LatLonAlt closest_point_circle(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x);
 
   private:
-    static LatLonAlt closest_point_circle(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x, double a, double b, double c, double A, double B, double C);
+    static LatLonAlt closest_point_circle(const LatLonAlt& p1, const LatLonAlt& p2, const LatLonAlt& x, real a, real b, real c, real A, real B, real C);
   public:
     
 	/**
@@ -633,12 +634,12 @@ public:
 	 */
     static LatLonAlt intersection(const LatLonAlt& a1, const LatLonAlt& a2, const LatLonAlt& b1, const LatLonAlt& b2);
 
-    static std::pair<LatLonAlt,double> intersectionExtrapAlt(const LatLonAlt& so, const LatLonAlt& so2, double dto, const LatLonAlt& si, const LatLonAlt& si2);
+    static std::pair<LatLonAlt,real> intersectionExtrapAlt(const LatLonAlt& so, const LatLonAlt& so2, real dto, const LatLonAlt& si, const LatLonAlt& si2);
 
-    static std::pair<LatLonAlt,double>  intersectionAvgAlt(const LatLonAlt& so, const LatLonAlt& so2, double dto, const LatLonAlt& si, const LatLonAlt& si2);
+    static std::pair<LatLonAlt,real>  intersectionAvgAlt(const LatLonAlt& so, const LatLonAlt& so2, real dto, const LatLonAlt& si, const LatLonAlt& si2);
 
 
-    static std::pair<LatLonAlt,double> intersection(const LatLonAlt& so, const Velocity& vo, const LatLonAlt& si, const Velocity& vi);
+    static std::pair<LatLonAlt,real> intersection(const LatLonAlt& so, const Velocity& vo, const LatLonAlt& si, const Velocity& vi);
 
 	/**
 	 * <p>Given two great circles defined by a1, a2 and b1, b2 return the angle between them at the intersection point.  
@@ -661,7 +662,7 @@ public:
 	 * @param b2 second point on the second great circle
 	 * @return angle between two great circles
 	 */
-    static double angleBetween(const LatLonAlt& a1, const LatLonAlt& a2, const LatLonAlt& b1, const LatLonAlt& b2);
+    static real angleBetween(const LatLonAlt& a1, const LatLonAlt& a2, const LatLonAlt& b1, const LatLonAlt& b2);
 
 	/**
 	 * Return angle between great circles (old version, uses spherical trig)
@@ -670,7 +671,7 @@ public:
 	 * @param c point on gc2
 	 * @return angle between the two great circles
 	 */
-    static double angle_betweenOLD(const LatLonAlt& a, const LatLonAlt& b, const LatLonAlt& c);
+    static real angle_betweenOLD(const LatLonAlt& a, const LatLonAlt& b, const LatLonAlt& c);
 
 	/**
 	 * Return the turn angle between great circles (this will return a value between 0 and PI)
@@ -680,7 +681,7 @@ public:
 	 * @param c point on gc2
 	 * @return magnitude of angle between the two great circles, from a-b to b-c
 	 */
-    static double angle_between(const LatLonAlt& a, const LatLonAlt& b, const LatLonAlt& c);
+    static real angle_between(const LatLonAlt& a, const LatLonAlt& b, const LatLonAlt& c);
 
 	/**
 	 * Return the turn angle between two great circles, measured in the indicated direction.  This can return a value larger than PI.
@@ -690,7 +691,7 @@ public:
 	 * @param dir +1 is right (clockwise), -1 is left (counterclockwise)
 	 * @return Value of angle of turn from a-b to b-c
 	 */
-    static double angle_between(const LatLonAlt& a, const LatLonAlt& b, const LatLonAlt& c, int dir);
+    static real angle_between(const LatLonAlt& a, const LatLonAlt& b, const LatLonAlt& c, int dir);
 
 
 	/**
@@ -739,7 +740,7 @@ public:
 	 * @param t time
 	 * @return average velocity
 	 */
-  static Velocity velocity_average(const LatLonAlt& p1, const LatLonAlt& p2, double t);
+  static Velocity velocity_average(const LatLonAlt& p1, const LatLonAlt& p2, real t);
 
 
 	/**
@@ -757,7 +758,7 @@ public:
 	 * @param speed speed between point
 	 * @return average velocity
 	 */
-  static Velocity velocity_average_speed(const LatLonAlt& s1, const LatLonAlt& s2, double speed);
+  static Velocity velocity_average_speed(const LatLonAlt& s1, const LatLonAlt& s2, real speed);
 
 
 	/**
@@ -781,7 +782,7 @@ public:
 	 * @param t time
 	 * @return velocity from point 1 to point 2, taking time t
 	 */
-  static Velocity velocity_initial(const LatLonAlt& p1, const LatLonAlt& p2, double t);
+  static Velocity velocity_initial(const LatLonAlt& p1, const LatLonAlt& p2, real t);
 
 	/**
 	 * Estimate the final velocity on the great circle from lat/lon #1 to
@@ -805,7 +806,7 @@ public:
 	 * @param t time
 	 * @return final velocity 
 	 */
-  static Velocity velocity_final(const LatLonAlt& p1, const LatLonAlt& p2, double t);
+  static Velocity velocity_final(const LatLonAlt& p1, const LatLonAlt& p2, real t);
 
 
 	/**
@@ -819,7 +820,7 @@ public:
 	 * @param lon longitude
 	 * @return point in R3 on surface of the earth (zero altitude)
 	 */
-  static Vect3 spherical2xyz(double lat, double lon);
+  static Vect3 spherical2xyz(real lat, real lon);
 
 	/**
 	 * Transforms a lat/lon position to a point in R3 (on a sphere)
@@ -854,9 +855,9 @@ public:
 	 * @param lon2 longitude of second point
 	 * @return the chord distance
 	 */
-  static double chord_distance(double lat1, double lon1, double lat2, double lon2);
+  static real chord_distance(real lat1, real lon1, real lat2, real lon2);
  
-  static double chord_distance(const LatLonAlt& lla1, const LatLonAlt& lla2);
+  static real chord_distance(const LatLonAlt& lla1, const LatLonAlt& lla2);
 
 	/**
 	 * Return the chord distance (through the earth) corresponding to a given surface distance (at the nominal earth radius).
@@ -864,18 +865,18 @@ public:
 	 * @param surface_dist distance across surface
 	 * @return chord distance
 	 */
-	static double chord_distance(double surface_dist);
+	static real chord_distance(real surface_dist);
 	
 	/**
 	 * Return the surface distance (at the nominal earth radius) corresponding to a given chord distance (through the earth).
 	 * @param chord_distance cordal distance
 	 * @return surface distance
 	 */
-	static double surface_distance(double chord_distance);
+	static real surface_distance(real chord_distance);
 	
-	static double to_chordal_radius(double surface_radius);
+	static real to_chordal_radius(real surface_radius);
 
-	static double to_surface_radius(double chord_radius);
+	static real to_surface_radius(real chord_radius);
 
 
 
@@ -887,7 +888,7 @@ public:
 	 * @param angle angle of rotation around center (positive is clockwise)
 	 * @return another position on the circle
 	 */
-	static LatLonAlt small_circle_rotation(const LatLonAlt& so, const LatLonAlt& center, double angle);
+	static LatLonAlt small_circle_rotation(const LatLonAlt& so, const LatLonAlt& center, real angle);
 
 	/**
 	 * Accurately calculate the linear distance of an arc on a small circle (turn) on the sphere.
@@ -896,7 +897,7 @@ public:
 	 * @return linear distance of the small circle arc
 	 * Note: A 100 km radius turn over 60 degrees produces about 4.3 m error.
 	 */
-	static double small_circle_arc_length(double radius, double arcAngle);
+	static real small_circle_arc_length(real radius, real arcAngle);
 
 	/**
 	 * Accurately calculate the angular distance of an arc on a small circle (turn) on the sphere.
@@ -905,7 +906,7 @@ public:
 	 * @return Angular distance of the arc around the small circle (from 0 o 2pi)
 	 * Note: A 100 km radius turn over 100 km of turn produces about 0.0024 degrees of error.
 	 */
-	static double small_circle_arc_angle(double radius, double arcLength);
+	static real small_circle_arc_angle(real radius, real arcLength);
 
 
 private:
@@ -914,7 +915,7 @@ private:
 	 * Convert the distance (in internal length units) across the <b>surface</b> of the
 	 * (spherical) Earth into an angle.
 	 */
-  static double angle_from_distance(double distance);
+  static real angle_from_distance(real distance);
 
   };
 

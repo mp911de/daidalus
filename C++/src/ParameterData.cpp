@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "ParameterData.h"
 #include "Units.h"
 #include "ErrorLog.h"
@@ -180,16 +181,16 @@ std::string ParameterData::getString(const std::string& key) const {
 	}
 }
 
-double ParameterData::getValue(const std::string& key) const {
+real ParameterData::getValue(const std::string& key) const {
 	paramtype::const_iterator q = parameters.find(key);
 	if (q == parameters.end()) {
-		return 0.0;
+		return real(0.0);
 	} else {
 		return q->second.dval;
 	}
 }
 
-double ParameterData::getValue(const std::string& key,const std::string& defaultUnit) const {
+real ParameterData::getValue(const std::string& key,const std::string& defaultUnit) const {
 	return Units::fromInternal(defaultUnit, getUnit(key), getValue(key));
 }
 
@@ -279,10 +280,10 @@ bool ParameterData::putParam(const std::string& ikey, bool perform_conversion, P
 /** Doesn't do error checking, string should be "trimmed." this should always return a ParameterEntry */
 std::pair<bool, ParameterEntry> ParameterData::parse_parameter_value(const std::string& value) {
 	bool perform_conversion = true;
-	double dbl = Units::parse(value,-123456.78);
-	if (dbl == -123456.78) {
+	real dbl = Units::parse(value,-real(123456.78));
+	if (dbl == -real(123456.78)) {
 		perform_conversion = true; //TODO: Does not match Java.  Problem?
-		dbl = 0.0;
+		dbl = real(0.0);
 		//do NOT change the string ("value").  The parameter coming in may not be a double value, it may be a list or a name
 	}
 	std::string unit = Units::parseUnits(value);
@@ -328,18 +329,18 @@ bool ParameterData::setInt(const std::string& key, int value) {
 	return putParam(key,std::pair<bool, ParameterEntry>(false,newEntry));
 }
 
-bool ParameterData::set(const std::string& key, double value, const std::string& units) {
+bool ParameterData::set(const std::string& key, real value, const std::string& units) {
 	std::string u = Units::clean(units);
 	ParameterEntry newEntry = ParameterEntry::makeDoubleEntry(Units::from(u,value),u,Constants::get_output_precision());
 	return putParam(key, std::pair<bool, ParameterEntry>(true,newEntry));
 }
 
-bool ParameterData::setInternal(const std::string& key, double value,
+bool ParameterData::setInternal(const std::string& key, real value,
 		const std::string& units) {
 	return setInternal(key, value, units, Constants::get_output_precision());
 }
 
-bool ParameterData::setInternal(const std::string& key, double value,
+bool ParameterData::setInternal(const std::string& key, real value,
 		const std::string& units, int prec) {
 	std::string u = Units::clean(units);
 	ParameterEntry newEntry = ParameterEntry::makeDoubleEntry(value,u,prec);
@@ -491,12 +492,12 @@ std::vector<int> ParameterData::getListInteger(const std::string& key) const {
 	}
 }
 
-std::vector<double> ParameterData::getListDouble(const std::string& key) const {
+std::vector<real> ParameterData::getListDouble(const std::string& key) const {
 	paramtype::const_iterator q =
 			parameters.find(key);
 
 	if (q == parameters.end()) {
-		return std::vector<double>();
+		return std::vector<real>();
 	} else {
 		return doubleList(q->second.sval);
 	}
@@ -524,7 +525,7 @@ bool ParameterData::set(const std::string& key, const std::vector<int>& list) {
 	return set(key,s);
 }
 
-bool ParameterData::set(const std::string& key, const std::vector<double>& list) {
+bool ParameterData::set(const std::string& key, const std::vector<real>& list) {
 	std:: string s = "";
 	if (list.size() > 0) {
 		s = ""+Fm8(list[0]);
@@ -725,7 +726,7 @@ std::string ParameterData::diffString(const ParameterData& pd) const {
 		if (isBoolean(key) && getBool(key) != pd.getBool(key))
 			out += padRight(key, keyLen)+"\t"+padRight(val1, valLen)+"\t"+val2+"\n";
 		else if (isNumber(key) && getValue(key) != pd.getValue(key)) {
-			double d = getValue(key)-pd.getValue(key);
+			real d = getValue(key)-pd.getValue(key);
 			out += padRight(key, keyLen)+"\t"+val1+"\t"+val2+"\t[delta="+FmPrecision(d)+"]\n";
 		} else if (isNumber(key) && !(getUnit(key) == pd.getUnit(key)))
 			out += padRight(key, keyLen)+" [unit="+getUnit(key)+"]\t"+val1+"\t"+val2+" [unit="+pd.getUnit(key)+"]\n";
@@ -790,10 +791,10 @@ std::vector<int> ParameterData::intList(const std::string& instring) {
 	return list;
 }
 
-std::vector<double> ParameterData::doubleList(const std::string& instring) {
+std::vector<real> ParameterData::doubleList(const std::string& instring) {
 	std::string s = instring;
 	std::vector<std::string> ss = ParameterData::stringList(s);
-	std::vector<double> list;
+	std::vector<real> list;
 	for (int i = 0; i < (int) ss.size(); i++) {
 		list.push_back(Units::parse(ss[i]));
 	}

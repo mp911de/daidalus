@@ -13,6 +13,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Projection.h"
 #include "SimpleProjection.h"
 #include "SimpleNoPolarProjection.h"
@@ -29,7 +30,7 @@ namespace larcfm {
   EuclideanProjection Projection::projection = EuclideanProjection();
   ProjectionType Projection::ptype = projection_type_value__;
 
-  EuclideanProjection Projection::createProjection(double lat, double lon, double alt) {
+  EuclideanProjection Projection::createProjection(real lat, real lon, real alt) {
     return projection.makeNew(lat, lon, alt);
   }
 
@@ -44,11 +45,11 @@ namespace larcfm {
    }
 
 
-  double Projection::projectionConflictRange(double lat, double accuracy) {
+  real Projection::projectionConflictRange(real lat, real accuracy) {
     return projection.conflictRange(lat,accuracy);
   }
   
-  double Projection::projectionMaxRange() {
+  real Projection::projectionMaxRange() {
     return projection.maxRange();
   }
 
@@ -83,7 +84,7 @@ namespace larcfm {
 //  EuclideanProjection projection = EuclideanProjection();
 //  ProjectionType ptype = projection_type_value__;
 
-  EuclideanProjection getProjection(double lat, double lon, double alt) {
+  EuclideanProjection getProjection(real lat, real lon, real alt) {
 	  return Projection::createProjection(lat, lon, alt);
   }
 
@@ -91,11 +92,11 @@ namespace larcfm {
 	  return Projection::createProjection(lla);
   }
 
-  double projectionConflictRange(double lat, double accuracy) {
+  real projectionConflictRange(real lat, real accuracy) {
 	  return Projection::projectionConflictRange(lat,accuracy);
   }
 
-  double projectionMaxRange() {
+  real projectionMaxRange() {
 	  return Projection::projectionMaxRange();
   }
 

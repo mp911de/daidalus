@@ -15,6 +15,7 @@
  */
 
 
+#include "Real.h"
 #include "StateReader.h"
 #include "Units.h"
 //#include "UnitSymbols.h"
@@ -116,13 +117,13 @@ namespace larcfm {
     interpretUnits = false;
     states.clear();
     string name = ""; // the current aircraft name
-    double lastTime = -1000000; // time must be increasing
+    real lastTime = -1000000; // time must be increasing
     int stateIndex = -1;
 
     // save accuracy info in temp vars
-    double h = Constants::get_horizontal_accuracy();
-    double v = Constants::get_vertical_accuracy();
-    double t = Constants::get_time_accuracy();
+    real h = Constants::get_horizontal_accuracy();
+    real v = Constants::get_vertical_accuracy();
+    real t = Constants::get_time_accuracy();
     
     while ( ! input.readLine()) {
       // look for each possible heading
@@ -206,7 +207,7 @@ namespace larcfm {
 
 		Position ss;
 		Velocity vv;
-		double tm = 0.0;
+		real tm = real(0.0);
 		if (head[TM_CLK] >= 0) {
 			tm = parseClockTime(input.getColumnString(head[TM_CLK]));
 			if (lastTime > tm && thisName == name) {
@@ -262,12 +263,12 @@ namespace larcfm {
 			extracolumnValues.erase(newkey); // remove old entry, if it exists
 			if (input.columnHasValue(colnum)) {
 				std::string str = input.getColumnString(colnum);
-				double val = input.getColumn(colnum, NaN, false);
+				real val = input.getColumn(colnum, NaN, false);
 				bool bol = false;
 				if (equalsIgnoreCase(str,"true")) {
 					bol = true;
 				}
-				extracolumnValues[newkey] = Triple<double,bool,std::string>(val, bol, str); // add new entry, if there is anything
+				extracolumnValues[newkey] = Triple<real,bool,std::string>(val, bol, str); // add new entry, if there is anything
 			}
 		}
 
@@ -305,8 +306,8 @@ namespace larcfm {
   }
   
   
-  double StateReader::parseClockTime(const string& s) const {
-    double tm = 0.0;
+  real StateReader::parseClockTime(const string& s) const {
+    real tm = real(0.0);
     try {
       if (clock) {
 //        string patternStr = "[:]";
@@ -363,8 +364,8 @@ namespace larcfm {
     return states[ac].name();
   }  
     
-  double StateReader::getTime(int ac) const {
-		if (ac < 0 || ac >= size()) return 0.0;
+  real StateReader::getTime(int ac) const {
+		if (ac < 0 || ac >= size()) return real(0.0);
 		return states[ac].timeLast();
 	}
 
@@ -422,7 +423,7 @@ namespace larcfm {
 	/**
 	 * Returns the column value associated with a given aircraft, interpreted as a double, or NaN if there is no info
 	 */
-	double StateReader::getExtraColumnValue(int ac, const std::string& colname) const {
+	real StateReader::getExtraColumnValue(int ac, const std::string& colname) const {
 		int colnum = input.findHeading(colname);
 		std::pair<int,int> key = std::pair<int,int>(ac,colnum);
 		extraTblType::const_iterator it = extracolumnValues.find(key);

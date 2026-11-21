@@ -6,6 +6,7 @@
  */
 #ifndef DAIDALUSPARAMETERS_H_
 #define DAIDALUSPARAMETERS_H_
+#include "Real.h"
 
 #include "ParameterData.h"
 #include "ParameterAcceptor.h"
@@ -39,17 +40,17 @@ private:
   ErrorLog error;
 
   // Bands
-  double lookahead_time_; // [s] Lookahead time
-  double distance_filter_; // Distance filter (respect to the ownship)
-	double altitude_filter_; // Altitude filter (respect to the ownship) 
-  double left_hdir_;      // Left horizontal direction [0 - pi]
-  double right_hdir_;     // Right horizontal direction [0 - pi]
-  double min_hs_;         // Minimum horizontal speed
-  double max_hs_;         // Maximum horizontal speed
-  double min_vs_;         // Minimum vertical speed
-  double max_vs_;         // Maximum vertical speed
-  double min_alt_;        // Minimum altitude
-  double max_alt_;        // Maximum altitude
+  real lookahead_time_; // [s] Lookahead time
+  real distance_filter_; // Distance filter (respect to the ownship)
+	real altitude_filter_; // Altitude filter (respect to the ownship)
+  real left_hdir_;      // Left horizontal direction [0 - pi]
+  real right_hdir_;     // Right horizontal direction [0 - pi]
+  real min_hs_;         // Minimum horizontal speed
+  real max_hs_;         // Maximum horizontal speed
+  real min_vs_;         // Minimum vertical speed
+  real max_vs_;         // Maximum vertical speed
+  real min_alt_;        // Minimum altitude
+  real max_alt_;        // Maximum altitude
 
   // Relative bands
   // The following values specify above and below values for the computation of bands
@@ -58,27 +59,27 @@ private:
   // if below < 0 && above >= 0 then [min,val+above]
   // if below >=0 && above < 0  then [val-below,max]
   // if below == 0 && above == 0] then [min,max]
-  double below_relative_hs_;
-  double above_relative_hs_;
-  double below_relative_vs_;
-  double above_relative_vs_;
-  double below_relative_alt_;
-  double above_relative_alt_;
+  real below_relative_hs_;
+  real above_relative_hs_;
+  real below_relative_vs_;
+  real above_relative_vs_;
+  real below_relative_alt_;
+  real above_relative_alt_;
 
   // Kinematic bands
-  double step_hdir_; // Direction step
-  double step_hs_;  // Horizontal speed step
-  double step_vs_;  // Vertical speed step
-  double step_alt_; // Altitude step
-  double horizontal_accel_; // Horizontal acceleration
-  double vertical_accel_; // Vertical acceleration
-  double turn_rate_; // Turn rate
-  double bank_angle_; // Bank angles (only used when turn_rate is 0)
-  double vertical_rate_; // Vertical rate
+  real step_hdir_; // Direction step
+  real step_hs_;  // Horizontal speed step
+  real step_vs_;  // Vertical speed step
+  real step_alt_; // Altitude step
+  real horizontal_accel_; // Horizontal acceleration
+  real vertical_accel_; // Vertical acceleration
+  real turn_rate_; // Turn rate
+  real bank_angle_; // Bank angles (only used when turn_rate is 0)
+  real vertical_rate_; // Vertical rate
 
   // Recovery bands
-  double min_horizontal_recovery_; // Horizontal distance protected during recovery. TCAS RA DMOD is used this value is 0
-  double min_vertical_recovery_; // Vertical distance protected during recovery. TCAS RA ZTHR is used when this value is 0
+  real min_horizontal_recovery_; // Horizontal distance protected during recovery. TCAS RA DMOD is used this value is 0
+  real min_vertical_recovery_; // Vertical distance protected during recovery. TCAS RA ZTHR is used when this value is 0
   bool recovery_hdir_;
   bool recovery_hs_;
   bool recovery_vs_;
@@ -86,19 +87,19 @@ private:
 
   // Collision avoidance bands 
   bool   ca_bands_;  // When true, compute recovery bands until NMAC
-  double ca_factor_; // Reduction factor when computing CA bands. It;s a value in [0,1]
-  double horizontal_nmac_; // Horizontal Near Mid-Air Collision
-  double vertical_nmac_; // Vertical Near Mid-Air Collision
+  real ca_factor_; // Reduction factor when computing CA bands. It;s a value in [0,1]
+  real horizontal_nmac_; // Horizontal Near Mid-Air Collision
+  real vertical_nmac_; // Vertical Near Mid-Air Collision
 
   // Hysteresis and persistence
-  double recovery_stability_time_;    // Recovery stability time
-  double hysteresis_time_;            // Resolution hysteresis time
-  double persistence_time_;           // Persistence time
+  real recovery_stability_time_;    // Recovery stability time
+  real hysteresis_time_;            // Resolution hysteresis time
+  real persistence_time_;           // Persistence time
   bool   bands_persistence_;          // Bands persistence enabled/disabled
-  double persistence_preferred_hdir_; // Persistence for preferred horizontal direction resolution
-  double persistence_preferred_hs_;   // Persistence for preferred horizontal speed resolution
-  double persistence_preferred_vs_;   // Persistence for preferred Max delta for vertical speed resolution
-  double persistence_preferred_alt_;  // Persistence for preferred altitude resolution resolution
+  real persistence_preferred_hdir_; // Persistence for preferred horizontal direction resolution
+  real persistence_preferred_hs_;   // Persistence for preferred horizontal speed resolution
+  real persistence_preferred_vs_;   // Persistence for preferred Max delta for vertical speed resolution
+  real persistence_preferred_alt_;  // Persistence for preferred altitude resolution resolution
   int    alerting_m_; // Alerting M parameter of M of N
   int    alerting_n_; // Alerting N parameter of M of N
 
@@ -107,15 +108,15 @@ private:
   bool recovery_crit_; /* Use criteria for recovery bands */
 
   // Sensor Uncertainty Mitigation
-  double h_pos_z_score_; // Number of horizontal position standard deviations
-  double h_vel_z_score_min_; // Minimum number of horizontal velocity standard deviations
-  double h_vel_z_score_max_; // Maximum number of horizontal velocity standard deviations
-  double h_vel_z_distance_; // Distance at which h_vel_z_score scales from min to max as range decreases
-  double v_pos_z_score_; // Number of vertical position standard deviations
-  double v_vel_z_score_; // Number of vertical velocity standard deviations
+  real h_pos_z_score_; // Number of horizontal position standard deviations
+  real h_vel_z_score_min_; // Minimum number of horizontal velocity standard deviations
+  real h_vel_z_score_max_; // Maximum number of horizontal velocity standard deviations
+  real h_vel_z_distance_; // Distance at which h_vel_z_score scales from min to max as range decreases
+  real v_pos_z_score_; // Number of vertical position standard deviations
+  real v_vel_z_score_; // Number of vertical velocity standard deviations
 
   // Contours
-  double contour_thr_; // Horizontal threshold, specified as an angle to the left/right of current aircraft direction,
+  real contour_thr_; // Horizontal threshold, specified as an angle to the left/right of current aircraft direction,
   // for computing horizontal contours. A value of 0 means only conflict contours. A value of pi means all contours.
 
   // DAA Terminal Area (DTA)
@@ -133,14 +134,14 @@ private:
    * intruder-centric logic).
    */
   int dta_logic_;
-  double dta_latitude_;
-  double dta_longitude_;
-  double dta_radius_;
-  double dta_height_;
+  real dta_latitude_;
+  real dta_longitude_;
+  real dta_radius_;
+  real dta_height_;
   int dta_alerter_;
 
   // Airspeed threshold for calculation of horizontal direction bands
-	double airspeed_thr_;   
+	real airspeed_thr_;
 	/** 
 	 * 0: Special horizontal dir bands logic when airspeed is below airspeed_thr is disabled
 	 * 1: Instantaneous horizontal direction bands computed assuming airspeed_thr
@@ -276,160 +277,160 @@ public:
   /** 
    * @return lookahead time in seconds.
    */
-  double getLookaheadTime() const;
+  real getLookaheadTime() const;
 
   /** 
    * @return lookahead time in specified units [u].
    */
-  double getLookaheadTime(const std::string& u) const;
+  real getLookaheadTime(const std::string& u) const;
   
   /** 
    * @return distance filter in meters.
    */
-	double getDistanceFilter() const;
+	real getDistanceFilter() const;
 
   /** 
    * @return distance filter in specified units [u].
    */
-	double getDistanceFilter(const std::string& u) const;
+	real getDistanceFilter(const std::string& u) const;
 
   /** 
    * @return altitude filter in meters.
    */
-	double getAltitudeFilter() const;
+	real getAltitudeFilter() const;
 
   /** 
    * @return altitude filter in specified units [u].
    */
-	double getAltitudeFilter(const std::string& u) const;
+	real getAltitudeFilter(const std::string& u) const;
 
-  double getLeftHorizontalDirection() const;
+  real getLeftHorizontalDirection() const;
 
-  double getLeftHorizontalDirection(const std::string& u) const;
+  real getLeftHorizontalDirection(const std::string& u) const;
 
-  double getRightHorizontalDirection() const;
+  real getRightHorizontalDirection() const;
 
-  double getRightHorizontalDirection(const std::string& u) const;
+  real getRightHorizontalDirection(const std::string& u) const;
 
   /** 
    * @return airspeed threshold in internal units [m/s].
    */
-  double getAirspeedThreshold() const;
+  real getAirspeedThreshold() const;
 
   /** 
    * @return airspeed threshold in specified units [u].    
    */
-  double getAirspeedThreshold(const std::string& u) const;
+  real getAirspeedThreshold(const std::string& u) const;
 
-  double getMinHorizontalSpeed() const;
+  real getMinHorizontalSpeed() const;
 
-  double getMinHorizontalSpeed(const std::string& u) const;
+  real getMinHorizontalSpeed(const std::string& u) const;
 
-  double getMaxHorizontalSpeed() const;
+  real getMaxHorizontalSpeed() const;
 
-  double getMaxHorizontalSpeed(const std::string& u) const;
+  real getMaxHorizontalSpeed(const std::string& u) const;
 
-  double getMinVerticalSpeed() const;
+  real getMinVerticalSpeed() const;
 
-  double getMinVerticalSpeed(const std::string& u) const;
+  real getMinVerticalSpeed(const std::string& u) const;
 
-  double getMaxVerticalSpeed() const;
+  real getMaxVerticalSpeed() const;
 
-  double getMaxVerticalSpeed(const std::string& u) const;
+  real getMaxVerticalSpeed(const std::string& u) const;
 
-  double getMinAltitude() const;
+  real getMinAltitude() const;
 
-  double getMinAltitude(const std::string& u) const;
+  real getMinAltitude(const std::string& u) const;
 
-  double getMaxAltitude() const;
+  real getMaxAltitude() const;
 
-  double getMaxAltitude(const std::string& u) const;
+  real getMaxAltitude(const std::string& u) const;
 
-  double getBelowRelativeHorizontalSpeed() const;
+  real getBelowRelativeHorizontalSpeed() const;
 
-  double getBelowRelativeHorizontalSpeed(const std::string& u) const;
+  real getBelowRelativeHorizontalSpeed(const std::string& u) const;
 
-  double getAboveRelativeHorizontalSpeed() const;
+  real getAboveRelativeHorizontalSpeed() const;
 
-  double getAboveRelativeHorizontalSpeed(const std::string& u) const;
+  real getAboveRelativeHorizontalSpeed(const std::string& u) const;
 
-  double getBelowRelativeVerticalSpeed() const;
+  real getBelowRelativeVerticalSpeed() const;
 
-  double getBelowRelativeVerticalSpeed(const std::string& u) const;
+  real getBelowRelativeVerticalSpeed(const std::string& u) const;
 
-  double getAboveRelativeVerticalSpeed() const;
+  real getAboveRelativeVerticalSpeed() const;
 
-  double getAboveRelativeVerticalSpeed(const std::string& u) const;
+  real getAboveRelativeVerticalSpeed(const std::string& u) const;
 
-  double getBelowRelativeAltitude() const;
+  real getBelowRelativeAltitude() const;
 
-  double getBelowRelativeAltitude(const std::string& u) const;
+  real getBelowRelativeAltitude(const std::string& u) const;
 
-  double getAboveRelativeAltitude() const;
+  real getAboveRelativeAltitude() const;
 
-  double getAboveRelativeAltitude(const std::string& u) const;
+  real getAboveRelativeAltitude(const std::string& u) const;
 
-  double getHorizontalDirectionStep() const;
+  real getHorizontalDirectionStep() const;
 
-  double getHorizontalDirectionStep(const std::string& u) const;
+  real getHorizontalDirectionStep(const std::string& u) const;
 
-  double getHorizontalSpeedStep() const;
+  real getHorizontalSpeedStep() const;
 
-  double getHorizontalSpeedStep(const std::string& u) const;
+  real getHorizontalSpeedStep(const std::string& u) const;
 
-  double getVerticalSpeedStep() const;
+  real getVerticalSpeedStep() const;
 
-  double getVerticalSpeedStep(const std::string& u) const;
+  real getVerticalSpeedStep(const std::string& u) const;
 
-  double getAltitudeStep() const;
+  real getAltitudeStep() const;
 
-  double getAltitudeStep(const std::string& u) const;
+  real getAltitudeStep(const std::string& u) const;
 
-  double getHorizontalAcceleration() const;
+  real getHorizontalAcceleration() const;
 
-  double getHorizontalAcceleration(const std::string& u) const;
+  real getHorizontalAcceleration(const std::string& u) const;
 
-  double getVerticalAcceleration() const;
+  real getVerticalAcceleration() const;
 
-  double getVerticalAcceleration(const std::string& u) const;
+  real getVerticalAcceleration(const std::string& u) const;
 
-  double getTurnRate() const;
+  real getTurnRate() const;
 
-  double getTurnRate(const std::string& u) const;
+  real getTurnRate(const std::string& u) const;
 
-  double getBankAngle() const;
+  real getBankAngle() const;
 
-  double getBankAngle(const std::string& u) const;
+  real getBankAngle(const std::string& u) const;
 
-  double getVerticalRate() const;
+  real getVerticalRate() const;
 
-  double getVerticalRate(const std::string& u) const;
+  real getVerticalRate(const std::string& u) const;
 
-  double getHorizontalNMAC() const;
+  real getHorizontalNMAC() const;
 
-  double getHorizontalNMAC(const std::string& u) const;
+  real getHorizontalNMAC(const std::string& u) const;
 
-  double getVerticalNMAC() const;
+  real getVerticalNMAC() const;
 
-  double getVerticalNMAC(const std::string& u) const;
+  real getVerticalNMAC(const std::string& u) const;
 
-  double getRecoveryStabilityTime() const;
+  real getRecoveryStabilityTime() const;
 
-  double getRecoveryStabilityTime(const std::string& u) const;
+  real getRecoveryStabilityTime(const std::string& u) const;
 
   /**
    * @return hysteresis time in seconds.
    */
-  double getHysteresisTime() const;
+  real getHysteresisTime() const;
 
   /**
    * @return hysteresis time in specified units [u]
    */
-  double getHysteresisTime(const std::string& u) const;
+  real getHysteresisTime(const std::string& u) const;
 
-  double getPersistenceTime() const;
+  real getPersistenceTime() const;
 
-  double getPersistenceTime(const std::string& u) const;
+  real getPersistenceTime(const std::string& u) const;
 
   bool   isEnabledBandsPersistence() const;
 
@@ -439,21 +440,21 @@ public:
 
   void   disableBandsPersistence();
 
-  double getPersistencePreferredHorizontalDirectionResolution() const;
+  real getPersistencePreferredHorizontalDirectionResolution() const;
 
-  double getPersistencePreferredHorizontalDirectionResolution(const std::string& u) const;
+  real getPersistencePreferredHorizontalDirectionResolution(const std::string& u) const;
 
-  double getPersistencePreferredHorizontalSpeedResolution() const;
+  real getPersistencePreferredHorizontalSpeedResolution() const;
 
-  double getPersistencePreferredHorizontalSpeedResolution(const std::string& u) const;
+  real getPersistencePreferredHorizontalSpeedResolution(const std::string& u) const;
 
-  double getPersistencePreferredVerticalSpeedResolution() const;
+  real getPersistencePreferredVerticalSpeedResolution() const;
 
-  double getPersistencePreferredVerticalSpeedResolution(const std::string& u) const;
+  real getPersistencePreferredVerticalSpeedResolution(const std::string& u) const;
 
-  double getPersistencePreferredAltitudeResolution() const;
+  real getPersistencePreferredAltitudeResolution() const;
 
-  double getPersistencePreferredAltitudeResolution(const std::string& u) const;
+  real getPersistencePreferredAltitudeResolution(const std::string& u) const;
 
   /**
    * @return Alerting parameter m of "M of N" strategy
@@ -465,111 +466,111 @@ public:
    */
   int getAlertingParameterN() const;
 
-  double getMinHorizontalRecovery() const;
+  real getMinHorizontalRecovery() const;
 
-  double getMinHorizontalRecovery(const std::string& u) const;
+  real getMinHorizontalRecovery(const std::string& u) const;
 
-  double getMinVerticalRecovery() const;
+  real getMinVerticalRecovery() const;
 
-  double getMinVerticalRecovery(const std::string& u) const;
+  real getMinVerticalRecovery(const std::string& u) const;
 
-  bool setLookaheadTime(double val);
+  bool setLookaheadTime(real val);
 
-  bool setLookaheadTime(double val, const std::string& u);
+  bool setLookaheadTime(real val, const std::string& u);
 
   /** 
    * Set distance filter to value in meters.
    */
-	bool setDistanceFilter(double val);
+	bool setDistanceFilter(real val);
 
   /** 
    * Set distance filter to value in specified units [u].
    */
-  bool setDistanceFilter(double val, const std::string& u); 
+  bool setDistanceFilter(real val, const std::string& u);
   
   /** 
    * Set altitude filter to value in meters.
    */
-	bool setAltitudeFilter(double val);
+	bool setAltitudeFilter(real val);
 
   /** 
    * Set altitude filter to value in specified units [u].
    */
-  bool setAltitudeFilter(double val, const std::string& u); 
+  bool setAltitudeFilter(real val, const std::string& u);
 
-  bool setLeftHorizontalDirection(double val);
+  bool setLeftHorizontalDirection(real val);
 
-  bool setLeftHorizontalDirection(double val, const std::string& u);
+  bool setLeftHorizontalDirection(real val, const std::string& u);
 
-  bool setRightHorizontalDirection(double val);
+  bool setRightHorizontalDirection(real val);
 
-  bool setRightHorizontalDirection(double val, const std::string& u);
+  bool setRightHorizontalDirection(real val, const std::string& u);
 
 	/** 
    * Set airspeed threshold to value in internal units [m/s].
    */
-	bool setAirspeedThreshold(double val);
+	bool setAirspeedThreshold(real val);
 
   /** 
    * Set airspeed threshold to value in specified units [u].
    */
-	bool setAirspeedThreshold(double val, const std::string& u);
+	bool setAirspeedThreshold(real val, const std::string& u);
     
   /**
    * Set minimum horizontal speed to value in internal units [m/s].
    * Minimum horizontal speed must be non-negative.
   */  
-  bool setMinHorizontalSpeed(double val);
+  bool setMinHorizontalSpeed(real val);
 
   /**
    * Set minimum horizontal speed to value in specified units.
    * Minimum horizontal speed must be non-negative.
   */
-  bool setMinHorizontalSpeed(double val, const std::string& u);
+  bool setMinHorizontalSpeed(real val, const std::string& u);
 
-  bool setMaxHorizontalSpeed(double val);
+  bool setMaxHorizontalSpeed(real val);
 
-  bool setMaxHorizontalSpeed(double val, const std::string& u);
+  bool setMaxHorizontalSpeed(real val, const std::string& u);
 
-  bool setMinVerticalSpeed(double val);
+  bool setMinVerticalSpeed(real val);
 
-  bool setMinVerticalSpeed(double val, const std::string& u);
+  bool setMinVerticalSpeed(real val, const std::string& u);
 
-  bool setMaxVerticalSpeed(double val);
+  bool setMaxVerticalSpeed(real val);
 
-  bool setMaxVerticalSpeed(double val, const std::string& u);
+  bool setMaxVerticalSpeed(real val, const std::string& u);
 
-  bool setMinAltitude(double val);
+  bool setMinAltitude(real val);
 
-  bool setMinAltitude(double val, const std::string& u);
+  bool setMinAltitude(real val, const std::string& u);
 
-  bool setMaxAltitude(double val);
+  bool setMaxAltitude(real val);
 
-  bool setMaxAltitude(double val, const std::string& u);
+  bool setMaxAltitude(real val, const std::string& u);
 
-  bool setBelowRelativeHorizontalSpeed(double val);
+  bool setBelowRelativeHorizontalSpeed(real val);
 
-  bool setBelowRelativeHorizontalSpeed(double val, const std::string& u);
+  bool setBelowRelativeHorizontalSpeed(real val, const std::string& u);
 
-  bool setAboveRelativeHorizontalSpeed(double val);
+  bool setAboveRelativeHorizontalSpeed(real val);
 
-  bool setAboveRelativeHorizontalSpeed(double val, const std::string& u);
+  bool setAboveRelativeHorizontalSpeed(real val, const std::string& u);
 
-  bool setBelowRelativeVerticalSpeed(double val);
+  bool setBelowRelativeVerticalSpeed(real val);
 
-  bool setBelowRelativeVerticalSpeed(double val, const std::string& u);
+  bool setBelowRelativeVerticalSpeed(real val, const std::string& u);
 
-  bool setAboveRelativeVerticalSpeed(double val);
+  bool setAboveRelativeVerticalSpeed(real val);
 
-  bool setAboveRelativeVerticalSpeed(double val, const std::string& u);
+  bool setAboveRelativeVerticalSpeed(real val, const std::string& u);
 
-  bool setBelowRelativeAltitude(double val);
+  bool setBelowRelativeAltitude(real val);
 
-  bool setBelowRelativeAltitude(double val, const std::string& u);
+  bool setBelowRelativeAltitude(real val, const std::string& u);
 
-  bool setAboveRelativeAltitude(double val);
+  bool setAboveRelativeAltitude(real val);
 
-  bool setAboveRelativeAltitude(double val, const std::string& u);
+  bool setAboveRelativeAltitude(real val, const std::string& u);
 
   void setBelowToMinRelativeHorizontalSpeed();
 
@@ -589,100 +590,100 @@ public:
 
   void disableRelativeAltitude();
 
-  bool setHorizontalDirectionStep(double val);
+  bool setHorizontalDirectionStep(real val);
 
-  bool setHorizontalDirectionStep(double val, const std::string& u);
+  bool setHorizontalDirectionStep(real val, const std::string& u);
 
-  bool setHorizontalSpeedStep(double val);
+  bool setHorizontalSpeedStep(real val);
 
-  bool setHorizontalSpeedStep(double val, const std::string& u);
+  bool setHorizontalSpeedStep(real val, const std::string& u);
 
-  bool setVerticalSpeedStep(double val);
+  bool setVerticalSpeedStep(real val);
 
-  bool setVerticalSpeedStep(double val, const std::string& u);
+  bool setVerticalSpeedStep(real val, const std::string& u);
 
-  bool setAltitudeStep(double val);
+  bool setAltitudeStep(real val);
 
-  bool setAltitudeStep(double val, const std::string& u);
+  bool setAltitudeStep(real val, const std::string& u);
 
-  bool setHorizontalAcceleration(double val);
+  bool setHorizontalAcceleration(real val);
 
-  bool setHorizontalAcceleration(double val, const std::string& u);
+  bool setHorizontalAcceleration(real val, const std::string& u);
 
-  bool setVerticalAcceleration(double val);
+  bool setVerticalAcceleration(real val);
 
-  bool setVerticalAcceleration(double val, const std::string& u);
+  bool setVerticalAcceleration(real val, const std::string& u);
 
 private:
-  bool set_turn_rate(double val);
+  bool set_turn_rate(real val);
 
-  bool set_bank_angle(double val);
+  bool set_bank_angle(real val);
 
   bool set_alerting_parameterM(int m);
 
   bool set_alerting_parameterN(int n);
 
 public:
-  bool setTurnRate(double val);
+  bool setTurnRate(real val);
 
-  bool setTurnRate(double val, const std::string& u);
+  bool setTurnRate(real val, const std::string& u);
 
-  bool setBankAngle(double val);
+  bool setBankAngle(real val);
 
-  bool setBankAngle(double val, const std::string& u);
+  bool setBankAngle(real val, const std::string& u);
 
-  bool setVerticalRate(double val);
+  bool setVerticalRate(real val);
 
-  bool setVerticalRate(double val, const std::string& u);
+  bool setVerticalRate(real val, const std::string& u);
 
-  bool setHorizontalNMAC(double val);
+  bool setHorizontalNMAC(real val);
 
-  bool setHorizontalNMAC(double val, const std::string& u);
+  bool setHorizontalNMAC(real val, const std::string& u);
 
-  bool setVerticalNMAC(double val);
+  bool setVerticalNMAC(real val);
 
-  bool setVerticalNMAC(double val, const std::string& u);
+  bool setVerticalNMAC(real val, const std::string& u);
 
-  bool setRecoveryStabilityTime(double val);
+  bool setRecoveryStabilityTime(real val);
 
-  bool setRecoveryStabilityTime(double val, const std::string& u);
+  bool setRecoveryStabilityTime(real val, const std::string& u);
 
-  bool setHysteresisTime(double val);
+  bool setHysteresisTime(real val);
 
-  bool setHysteresisTime(double val, const std::string& u);
+  bool setHysteresisTime(real val, const std::string& u);
 
-  bool setPersistenceTime(double val);
+  bool setPersistenceTime(real val);
 
-  bool setPersistenceTime(double val, const std::string& u);
+  bool setPersistenceTime(real val, const std::string& u);
 
-  bool setPersistencePreferredHorizontalDirectionResolution(double val);
+  bool setPersistencePreferredHorizontalDirectionResolution(real val);
 
-  bool setPersistencePreferredHorizontalDirectionResolution(double val, const std::string& u);
+  bool setPersistencePreferredHorizontalDirectionResolution(real val, const std::string& u);
 
-  bool setPersistencePreferredHorizontalSpeedResolution(double val);
+  bool setPersistencePreferredHorizontalSpeedResolution(real val);
 
-  bool setPersistencePreferredHorizontalSpeedResolution(double val, const std::string& u);
+  bool setPersistencePreferredHorizontalSpeedResolution(real val, const std::string& u);
 
-  bool setPersistencePreferredVerticalSpeedResolution(double val);
+  bool setPersistencePreferredVerticalSpeedResolution(real val);
 
-  bool setPersistencePreferredVerticalSpeedResolution(double val, const std::string& u);
+  bool setPersistencePreferredVerticalSpeedResolution(real val, const std::string& u);
 
-  bool setPersistencePreferredAltitudeResolution(double val);
+  bool setPersistencePreferredAltitudeResolution(real val);
 
-  bool setPersistencePreferredAltitudeResolution(double val, const std::string& u);
+  bool setPersistencePreferredAltitudeResolution(real val, const std::string& u);
 
   /**
    * Set alerting parameters of M of N strategy
    */
   bool setAlertingMofN(int m, int n);
 
-  bool setMinHorizontalRecovery(double val);
+  bool setMinHorizontalRecovery(real val);
 
-  bool setMinHorizontalRecovery(double val, const std::string& u);
+  bool setMinHorizontalRecovery(real val, const std::string& u);
 
-  bool setMinVerticalRecovery(double val);
+  bool setMinVerticalRecovery(real val);
 
-  bool setMinVerticalRecovery(double val, const std::string& u);
+  bool setMinVerticalRecovery(real val, const std::string& u);
 
   /**
    * @return true if repulsive criteria is enabled for conflict bands -- EXPERIMENTAL FEATURE
@@ -816,68 +817,68 @@ public:
   /**
    * @return get factor for computing collision avoidance bands. Factor value is in (0,1]
    */
-  double getCollisionAvoidanceBandsFactor() const;
+  real getCollisionAvoidanceBandsFactor() const;
 
   /**
    * @return set factor for computing collision avoidance bands. Factor value is in (0,1]
    */
-  bool setCollisionAvoidanceBandsFactor(double val);
+  bool setCollisionAvoidanceBandsFactor(real val);
 
-  double getHorizontalPositionZScore() const;
+  real getHorizontalPositionZScore() const;
 
-  bool setHorizontalPositionZScore(double val);
+  bool setHorizontalPositionZScore(real val);
 
-  double getHorizontalVelocityZScoreMin() const;
+  real getHorizontalVelocityZScoreMin() const;
 
-  bool setHorizontalVelocityZScoreMin(double val);
+  bool setHorizontalVelocityZScoreMin(real val);
 
-  double getHorizontalVelocityZScoreMax() const;
+  real getHorizontalVelocityZScoreMax() const;
 
-  bool setHorizontalVelocityZScoreMax(double val);
+  bool setHorizontalVelocityZScoreMax(real val);
 
-  double getHorizontalVelocityZDistance() const;
+  real getHorizontalVelocityZDistance() const;
 
-  bool setHorizontalVelocityZDistance(double val);
+  bool setHorizontalVelocityZDistance(real val);
 
-  double getHorizontalVelocityZDistance(const std::string& u) const;
+  real getHorizontalVelocityZDistance(const std::string& u) const;
 
-  bool setHorizontalVelocityZDistance(double val, const std::string& u);
+  bool setHorizontalVelocityZDistance(real val, const std::string& u);
 
-  double getVerticalPositionZScore() const;
+  real getVerticalPositionZScore() const;
 
-  bool setVerticalPositionZScore(double val);
+  bool setVerticalPositionZScore(real val);
 
-  double getVerticalSpeedZScore() const;
+  real getVerticalSpeedZScore() const;
 
-  bool setVerticalSpeedZScore(double val);
+  bool setVerticalSpeedZScore(real val);
 
   /**
    * Get horizontal contour threshold, specified in internal units [rad] as an angle to
    * the left/right of current aircraft direction. A value of 0 means only conflict contours.
    * A value of pi means all contours.
    */
-  double getHorizontalContourThreshold() const;
+  real getHorizontalContourThreshold() const;
 
   /**
    * Get horizontal contour threshold, specified in given units [u] as an angle to
    * the left/right of current aircraft direction. A value of 0 means only conflict contours.
    * A value of pi means all contours.
    */
-  double getHorizontalContourThreshold(const std::string& u) const;
+  real getHorizontalContourThreshold(const std::string& u) const;
 
   /**
    * Set horizontal contour threshold, specified in internal units [rad] [0 - pi] as an angle to
    * the left/right of current aircraft direction. A value of 0 means only conflict contours.
    * A value of pi means all contours.
    */
-  bool setHorizontalContourThreshold(double val);
+  bool setHorizontalContourThreshold(real val);
 
   /**
    * Set horizontal contour threshold, specified in given units [u] [0 - pi] as an angle to
    * the left/right of current aircraft direction. A value of 0 means only conflict contours.
    * A value of pi means all contours.
    */
-  bool setHorizontalContourThreshold(double val, const std::string& u);
+  bool setHorizontalContourThreshold(real val, const std::string& u);
 
   /**
    * Get DTA Logic:
@@ -915,62 +916,62 @@ public:
   /**
    * Set DAA Terminal Area (DTA) latitude (internal units)
    */
-  bool setDTALatitude(double lat);
+  bool setDTALatitude(real lat);
 
   /**
    * Set DAA Terminal Area (DTA) latitude in given units
    */
-  bool setDTALatitude(double lat, const std::string& ulat);
+  bool setDTALatitude(real lat, const std::string& ulat);
 
   /**
    * Set DAA Terminal Area (DTA) longitude (internal units)
    */
-  bool setDTALongitude(double lon);
+  bool setDTALongitude(real lon);
 
   /**
    * Set DAA Terminal Area (DTA) longitude in given units
    */
-  bool setDTALongitude(double lon, const std::string& ulon);
+  bool setDTALongitude(real lon, const std::string& ulon);
 
   /**
    * Get DAA Terminal Area (DTA) radius (internal units)
    */
-  double getDTARadius() const;
+  real getDTARadius() const;
 
   /**
    * Get DAA Terminal Area (DTA) radius in given units
    */
-  double getDTARadius(const std::string& u) const;
+  real getDTARadius(const std::string& u) const;
 
   /**
    * Set DAA Terminal Area (DTA) radius (internal units)
    */
-  bool setDTARadius(double val);
+  bool setDTARadius(real val);
 
   /**
    * Set DAA Terminal Area (DTA) radius in given units
    */
-  bool setDTARadius(double val, const std::string& u);
+  bool setDTARadius(real val, const std::string& u);
 
   /**
    * Get DAA Terminal Area (DTA) height (internal units)
    */
-  double getDTAHeight() const;
+  real getDTAHeight() const;
 
   /**
    * Get DAA Terminal Area (DTA) height in given units
    */
-  double getDTAHeight(const std::string& u) const;
+  real getDTAHeight(const std::string& u) const;
 
   /**
    * Set DAA Terminal Area (DTA) height (internal units)
    */
-  bool setDTAHeight(double val);
+  bool setDTAHeight(real val);
 
   /**
    * Set DAA Terminal Area (DTA) height in given units
    */
-  bool setDTAHeight(double val, const std::string& u);
+  bool setDTAHeight(real val, const std::string& u);
 
   /**
    * Get DAA Terminal Area (DTA) alerter
@@ -1140,7 +1141,7 @@ private:
 
   static std::string getUnit(const ParameterData& p,const std::string& key);
 
-  static double getValue(const ParameterData& p,const std::string& key);
+  static real getValue(const ParameterData& p,const std::string& key);
 
   static bool getBool(const ParameterData& p,const std::string& key);
 

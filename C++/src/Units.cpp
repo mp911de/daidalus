@@ -12,6 +12,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Units.h"
 #include "Util.h"
 #include "Constants.h"
@@ -35,261 +36,261 @@ using namespace std;
 // the static initialization fiasco problem.  This problem manifests itself differently
 // between g++ and Visual C++, so be careful if you want to "optimize" this section.
 
-static double _FormalATM_unspecified() {
-	static double ans = 1.0;
+static real _FormalATM_unspecified() {
+	static real ans = real(1.0);
 	return ans;
 }
-static double _FormalATM_unitless() {
-	static double ans = 1.0;
+static real _FormalATM_unitless() {
+	static real ans = real(1.0);
 	return ans;
 }
-static double _FormalATM_internal() {
-	static double ans = 1.0;
-	return ans;
-}
-
-static double _FormalATM_m() {
-	static double ans = 1.0;
-	return ans;
-}
-static double _FormalATM_km() {
-	static double ans = 1000.0 * _FormalATM_m();
-	return ans;
-}
-static double _FormalATM_NM() {
-	static double ans = 1852.0 * _FormalATM_m();
-	return ans;
-}
-static double _FormalATM_ft() {
-	static double ans = 0.3048 * _FormalATM_m();
-	return ans;
-}
-static double _FormalATM_mile() {
-	static double ans = 5280.0 * _FormalATM_ft();
-	return ans;
-}
-static double _FormalATM_inch() {
-	static double ans = _FormalATM_ft() / 12.0;
-	return ans;
-}
-static double _FormalATM_yard() {
-	static double ans = 3.0 * _FormalATM_ft();
-	return ans;
-}
-static double _FormalATM_mm() {
-	static double ans = 0.001 * _FormalATM_m();
+static real _FormalATM_internal() {
+	static real ans = real(1.0);
 	return ans;
 }
 
-static double _FormalATM_m2() {
-	static double ans = _FormalATM_m() * _FormalATM_m();
+static real _FormalATM_m() {
+	static real ans = real(1.0);
 	return ans;
 }
-static double _FormalATM_ft2() {
-	static double ans = _FormalATM_ft() * _FormalATM_ft();
+static real _FormalATM_km() {
+	static real ans = real(1000.0) * _FormalATM_m();
 	return ans;
 }
-
-static double _FormalATM_kg() {
-	static double ans = 1.0;
+static real _FormalATM_NM() {
+	static real ans = real(1852.0) * _FormalATM_m();
 	return ans;
 }
-static double _FormalATM_pound_mass() {
-	static double ans = 0.45359237 * _FormalATM_kg();
+static real _FormalATM_ft() {
+	static real ans = real(0.3048) * _FormalATM_m();
 	return ans;
 }
-
-static double _FormalATM_s() {
-	static double ans = 1.0;
+static real _FormalATM_mile() {
+	static real ans = real(5280.0) * _FormalATM_ft();
 	return ans;
 }
-static double _FormalATM_min() {
-	static double ans = 60.0 * _FormalATM_s();
+static real _FormalATM_inch() {
+	static real ans = _FormalATM_ft() / real(12.0);
 	return ans;
 }
-static double _FormalATM_hour() {
-	static double ans = 3600.0 * _FormalATM_s();
+static real _FormalATM_yard() {
+	static real ans = real(3.0) * _FormalATM_ft();
 	return ans;
 }
-static double _FormalATM_day() {
-	static double ans = 8640000.0 * _FormalATM_s();
-	return ans;
-}
-static double _FormalATM_ms() {
-	static double ans = 0.001 * _FormalATM_s();
+static real _FormalATM_mm() {
+	static real ans = real(0.001) * _FormalATM_m();
 	return ans;
 }
 
-static double _FormalATM_rad() {
-	static double ans = 1.0;
+static real _FormalATM_m2() {
+	static real ans = _FormalATM_m() * _FormalATM_m();
 	return ans;
 }
-static double _FormalATM_deg() {
-	static double ans = M_PI / 180.0;
-	return ans;
-}
-
-static double _FormalATM_radian_per_second() {
-	static double ans = _FormalATM_rad() / _FormalATM_s();
+static real _FormalATM_ft2() {
+	static real ans = _FormalATM_ft() * _FormalATM_ft();
 	return ans;
 }
 
-static double _FormalATM_degree_per_second() {
-	static double ans = _FormalATM_deg() / _FormalATM_s();
+static real _FormalATM_kg() {
+	static real ans = real(1.0);
+	return ans;
+}
+static real _FormalATM_pound_mass() {
+	static real ans = real(0.45359237) * _FormalATM_kg();
 	return ans;
 }
 
-static double _FormalATM_mps() {
-	static double ans = 1.0;
+static real _FormalATM_s() {
+	static real ans = real(1.0);
 	return ans;
 }
-static double _FormalATM_kph() {
-	static double ans = _FormalATM_km() / _FormalATM_hour();
+static real _FormalATM_min() {
+	static real ans = real(60.0) * _FormalATM_s();
 	return ans;
 }
-static double _FormalATM_kn() {
-	static double ans = _FormalATM_NM() / _FormalATM_hour();
+static real _FormalATM_hour() {
+	static real ans = real(3600.0) * _FormalATM_s();
 	return ans;
 }
-static double _FormalATM_fpm() {
-	static double ans = _FormalATM_ft() / _FormalATM_min();
+static real _FormalATM_day() {
+	static real ans = real(8640000.0) * _FormalATM_s();
 	return ans;
 }
-static double _FormalATM_mph() {
-	static double ans = _FormalATM_mile() / _FormalATM_hour();
+static real _FormalATM_ms() {
+	static real ans = real(0.001) * _FormalATM_s();
 	return ans;
 }
-static double _FormalATM_foot_per_second() {
-	static double ans = _FormalATM_ft() / _FormalATM_s();
+
+static real _FormalATM_rad() {
+	static real ans = real(1.0);
 	return ans;
 }
-static double _FormalATM_NMps() {
-	static double ans = _FormalATM_NM() / _FormalATM_s();
+static real _FormalATM_deg() {
+	static real ans = real(M_PI) / real(180.0);
+	return ans;
+}
+
+static real _FormalATM_radian_per_second() {
+	static real ans = _FormalATM_rad() / _FormalATM_s();
+	return ans;
+}
+
+static real _FormalATM_degree_per_second() {
+	static real ans = _FormalATM_deg() / _FormalATM_s();
+	return ans;
+}
+
+static real _FormalATM_mps() {
+	static real ans = real(1.0);
+	return ans;
+}
+static real _FormalATM_kph() {
+	static real ans = _FormalATM_km() / _FormalATM_hour();
+	return ans;
+}
+static real _FormalATM_kn() {
+	static real ans = _FormalATM_NM() / _FormalATM_hour();
+	return ans;
+}
+static real _FormalATM_fpm() {
+	static real ans = _FormalATM_ft() / _FormalATM_min();
+	return ans;
+}
+static real _FormalATM_mph() {
+	static real ans = _FormalATM_mile() / _FormalATM_hour();
+	return ans;
+}
+static real _FormalATM_foot_per_second() {
+	static real ans = _FormalATM_ft() / _FormalATM_s();
+	return ans;
+}
+static real _FormalATM_NMps() {
+	static real ans = _FormalATM_NM() / _FormalATM_s();
 	return ans;
 }
 
 
-static double _FormalATM_meter_per_second2() {
-	static double ans = _FormalATM_m() / (_FormalATM_s() * _FormalATM_s());
+static real _FormalATM_meter_per_second2() {
+	static real ans = _FormalATM_m() / (_FormalATM_s() * _FormalATM_s());
 	return ans;
 }
-double larcfm::_FormalATM_gn() {
-	static double ans = 9.80665 * _FormalATM_meter_per_second2();
+real larcfm::_FormalATM_gn() {
+	static real ans = real(9.80665) * _FormalATM_meter_per_second2();
 	return ans;
 }
-static double _FormalATM_foot_per_second2() {
-	static double ans = _FormalATM_ft() / (_FormalATM_s() * _FormalATM_s());
+static real _FormalATM_foot_per_second2() {
+	static real ans = _FormalATM_ft() / (_FormalATM_s() * _FormalATM_s());
 	return ans;
 }
 
-static double _FormalATM_newton() {
-	static double ans = _FormalATM_kg() * _FormalATM_meter_per_second2();
+static real _FormalATM_newton() {
+	static real ans = _FormalATM_kg() * _FormalATM_meter_per_second2();
 	return ans;
 }
-static double _FormalATM_slug() {
-	static double ans = _FormalATM_pound_mass() * _FormalATM_gn()
+static real _FormalATM_slug() {
+	static real ans = _FormalATM_pound_mass() * _FormalATM_gn()
 							/ _FormalATM_foot_per_second2();
 	return ans;
 }
-static double _FormalATM_pound_force() {
-	static double ans = _FormalATM_slug() * _FormalATM_foot_per_second2();
+static real _FormalATM_pound_force() {
+	static real ans = _FormalATM_slug() * _FormalATM_foot_per_second2();
 	return ans;
 }
 
-static double _FormalATM_joule() {
-	static double ans = _FormalATM_newton() * _FormalATM_m();
+static real _FormalATM_joule() {
+	static real ans = _FormalATM_newton() * _FormalATM_m();
 	return ans;
 }
-static double _FormalATM_foot_pound_force() {
-	static double ans = _FormalATM_ft() * _FormalATM_pound_force();
-	return ans;
-}
-
-
-static double _FormalATM_pascal() {
-	static double ans = _FormalATM_newton() / (_FormalATM_m() * _FormalATM_m());
-	return ans;
-}
-double larcfm::_FormalATM_P0() {
-	static double ans = 101325.0 * _FormalATM_pascal();
-	return ans;
-}
-static double _FormalATM_atm() {
-	static double ans = 1.0 * _FormalATM_P0();
+static real _FormalATM_foot_pound_force() {
+	static real ans = _FormalATM_ft() * _FormalATM_pound_force();
 	return ans;
 }
 
-static double _FormalATM_degreeC() {
-  static double res = -1.0;
+
+static real _FormalATM_pascal() {
+	static real ans = _FormalATM_newton() / (_FormalATM_m() * _FormalATM_m());
+	return ans;
+}
+real larcfm::_FormalATM_P0() {
+	static real ans = real(101325.0) * _FormalATM_pascal();
+	return ans;
+}
+static real _FormalATM_atm() {
+	static real ans = real(1.0) * _FormalATM_P0();
+	return ans;
+}
+
+static real _FormalATM_degreeC() {
+  static real res = -real(1.0);
   return res;
 }
-static double _FormalATM_degreeF() {
-  static double res = -2.0;
+static real _FormalATM_degreeF() {
+  static real res = -real(2.0);
   return res;
 }
-static double _FormalATM_K() {
-  static double res = 1.0;
+static real _FormalATM_K() {
+  static real res = real(1.0);
   return res;
 }
-static double _FormalATM_degreeR() {
-  static double res = 1.0 / 1.8;
+static real _FormalATM_degreeR() {
+  static real res = real(1.0) / real(1.8);
   return res;
 }
 
-const double Units::unspecified = Units::getFactor("unspecified");
-const double Units::unitless = Units::getFactor("unitless");
-const double Units::internal = Units::getFactor("internal");
+const real Units::unspecified = Units::getFactor("unspecified");
+const real Units::unitless = Units::getFactor("unitless");
+const real Units::internal = Units::getFactor("internal");
 
-const double Units::m = Units::getFactor("m");
-const double Units::km = Units::getFactor("km");
-const double Units::nmi = Units::getFactor("NM");
-const double Units::NM = Units::getFactor("NM");
-const double Units::ft = Units::getFactor("ft");
-const double Units::mm = Units::getFactor("mm");
+const real Units::m = Units::getFactor("m");
+const real Units::km = Units::getFactor("km");
+const real Units::nmi = Units::getFactor("NM");
+const real Units::NM = Units::getFactor("NM");
+const real Units::ft = Units::getFactor("ft");
+const real Units::mm = Units::getFactor("mm");
 
-const double Units::s = Units::getFactor("s");
-const double Units::sec = Units::getFactor("sec");
-const double Units::min = Units::getFactor("min");
-const double Units::hour = Units::getFactor("hour");
-const double Units::day = Units::getFactor("day");
-const double Units::ms = Units::getFactor("ms");
+const real Units::s = Units::getFactor("s");
+const real Units::sec = Units::getFactor("sec");
+const real Units::min = Units::getFactor("min");
+const real Units::hour = Units::getFactor("hour");
+const real Units::day = Units::getFactor("day");
+const real Units::ms = Units::getFactor("ms");
 
-const double Units::rad = Units::getFactor("rad");
-const double Units::deg = Units::getFactor("deg");
+const real Units::rad = Units::getFactor("rad");
+const real Units::deg = Units::getFactor("deg");
 
-const double Units::kg = Units::getFactor("kg");
-const double Units::pound_mass = Units::getFactor("pound_mass");
+const real Units::kg = Units::getFactor("kg");
+const real Units::pound_mass = Units::getFactor("pound_mass");
 
-const double Units::mps = Units::getFactor("mps");
-const double Units::meter_per_second = Units::getFactor("meter_per_second");
-const double Units::kph = Units::getFactor("kph");
-const double Units::kilometer_per_hour = Units::getFactor("kilometer_per_hour");
-const double Units::knot = Units::getFactor("knot");
-const double Units::kn = Units::getFactor("kn");
-const double Units::kts = Units::getFactor("kts");
-const double Units::fpm = Units::getFactor("fpm");
-const double Units::foot_per_second = Units::getFactor("foot_per_second");
-const double Units::nautical_mile_per_second = Units::getFactor("nautical_mile_per_second");
-const double Units::mph = Units::getFactor("mph");
+const real Units::mps = Units::getFactor("mps");
+const real Units::meter_per_second = Units::getFactor("meter_per_second");
+const real Units::kph = Units::getFactor("kph");
+const real Units::kilometer_per_hour = Units::getFactor("kilometer_per_hour");
+const real Units::knot = Units::getFactor("knot");
+const real Units::kn = Units::getFactor("kn");
+const real Units::kts = Units::getFactor("kts");
+const real Units::fpm = Units::getFactor("fpm");
+const real Units::foot_per_second = Units::getFactor("foot_per_second");
+const real Units::nautical_mile_per_second = Units::getFactor("nautical_mile_per_second");
+const real Units::mph = Units::getFactor("mph");
 
-const double Units::meter_per_second2 = Units::getFactor("meter_per_second2");
-const double Units::gn = _FormalATM_gn();
-const double Units::G = Units::getFactor("G");
+const real Units::meter_per_second2 = Units::getFactor("meter_per_second2");
+const real Units::gn = _FormalATM_gn();
+const real Units::G = Units::getFactor("G");
 
-const double Units::newton = Units::getFactor("newton");
-const double Units::pascal = Units::getFactor("pascal");
+const real Units::newton = Units::getFactor("newton");
+const real Units::pascal = Units::getFactor("pascal");
 
-const double Units::P0 = _FormalATM_P0();
-const double Units::atm = Units::getFactor("atm");
+const real Units::P0 = _FormalATM_P0();
+const real Units::atm = Units::getFactor("atm");
 
-const double Units::degreeC = Units::getFactor("degreeC");
-const double Units::degreeF = Units::getFactor("degreeF");
-const double Units::K = Units::getFactor("K");
-const double Units::degreeK = Units::getFactor("K");
-const double Units::degreeR = Units::getFactor("degreeR");
+const real Units::degreeC = Units::getFactor("degreeC");
+const real Units::degreeF = Units::getFactor("degreeF");
+const real Units::K = Units::getFactor("K");
+const real Units::degreeK = Units::getFactor("K");
+const real Units::degreeR = Units::getFactor("degreeR");
 
 // Converts value canonical units to [symbol] units
-double Units::getFactor(const std::string& symbolp) {
+real Units::getFactor(const std::string& symbolp) {
 
 	const std::string symbol = Units::canonical(symbolp);
 
@@ -395,11 +396,11 @@ double Units::getFactor(const std::string& symbolp) {
 	} else if (symbol == "unitless") {
 		return _FormalATM_unitless();
 	}
-	return 0.0;  // this is a special value that indicates an invalid unit
+	return real(0.0);  // this is a special value that indicates an invalid unit
 }
 
 bool Units::isUnit(const std::string& unit) {
-	return getFactor(unit) != 0.0;
+	return getFactor(unit) != real(0.0);
 }
 
 const std::string Units::canonical(const std::string& unit) {
@@ -587,36 +588,36 @@ std::string Units::getCompatibleInternalUnit(const std::string& unitp) {
 
 
 // Converts value canonical units to [symbol] units
-double Units::to(const std::string& symbol, double value) {
+real Units::to(const std::string& symbol, real value) {
   return to(Units::getFactor(symbol), value);
 }
 
 // Converts value canonical units to [symbol] units
-double Units::to(const double symbol, const double value) {
+real Units::to(const real symbol, const real value) {
   if (symbol == degreeC) {
-    return value/Units::K - 273.15;
+    return value/Units::K - real(273.15);
   } else if (symbol == degreeF) {
-    return value/Units::degreeR - (273.15 * 1.8 - 32.0); 
+    return value/Units::degreeR - (real(273.15) * real(1.8) - real(32.0));
   } else {
     return value / symbol;
   }
 }
 
-double Units::from(const std::string& symbol, double value) {
+real Units::from(const std::string& symbol, real value) {
   return from(Units::getFactor(symbol), value);
 }
 
-double Units::from(const double symbol, const double value) {
+real Units::from(const real symbol, const real value) {
   if (symbol == degreeC) {
-    return (value+273.15)*Units::K;
+    return (value+real(273.15))*Units::K;
   } else if (symbol == degreeF) {
-    return (value + (273.15 * 1.8 - 32.0)) * Units::degreeR; 
+    return (value + (real(273.15) * real(1.8) - real(32.0))) * Units::degreeR;
   } else {
     return value * symbol;
   }
 }
 
-double Units::fromInternal(const std::string& defaultUnits, const std::string& units, double value) {
+real Units::fromInternal(const std::string& defaultUnits, const std::string& units, real value) {
   if (units == "unspecified") {
     return from(getFactor(defaultUnits), value);
   } else {
@@ -624,17 +625,17 @@ double Units::fromInternal(const std::string& defaultUnits, const std::string& u
   }
 }
 
-std::string Units::str(const std::string& symbol, double value) {
+std::string Units::str(const std::string& symbol, real value) {
 	return str(symbol,value,Constants::get_output_precision());
 }
 
-std::string Units::strX(const std::string& symbol, double value) {
+std::string Units::strX(const std::string& symbol, real value) {
 	std::ostringstream st;
 	st << Units::to(symbol, value) << " [" << symbol << "]";
 	return st.str();
 }
 
-std::string Units::str(const std::string& symbol, double value, int precision) {
+std::string Units::str(const std::string& symbol, real value, int precision) {
 	return FmPrecision(to(symbol, value),precision) + " [" + symbol + "]";
 }
 
@@ -678,25 +679,25 @@ std::string Units::clean(const std::string& unit) {
 	}
 }
 
-double Units::parse(const std::string& s) {
-	return parse(s,0.0);
+real Units::parse(const std::string& s) {
+	return parse(s,real(0.0));
 }
 
-double Units::parse(const string& str, double default_value) {
+real Units::parse(const string& str, real default_value) {
 	  	return parse("internal", str, default_value);
 }
 
-double Units::parse(const std::string& defaultUnitsFrom, const std::string& str) {
-	  return parse(defaultUnitsFrom, str, 0.0);
+real Units::parse(const std::string& defaultUnitsFrom, const std::string& str) {
+	  return parse(defaultUnitsFrom, str, real(0.0));
   }
 
 
 #if defined(_MSC_VER)
 
-double getd(string str, double def) {
+real getd(string str, real def) {
 	std::istringstream stream;
 	stream.str(str);
-	double d;
+	real d;
 	stream >> d;
 	if (stream.fail()) {
 		return def;
@@ -705,8 +706,8 @@ double getd(string str, double def) {
 }
 
 
-double Units::parse(const string& defaultUnitsFrom, const std::string& s, double default_value) {
-	double ret = 0.0;
+real Units::parse(const string& defaultUnitsFrom, const std::string& s, real default_value) {
+	real ret = real(0.0);
 	std::smatch m;
 	std::regex numre("\\s*([-+0-9\\.]+)\\s*\\[?\\s*([-/^_a-zA-Z0-9]*).*"); //(.*)");   We want to add this unicode character \u00B0 (the degree symbol) to the units part  //TODO: does not recognize e-notation
 //	std::regex numre("\\s*([-+0-9\\.]+)\\s*\\[?\\s*([/^_a-zA-Z0-9]*)\\s*\\]?\\s*$"); //(.*)");   We want to add this unicode character \u00B0 (the degree symbol) to the units part
@@ -768,8 +769,8 @@ std::string Units::parseUnits(const std::string& s) {
 
 #else
 
-double Units::parse(const string& defaultUnitsFrom, const std::string& s, double default_value) {
-	double ret = Units::from(defaultUnitsFrom,default_value);
+real Units::parse(const string& defaultUnitsFrom, const std::string& s, real default_value) {
+	real ret = Units::from(defaultUnitsFrom,default_value);
 	regex_t regex;
 	int reti;
 	char msgbuf[100];
@@ -822,7 +823,7 @@ double Units::parse(const string& defaultUnitsFrom, const std::string& s, double
 		//   illformed               defvalue       defunit
 
 		if (Util::is_double(m1)) {
-			double dbl = Util::parse_double(m1);
+			real dbl = Util::parse_double(m1);
 			if (Units::isUnit(unit)) {
 				ret = Units::from(unit, dbl);
 			} else {

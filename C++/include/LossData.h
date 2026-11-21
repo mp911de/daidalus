@@ -17,6 +17,7 @@
 
 #ifndef SRC_LOSSDATA_H_
 #define SRC_LOSSDATA_H_
+#include "Real.h"
 
 #include "Interval.h"
 #include <string>
@@ -26,14 +27,14 @@ class LossData {
 
 private:
 
-	double time_in;   // relative time to loss of separation
-	double time_out;  // relative time to the exit from loss of separation
+	real time_in;   // relative time to loss of separation
+	real time_out;  // relative time to the exit from loss of separation
 
 public:
 
 	virtual std::string toString() const ;
 
-	LossData(double time_in, double time_out);
+	LossData(real time_in, real time_out);
 
 	LossData();
 
@@ -52,29 +53,29 @@ public:
 	/**
 	 * Returns true if predicted loss occurs before t in seconds
 	 */
-	bool conflictBefore(double t) const;
+	bool conflictBefore(real t) const;
 
 	/**
 	 * Returns true if predicted loss last more than thr in seconds
 	 */
-	bool conflictLastMoreThan(double thr) const;
+	bool conflictLastMoreThan(real thr) const;
 
 	/**
 	 * DEPRECATED -- Use conflictLastMoreThan instead
 	 */
-	bool conflict(double thr) const;
+	bool conflict(real thr) const;
 
 	/**
 	 * Returns time to first loss in seconds.
 	 * Note: this returns positive infinity if there is not a conflict!
 	 */
-	double getTimeIn() const;
+	real getTimeIn() const;
 
 	/**
 	 * Returns time to last loss in seconds.
 	 * Note: this returns negative infinity if there is not a conflict!
 	 */
-	double getTimeOut() const;
+	real getTimeOut() const;
 
 	/**
 	 * Returns time interval to loss in seconds.

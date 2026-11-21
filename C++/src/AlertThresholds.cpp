@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "DaidalusParameters.h"
 #include "AlertThresholds.h"
 #include "Vect3.h"
@@ -23,15 +24,15 @@ namespace larcfm {
  * region is the type of guidance
  */
 AlertThresholds::AlertThresholds(const Detection3D& detector,
-    double alerting_time, double early_alerting_time, BandsRegion::Region region) :
+    real alerting_time, real early_alerting_time, BandsRegion::Region region) :
                                 detector_(detector.copy()),
                                 alerting_time_(std::abs(alerting_time)),
                                 early_alerting_time_(Util::max(alerting_time_,early_alerting_time)),
                                 region_(region),
-                                spread_hdir_(0.0),
-                                spread_hs_(0.0),
-                                spread_vs_(0.0),
-                                spread_alt_(0.0) {
+                                spread_hdir_(real(0.0)),
+                                spread_hs_(real(0.0)),
+                                spread_vs_(real(0.0)),
+                                spread_alt_(real(0.0)) {
   units_["alerting_time"] = "s";
   units_["early_alerting_time"] = "s";
   units_["spread_hdir"] = "deg";
@@ -45,20 +46,20 @@ AlertThresholds::AlertThresholds(const AlertThresholds& athr) :
                             alerting_time_(athr.alerting_time_),
                             early_alerting_time_(athr.early_alerting_time_),
                             region_(athr.region_),
-                            spread_hdir_(DaidalusParameters::EXPERIMENTAL_FEATURES ? athr.spread_hdir_ : 0.0),
-                            spread_hs_(DaidalusParameters::EXPERIMENTAL_FEATURES ? athr.spread_hs_ : 0.0),
-                            spread_vs_(DaidalusParameters::EXPERIMENTAL_FEATURES ? athr.spread_vs_ : 0.0),
-                            spread_alt_(DaidalusParameters::EXPERIMENTAL_FEATURES ? athr.spread_alt_ : 0.0),
+                            spread_hdir_(DaidalusParameters::EXPERIMENTAL_FEATURES ? athr.spread_hdir_ : real(0.0)),
+                            spread_hs_(DaidalusParameters::EXPERIMENTAL_FEATURES ? athr.spread_hs_ : real(0.0)),
+                            spread_vs_(DaidalusParameters::EXPERIMENTAL_FEATURES ? athr.spread_vs_ : real(0.0)),
+                            spread_alt_(DaidalusParameters::EXPERIMENTAL_FEATURES ? athr.spread_alt_ : real(0.0)),
                             units_(athr.units_) {}
 
 AlertThresholds::AlertThresholds() :
-                      alerting_time_(0.0),
-                      early_alerting_time_(0.0),
+                      alerting_time_(real(0.0)),
+                      early_alerting_time_(real(0.0)),
                       region_(BandsRegion::UNKNOWN),
-                      spread_hdir_(0.0),
-                      spread_hs_(0.0),
-                      spread_vs_(0.0),
-                      spread_alt_(0.0) {
+                      spread_hdir_(real(0.0)),
+                      spread_hs_(real(0.0)),
+                      spread_vs_(real(0.0)),
+                      spread_alt_(real(0.0)) {
   units_["alerting_time"] = "s";
   units_["early_alerting_time"] = "s";
   units_["spread_hdir"] = "deg";
@@ -73,13 +74,13 @@ AlertThresholds::AlertThresholds() :
  */
 AlertThresholds::AlertThresholds(Detection3D* det) :
                       detector_(det),
-                      alerting_time_(0.0),
-                      early_alerting_time_(0.0),
+                      alerting_time_(real(0.0)),
+                      early_alerting_time_(real(0.0)),
                       region_(BandsRegion::UNKNOWN),
-                      spread_hdir_(0.0),
-                      spread_hs_(0.0),
-                      spread_vs_(0.0),
-                      spread_alt_(0.0) {
+                      spread_hdir_(real(0.0)),
+                      spread_hs_(real(0.0)),
+                      spread_vs_(real(0.0)),
+                      spread_alt_(real(0.0)) {
   units_["alerting_time"] = "s";
   units_["early_alerting_time"] = "s";
   units_["spread_hdir"] = "deg";
@@ -139,28 +140,28 @@ void AlertThresholds::setCoreDetection(const Detection3D& det) {
 /**
  * Return alerting time in seconds.
  */
-double AlertThresholds::getAlertingTime() const {
+real AlertThresholds::getAlertingTime() const {
   return alerting_time_;
 }
 
 /**
  * Return alerting time in specified units.
  */
-double AlertThresholds::getAlertingTime(const std::string& u) const {
+real AlertThresholds::getAlertingTime(const std::string& u) const {
   return Units::to(u,alerting_time_);
 }
 
 /**
  * Set alerting time in seconds. Alerting time is non-negative number.
  */
-void AlertThresholds::setAlertingTime(double val) {
+void AlertThresholds::setAlertingTime(real val) {
   alerting_time_ = std::abs(val);
 }
 
 /**
  * Set alerting time in specified units. Alerting time is non-negative number.
  */
-void AlertThresholds::setAlertingTime(double t, const std::string& u) {
+void AlertThresholds::setAlertingTime(real t, const std::string& u) {
   setAlertingTime(Units::from(u,t));
   units_["alerting_time"] = u;
 }
@@ -168,28 +169,28 @@ void AlertThresholds::setAlertingTime(double t, const std::string& u) {
 /**
  * Return early alerting time in seconds.
  */
-double AlertThresholds::getEarlyAlertingTime() const {
+real AlertThresholds::getEarlyAlertingTime() const {
   return early_alerting_time_;
 }
 
 /**
  * Return early alerting time in specified units.
  */
-double AlertThresholds::getEarlyAlertingTime(const std::string& u) const {
+real AlertThresholds::getEarlyAlertingTime(const std::string& u) const {
   return Units::to(u,early_alerting_time_);
 }
 
 /**
  * Set early alerting time in seconds. Early alerting time is a positive number >= alerting time
  */
-void AlertThresholds::setEarlyAlertingTime(double t) {
+void AlertThresholds::setEarlyAlertingTime(real t) {
   early_alerting_time_ = std::abs(t);
 }
 
 /**
  * Set early alerting time in specified units. Early alerting time is a positive number >= alerting time
  */
-void AlertThresholds::setEarlyAlertingTime(double t, const std::string& u) {
+void AlertThresholds::setEarlyAlertingTime(real t, const std::string& u) {
   setEarlyAlertingTime(Units::from(u,t));
   units_["early_alerting_time"] = u;
 }
@@ -208,84 +209,84 @@ void AlertThresholds::setRegion(BandsRegion::Region region) {
   region_ = region;
 }
 
-double AlertThresholds::getHorizontalDirectionSpread() const {
+real AlertThresholds::getHorizontalDirectionSpread() const {
   return spread_hdir_;
 }
 
-double AlertThresholds::getHorizontalDirectionSpread(const std::string& u) const {
+real AlertThresholds::getHorizontalDirectionSpread(const std::string& u) const {
   return Units::to(u,spread_hdir_);
 }
 
-void AlertThresholds::setHorizontalDirectionSpread(double spread) {
+void AlertThresholds::setHorizontalDirectionSpread(real spread) {
   if (DaidalusParameters::EXPERIMENTAL_FEATURES) {
     spread_hdir_ = std::abs(Util::to_pi(spread));
   }
 }
 
-void AlertThresholds::setHorizontalDirectionSpread(double spread, const std::string& u) {
+void AlertThresholds::setHorizontalDirectionSpread(real spread, const std::string& u) {
   if (DaidalusParameters::EXPERIMENTAL_FEATURES) {
     setHorizontalDirectionSpread(Units::from(u,spread));
     units_["spread_hdir"] = u;
   }
 }
 
-double AlertThresholds::getHorizontalSpeedSpread() const {
+real AlertThresholds::getHorizontalSpeedSpread() const {
   return spread_hs_;
 }
 
-double AlertThresholds::getHorizontalSpeedSpread(const std::string& u) const {
+real AlertThresholds::getHorizontalSpeedSpread(const std::string& u) const {
   return Units::to(u,spread_hs_);
 }
 
-void AlertThresholds::setHorizontalSpeedSpread(double spread) {
+void AlertThresholds::setHorizontalSpeedSpread(real spread) {
   if (DaidalusParameters::EXPERIMENTAL_FEATURES) {
     spread_hs_ = std::abs(spread);
   }
 }
 
-void AlertThresholds::setHorizontalSpeedSpread(double spread, const std::string& u) {
+void AlertThresholds::setHorizontalSpeedSpread(real spread, const std::string& u) {
   if (DaidalusParameters::EXPERIMENTAL_FEATURES) {
     setHorizontalSpeedSpread(Units::from(u,spread));
     units_["spread_hs"] = u;
   }
 }
 
-double AlertThresholds::getVerticalSpeedSpread() const {
+real AlertThresholds::getVerticalSpeedSpread() const {
   return spread_vs_;
 }
 
-double AlertThresholds::getVerticalSpeedSpread(const std::string& u) const {
+real AlertThresholds::getVerticalSpeedSpread(const std::string& u) const {
   return Units::to(u,spread_vs_);
 }
 
-void AlertThresholds::setVerticalSpeedSpread(double spread) {
+void AlertThresholds::setVerticalSpeedSpread(real spread) {
   if (DaidalusParameters::EXPERIMENTAL_FEATURES) {
     spread_vs_ = std::abs(spread);
   }
 }
 
-void AlertThresholds::setVerticalSpeedSpread(double spread, const std::string& u) {
+void AlertThresholds::setVerticalSpeedSpread(real spread, const std::string& u) {
   if (DaidalusParameters::EXPERIMENTAL_FEATURES) {
     setVerticalSpeedSpread(Units::from(u,spread));
     units_["spread_vs"] = u;
   }
 }
 
-double AlertThresholds::getAltitudeSpread() const {
+real AlertThresholds::getAltitudeSpread() const {
   return spread_alt_;
 }
 
-double AlertThresholds::getAltitudeSpread(const std::string& u) const {
+real AlertThresholds::getAltitudeSpread(const std::string& u) const {
   return Units::to(u,spread_alt_);
 }
 
-void AlertThresholds::setAltitudeSpread(double spread) {
+void AlertThresholds::setAltitudeSpread(real spread) {
   if (DaidalusParameters::EXPERIMENTAL_FEATURES) {
     spread_alt_ = std::abs(spread);
   }
 }
 
-void AlertThresholds::setAltitudeSpread(double spread, const std::string& u) {
+void AlertThresholds::setAltitudeSpread(real spread, const std::string& u) {
   if (DaidalusParameters::EXPERIMENTAL_FEATURES) {
     setAltitudeSpread(Units::from(u,spread));
     units_["spread_alt"] = u;

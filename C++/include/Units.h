@@ -14,6 +14,7 @@
 
 #ifndef UNITS_H_
 #define UNITS_H_
+#include "Real.h"
 
 #include "Util.h"
 #include <string>
@@ -23,10 +24,10 @@ namespace larcfm {
 //  double _FormalATM_m();
 
 /** See Units::gn */
-double _FormalATM_gn();
+real _FormalATM_gn();
 
 /** See Units::P0 */
-double _FormalATM_P0();
+real _FormalATM_P0();
 
 
 
@@ -347,79 +348,79 @@ class Units {
 public:
 
 	/** Units were not specified */
-	static const double unspecified;
+	static const real unspecified;
 	/** Quantity without units */
-	static const double unitless;
+	static const real unitless;
 	/** Use the internal representation for this quantity */
-	static const double internal;
+	static const real internal;
 
 	/** meter */
-	static const double m;
+	static const real m;
 	/** kilometer */
-	static const double km;
+	static const real km;
 	/** nautical mile */
-	static const double nmi;
+	static const real nmi;
 	/** nautical mile */
-	static const double NM;
+	static const real NM;
 	/** foot */
-	static const double foot;
+	static const real foot;
 	/** foot */
-	static const double ft;
+	static const real ft;
 	/** millimeter */
-	static const double mm;
+	static const real mm;
 
 	/** meter squared, a unit of area */
-	static const double meter2;
+	static const real meter2;
 
 	/** seconds */
-	static const double s;
+	static const real s;
 	/** seconds */
-	static const double sec;
+	static const real sec;
 	/** minutes */
-	static const double min;
+	static const real min;
 	/** hours */
-	static const double hour;
+	static const real hour;
 	/** days */
-	static const double day;
+	static const real day;
 	/** milliseconds */
-	static const double ms;
+	static const real ms;
 
 	/** radians */
-	static const double rad;
+	static const real rad;
 	/** degrees */
-	static const double deg;
+	static const real deg;
 	/** degrees */
-	static const double degree;
+	static const real degree;
 
 	/** kilograms */
-	static const double kg;
+	static const real kg;
 	/** pounds of mass */
-	static const double pound_mass;
+	static const real pound_mass;
 
 	/** Meters per second */
-	static const double mps;
-	static const double meter_per_second;
+	static const real mps;
+	static const real meter_per_second;
 	/** kilometers per hour */
-	static const double kph;
-	static const double kilometer_per_hour;
+	static const real kph;
+	static const real kilometer_per_hour;
 	/** knots, (nautical miles per hour) */
-	static const double knot;
-	static const double kn;
-	static const double kts;
+	static const real knot;
+	static const real kn;
+	static const real kts;
 	/** feet per minute */
-	static const double fpm;
+	static const real fpm;
 	/** feet per second */
-	static const double foot_per_second;
+	static const real foot_per_second;
 	/** nautical mile per second */
-	static const double nautical_mile_per_second;
+	static const real nautical_mile_per_second;
 	/** mile per hour */
-	static const double mph;
+	static const real mph;
 
-	static const double degreeC;
-	static const double degreeF;
-	static const double K;
-	static const double degreeK;
-	static const double degreeR;
+	static const real degreeC;
+	static const real degreeF;
+	static const real K;
+	static const real degreeK;
+	static const real degreeR;
 
 
 	
@@ -441,42 +442,42 @@ public:
 	 * International System of Units (SI), 1991 edition, p17.
 	 * <p>
 	 */
-	static const double gn;
+	static const real gn;
 
-	static const double G;
+	static const real G;
 
 	/** meters per second^2 */
-	static const double meter_per_second2;
+	static const real meter_per_second2;
 
 	/** unit of force */
-	static const double newton;
+	static const real newton;
 
 	/** pascal, a unit of pressure */
-	static const double pascal;
+	static const real pascal;
 	/** pascal, unit of pressure, defined as a newton per meter squared */
-	static const double Pa;
+	static const real Pa;
 	/**
 	 * P0, the adopted standard atmosphere. This quanity equals 101325 Pa. This
 	 * definition comes from NIST Special Publication 330, the International
 	 * System of Units (SI), 1991 edition, p15.
 	 */
-	static const double P0;
+	static const real P0;
 	/** atmosphere, a unit of pressure, defined as one P0 */
-	static const double atm;
+	static const real atm;
 
 
 	/** Convert the value in internal units to the given units */
-	static double to(const double symbol, const double value);
+	static real to(const real symbol, const real value);
 	/** Convert the value in internal units to the given units */
-	static double to(const std::string& symbol, double value);
+	static real to(const std::string& symbol, real value);
 	/** Convert the value from the given units into internal units */
-	static double from(const double symbol, const double value);
+	static real from(const real symbol, const real value);
 	/** Convert the value from the given units into internal units */
-	static double from(const std::string& units, double value);
-	static double fromInternal(const std::string& defaultUnits, const std::string& units, double value);
+	static real from(const std::string& units, real value);
+	static real fromInternal(const std::string& defaultUnits, const std::string& units, real value);
 
 	/** Get the unit conversion factor for the given string unit */
-	static double getFactor(const std::string& unit);
+	static real getFactor(const std::string& unit);
  	/** Determine if the given string is a valid unit
   	 * @param unit string representation of a unit
    	* @return true, if this string is known as a unit in the database of units */
@@ -499,13 +500,13 @@ public:
 	static std::string getCompatibleInternalUnit(const std::string& unit);
 
 	/** Make a string representation of the value in internal units to the given units */
-	static std::string str(const std::string& symbol, double value);
+	static std::string str(const std::string& symbol, real value);
 
 	/** Make a string representation of the value in internal units to the given units. */
-	static std::string strX(const std::string& symbol, double value);
+	static std::string strX(const std::string& symbol, real value);
 
 	/** Make a string representation of the value in internal units to the given units */
-	static std::string str(const std::string& symbol, double value, int precision);
+	static std::string str(const std::string& symbol, real value, int precision);
 
   /**
    * Clean up the unit string that may contain brackets or extra space. For
@@ -525,9 +526,9 @@ private:
 	static std::string cleanOnly(const std::string& unit);
 public:
 
-	static double parse(const std::string& defaultUnitsFrom, const std::string& s, double default_val);
+	static real parse(const std::string& defaultUnitsFrom, const std::string& s, real default_val);
 
-	static double parse(const std::string& s);
+	static real parse(const std::string& s);
 
   /**
    * Parse a string, including an optional units identifier, as a double value.
@@ -537,9 +538,9 @@ public:
    * @param default_value if the string is not recognized as a valid value, the result to be returned 
    * @return value
    */
-	static double parse(const std::string& str, double default_value);
+	static real parse(const std::string& str, real default_value);
 
-	static double parse(const std::string&, const std::string& str);
+	static real parse(const std::string&, const std::string& str);
 
 	/**
 	 * Parse a string, representing a value and a unit.

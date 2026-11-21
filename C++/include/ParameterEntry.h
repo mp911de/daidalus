@@ -7,6 +7,7 @@
 
 #ifndef PARAMETERENTRY_H_
 #define PARAMETERENTRY_H_
+#include "Real.h"
 
 #include <string>
 
@@ -15,7 +16,7 @@ namespace larcfm {
 class ParameterEntry {
 public:
 	std::string  sval; // String value
-	double       dval; // Double value (internal units)
+	real       dval; // Double value (internal units)
 	std::string  units; // Unit
 	bool         bval; // Boolean value
 	std::string  comment; // Comment for printing
@@ -23,16 +24,16 @@ public:
 
 	ParameterEntry();
 	virtual ~ParameterEntry();
-	ParameterEntry(const std::string& s, double d, const std::string& u, bool b, const std::string& msg, long order);
+	ParameterEntry(const std::string& s, real d, const std::string& u, bool b, const std::string& msg, long order);
 
-	static ParameterEntry make(const std::string& s, double d, const std::string& u, bool b, const std::string& msg);
+	static ParameterEntry make(const std::string& s, real d, const std::string& u, bool b, const std::string& msg);
 	static ParameterEntry make(const ParameterEntry& pe);
 
 	// Make bool entry
 	static ParameterEntry makeBoolEntry(bool b);
 
 	// New double entry
-	static ParameterEntry makeDoubleEntry(double d, const std::string& u, int p);
+	static ParameterEntry makeDoubleEntry(real d, const std::string& u, int p);
 
 	// New integer entry
 	static ParameterEntry makeIntEntry(int i);
@@ -40,7 +41,7 @@ public:
 	//void set_sval();
 
 private:
-	static std::string format(const std::string& u, double d, int p);
+	static std::string format(const std::string& u, real d, int p);
 	static long count;
 
 };

@@ -13,6 +13,7 @@
 
 #ifndef FIXEDAIRCRAFTURGENCYSTRATEGY_H_
 #define FIXEDAIRCRAFTURGENCYSTRATEGY_H_
+#include "Real.h"
 
 #include "UrgencyStrategy.h"
 
@@ -31,7 +32,7 @@ public:
   /**
    * @return index of aircraft id
    */
-  int mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, double T) const;
+  int mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, real T) const;
   UrgencyStrategy* copy() const;
 };
 

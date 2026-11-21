@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "ParameterEntry.h"
 #include "Util.h"
 #include "Units.h"
@@ -28,7 +29,7 @@ ParameterEntry::ParameterEntry() :
 ParameterEntry::~ParameterEntry() {
 }
 
-ParameterEntry::ParameterEntry(const std::string& s, double d, const std::string& u,
+ParameterEntry::ParameterEntry(const std::string& s, real d, const std::string& u,
 		bool b, const std::string& msg, long o) :
 	sval(s),
 	dval(d),
@@ -38,7 +39,7 @@ ParameterEntry::ParameterEntry(const std::string& s, double d, const std::string
 	order(o) {
 }
 
-ParameterEntry ParameterEntry::make(const std::string& s, double d, const std::string& u,
+ParameterEntry ParameterEntry::make(const std::string& s, real d, const std::string& u,
 	bool b, const std::string& msg) {
 	return ParameterEntry(s, d, u, b, msg, count++);
 }
@@ -55,7 +56,7 @@ ParameterEntry ParameterEntry::makeBoolEntry(bool b) {
 }
 
 // New double entry
-ParameterEntry ParameterEntry::makeDoubleEntry(double d, const std::string& u, int p) {
+ParameterEntry ParameterEntry::makeDoubleEntry(real d, const std::string& u, int p) {
 	return ParameterEntry(format(u,d,p),d,u,false,"", count++);
 }
 // New integer entry
@@ -63,7 +64,7 @@ ParameterEntry ParameterEntry::makeIntEntry(int i){
 	return ParameterEntry(to_string(i),i,"unitless",false,"",count++);
 }
 
-std::string ParameterEntry::format(const std::string& u, double d, int p) {
+std::string ParameterEntry::format(const std::string& u, real d, int p) {
 	if (u != "unitless" && u != "unspecified") {
 		if (p < 0) {
 			return Units::strX(u,d);

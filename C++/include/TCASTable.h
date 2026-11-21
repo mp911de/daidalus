@@ -7,6 +7,7 @@
 
 #ifndef TCASTABLE_H_
 #define TCASTABLE_H_
+#include "Real.h"
 
 
 #include "Units.h"
@@ -25,7 +26,7 @@ class TCASTable : public ParameterTable {
 
 private:
   /* Default levels in internal units */
-  static const std::vector<double>& default_levels(); // default 7
+  static const std::vector<real>& default_levels(); // default 7
   //  = {
   //      Units::from(Units::ft,0),     // Upper bound of TCAS Level 1
   //      Units::from(Units::ft,1000),  // Upper bound of TCAS Level 2
@@ -38,17 +39,17 @@ private:
   //It is understood that there is one additional level with an infinite upper bound.
 
   /* TA TAU Threshold in seconds */
-  static const std::vector<double>& TA_TAU(); // default 8
+  static const std::vector<real>& TA_TAU(); // default 8
   // 1  2  3  4  5  6  7  8 (0 i N/A)
   // = {0.0,20.0,25.0,30.0,40.0,45.0,48.0,48.0};
 
   /* RA TAU Threshold in seconds */
-  static const std::vector<double>& RA_TAU(); // default 8
+  static const std::vector<real>& RA_TAU(); // default 8
   // 1  2  3  4  5  6  7  8 (0 i N/A)
   // = {0.0,0.0,15.0,20.0,25.0,30.0,35.0,35.0};
 
   /* TA DMOD in internal units (0 if N/A) */
-  static const std::vector<double>& TA_DMOD(); //default 8
+  static const std::vector<real>& TA_DMOD(); //default 8
   //  = {
   //      0,                                                       // 1
   //      Units::from(Units::NM,0.30),                       // 2
@@ -60,7 +61,7 @@ private:
   //      Units::from(Units::NM,1.3)};                       // 8
 
   /* RA DMOD in internal units (0 if N/A) */
-  static const std::vector<double>& RA_DMOD(); // default 8
+  static const std::vector<real>& RA_DMOD(); // default 8
   //  = {
   //      0,                                                    // 1
   //      0,                                                  // 2
@@ -72,7 +73,7 @@ private:
   //      Units::from(Units::NM,1.1)};              // 8
 
   /* TA ZTHR in internal units (0 if N/A) */
-  static const std::vector<double>& TA_ZTHR(); // default 8
+  static const std::vector<real>& TA_ZTHR(); // default 8
   //  = {
   //      0,                                                  // 1
   //      Units::from(Units::ft,850),               // 2
@@ -84,7 +85,7 @@ private:
   //      Units::from(Units::ft,1200)};             // 8
 
   /* RA ZTHR in internal units (0 if N/A) */
-  static const std::vector<double>& RA_ZTHR(); // default 8
+  static const std::vector<real>& RA_ZTHR(); // default 8
   //  = {
   //      0,                                                      // 1
   //      0,                                                      // 2
@@ -96,7 +97,7 @@ private:
   //      Units::from(Units::ft,800)};              // 8
 
   /* RA HMD in internal units (0 if N/A) */
-  static const std::vector<double>& RA_HMD(); // default 8
+  static const std::vector<real>& RA_HMD(); // default 8
   //  = {
   //      0,                                                      // 1
   //      0,                                                      // 2
@@ -109,12 +110,12 @@ private:
 
   bool HMDFilter_;
   std::map<std::string,std::string> units_;
-  std::vector<double> TAU_;
-  std::vector<double> TCOA_;
-  std::vector<double> DMOD_;
-  std::vector<double> ZTHR_;
-  std::vector<double> HMD_;
-  std::vector<double> levels_; // this is the upper end for each level, indexed from 1.
+  std::vector<real> TAU_;
+  std::vector<real> TCOA_;
+  std::vector<real> DMOD_;
+  std::vector<real> ZTHR_;
+  std::vector<real> HMD_;
+  std::vector<real> levels_; // this is the upper end for each level, indexed from 1.
   // This list has one less element than the other lists.
 
   void add_zeros();
@@ -147,10 +148,10 @@ public:
    * Return sensitivity level from alt, specified in internal units.
    * Sensitivity levels are indexed from 1.
    */
-  int getSensitivityLevel(double alt) const;
+  int getSensitivityLevel(real alt) const;
 
   /** Return sensitivity level from alt specified in u units */
-  int getSensitivityLevel(double alt, const std::string& u) const;
+  int getSensitivityLevel(real alt, const std::string& u) const;
 
   /**
    * Return true if the sensitivity level is between 1 and levels.size().
@@ -167,28 +168,28 @@ public:
    * Note this is an open bound (sl is valid for altitudes strictly greater than the return value)
    * This returns a negative value if an invalid level is input.
    */
-  double getLevelAltitudeLowerBound(int sl) const;
+  real getLevelAltitudeLowerBound(int sl) const;
 
   /**
    * Returns altitude lower bound for a given sensitivity level sl, in given units.
    * Note this is an open bound (sl is valid for altitudes strictly greater than the return value)
    * This returns a negative value if an invalid level is input.
    */
-  double getLevelAltitudeLowerBound(int sl, const std::string& u) const;
+  real getLevelAltitudeLowerBound(int sl, const std::string& u) const;
 
   /**
    * Returns altitude upper bound for a given sensitivity level sl, in internal units.
    * Note this is a closed bound (sl is valid for altitudes less than or equal to the return value)
    * This returns a negative value if an invalid level is input.
    */
-  double getLevelAltitudeUpperBound(int sl) const;
+  real getLevelAltitudeUpperBound(int sl) const;
 
   /**
    * Returns altitude upper bound for a given sensitivity level sl, in given units.
    * Note this is a closed bound (sl is valid for altitudes less than or equal to the return value)
    * This returns a negative value if an invalid level is input.
    */
-  double getLevelAltitudeUpperBound(int sl, const std::string& u) const;
+  real getLevelAltitudeUpperBound(int sl, const std::string& u) const;
 
 private:
   void setTCASIILevels();
@@ -203,102 +204,102 @@ public:
    * Returns TAU threshold for sensitivity level sl in seconds.
    * This returns a negative value if an invalid level is input.
    */
-  double getTAU(int sl) const;
+  real getTAU(int sl) const;
 
   /**
    * Returns TCOA threshold for sensitivity level sl in seconds
    * This returns a negative value if an invalid level is input.
    */
-  double getTCOA(int sl) const;
+  real getTCOA(int sl) const;
 
   /**
    * Returns DMOD for sensitivity level sl in internal units.
    * This returns a negative value if an invalid level is input.
    */
-  double getDMOD(int sl) const;
+  real getDMOD(int sl) const;
 
   /**
    * Returns DMOD for sensitivity level sl in u units.
    * This returns a negative value if an invalid level is input.
    */
-  double getDMOD(int sl, const std::string& u) const;
+  real getDMOD(int sl, const std::string& u) const;
 
   /**
    * Returns Z threshold for sensitivity level sl in internal units.
    * This returns a negative value if an invalid level is input.
    */
-  double getZTHR(int sl) const;
+  real getZTHR(int sl) const;
 
   /**
    * Returns Z threshold for sensitivity level sl in u units.
    * This returns a negative value if an invalid level is input.
    */
-  double getZTHR(int sl,const std::string& u) const;
+  real getZTHR(int sl,const std::string& u) const;
 
   /**
    * Returns HMD for sensitivity level sl in internal units.
    * This returns a negative value if an invalid level is input.
    */
-  double getHMD(int sl) const;
+  real getHMD(int sl) const;
 
   /**
    * Returns HMD for sensitivity level sl in u units.
    * This returns a negative value if an invalid level is input.
    */
-  double getHMD(int sl, const std::string& u) const;
+  real getHMD(int sl, const std::string& u) const;
 
   /** Modify the value of Tau Threshold for a given sensitivity level
    * Parameter val is given in seconds. Val is >= 0. Return true is value was set.
    */
-  bool setTAU(int sl, double val);
+  bool setTAU(int sl, real val);
 
   /** Modify the value of Tau Threshold for a given sensitivity level
    * Parameter val is given in given units. Val is >= 0
    */
-  void setTAU(int sl, double val, const std::string& u);
+  void setTAU(int sl, real val, const std::string& u);
 
   /** Modify the value of TCOA Threshold for a given sensitivity level
    * Parameter val is given in seconds. Val is >= 0. Return true is value was set.
    */
-  bool setTCOA(int sl, double val);
+  bool setTCOA(int sl, real val);
 
   /** Modify the value of TCOA Threshold for a given sensitivity level
    * Parameter val is given in given units. Val is >= 0
    */
-  void setTCOA(int sl, double val, const std::string& u);
+  void setTCOA(int sl, real val, const std::string& u);
 
   /** Modify the value of DMOD for a given sensitivity level
    * Parameter val is given in internal units. Val is >= 0. Return true is value was set.
    */
-  bool setDMOD(int sl, double val);
+  bool setDMOD(int sl, real val);
 
   /** Modify the value of DMOD for a given sensitivity level
    * Parameter val is given in u units. Val is >= 0.
    */
-  void setDMOD(int sl, double val, const std::string& u);
+  void setDMOD(int sl, real val, const std::string& u);
 
   /** Modify the value of ZTHR for a given sensitivity level
    * Parameter val is given in internal units. Val is >= 0. Return true is value was set.
    */
-  bool setZTHR(int sl, double val);
+  bool setZTHR(int sl, real val);
 
   /** Modify the value of ZTHR for a given sensitivity level
    * Parameter val is given in u units. Val is >= 0.
    */
-  void setZTHR(int sl, double val, const std::string& u);
+  void setZTHR(int sl, real val, const std::string& u);
 
   /**
    * Modify the value of HMD for a given sensitivity level
    * Parameter val is given in internal units. Val is >= 0. Return true is value was set.
    */
-  bool setHMD(int sl, double val);
+  bool setHMD(int sl, real val);
 
 
   /**
    * Modify the value of HMD for a given sensitivity level
    * Parameter val is given in u units. Val is >= 0.
    */
-  void setHMD(int sl, double val, const std::string& u);
+  void setHMD(int sl, real val, const std::string& u);
 
   /**
    * Add sensitivity level with upper bound altitude alt (in internal units).
@@ -306,7 +307,7 @@ public:
    * Add value 0 to DMOD,HMD,ZTHR,TAUMOD,TCOA
    * Either returns index of new maximum sensitivity level or 0 (if requires is false)
    */
-  int addSensitivityLevel(double alt);
+  int addSensitivityLevel(real alt);
 
   /**
    * Add empty sensitivity level
@@ -321,7 +322,7 @@ public:
    * Add value 0 to DMOD,HMD,ZTHR,TAUMOD,TCOA
    * Either returns new sensitivity level or 0 (if requires is false)
    */
-  int addSensitivityLevel(double alt, const std::string& u);
+  int addSensitivityLevel(real alt, const std::string& u);
 
   void setHMDFilter(bool flag);
 
@@ -334,13 +335,13 @@ public:
   bool isTAStandard() const;
 
 private:
-  static std::string list_units(const std::string& units, const std::vector<double>& v);
+  static std::string list_units(const std::string& units, const std::vector<real>& v);
 
 public:
   std::string toString() const;
 
 private:
-  std::string pvs_list(const std::vector<double>& v) const;
+  std::string pvs_list(const std::vector<real>& v) const;
 
 public:
   std::string toPVS() const;

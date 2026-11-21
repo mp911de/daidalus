@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "TCASTable.h"
 #include "Units.h"
 #include "format.h"
@@ -17,8 +18,8 @@
 namespace larcfm {
 
 /* Default levels in internal units */
-const std::vector<double>& TCASTable::default_levels() {
-  static std::vector<double> default_levels_;
+const std::vector<real>& TCASTable::default_levels() {
+  static std::vector<real> default_levels_;
   if (default_levels_.empty()) {
     default_levels_.resize(7); // use resize since we are then using subscript assignment
     default_levels_[0] = Units::from(Units::ft,0);     // Upper bound of SL 1
@@ -34,8 +35,8 @@ const std::vector<double>& TCASTable::default_levels() {
 //It is understood that there is one additional level with an infinite upper bound.
 
 /* TA TAU Threshold in seconds */
-const std::vector<double>& TCASTable::TA_TAU() {
-  static std::vector<double> TA_TAU_;
+const std::vector<real>& TCASTable::TA_TAU() {
+  static std::vector<real> TA_TAU_;
   if (TA_TAU_.empty()) {
     TA_TAU_.resize(8); // use resize since we are then using subscript assignment
     TA_TAU_[0] = 0;   // SL 1
@@ -51,8 +52,8 @@ const std::vector<double>& TCASTable::TA_TAU() {
 }
 
 /* RA TAU Threshold in seconds */
-const std::vector<double>& TCASTable::RA_TAU() {
-  static std::vector<double> RA_TAU_;
+const std::vector<real>& TCASTable::RA_TAU() {
+  static std::vector<real> RA_TAU_;
   if (RA_TAU_.empty()) {
     RA_TAU_.resize(8); // use resize since we are then using subscript assignment
     RA_TAU_[0] = 0;  // SL 1
@@ -68,42 +69,42 @@ const std::vector<double>& TCASTable::RA_TAU() {
 }
 
 /* TA DMOD in internal units (0 if N/A) */
-const std::vector<double>& TCASTable::TA_DMOD() {
-  static std::vector<double> TA_DMOD_;
+const std::vector<real>& TCASTable::TA_DMOD() {
+  static std::vector<real> TA_DMOD_;
   if (TA_DMOD_.empty()) {
     TA_DMOD_.resize(8); // use resize since we are then using subscript assignment
     TA_DMOD_[0] = 0;                             // SL 1
-    TA_DMOD_[1] = Units::from(Units::NM,0.30);   // SL 2
-    TA_DMOD_[2] = Units::from(Units::NM,0.33);   // SL 3
-    TA_DMOD_[3] = Units::from(Units::NM,0.48);   // SL 4
-    TA_DMOD_[4] = Units::from(Units::NM,0.75);   // SL 5
-    TA_DMOD_[5] = Units::from(Units::NM,1.0);    // SL 6
-    TA_DMOD_[6] = Units::from(Units::NM,1.3);    // SL 7
-    TA_DMOD_[7] = Units::from(Units::NM,1.3);    // SL 8
+    TA_DMOD_[1] = Units::from(Units::NM,real(0.30));   // SL 2
+    TA_DMOD_[2] = Units::from(Units::NM,real(0.33));   // SL 3
+    TA_DMOD_[3] = Units::from(Units::NM,real(0.48));   // SL 4
+    TA_DMOD_[4] = Units::from(Units::NM,real(0.75));   // SL 5
+    TA_DMOD_[5] = Units::from(Units::NM,real(1.0));    // SL 6
+    TA_DMOD_[6] = Units::from(Units::NM,real(1.3));    // SL 7
+    TA_DMOD_[7] = Units::from(Units::NM,real(1.3));    // SL 8
   }
   return TA_DMOD_;
 }
 
 /* RA DMOD in internal units (0 if N/A) */
-const std::vector<double>& TCASTable::RA_DMOD() {
-  static std::vector<double> RA_DMOD_;
+const std::vector<real>& TCASTable::RA_DMOD() {
+  static std::vector<real> RA_DMOD_;
   if (RA_DMOD_.empty()) {
     RA_DMOD_.resize(8); // use resize since we are then using subscript assignment
     RA_DMOD_[0] = 0;                               // SL 1
     RA_DMOD_[1] = 0;                               // SL 2
-    RA_DMOD_[2] = Units::from(Units::NM,0.2);      // SL 3
-    RA_DMOD_[3] = Units::from(Units::NM,0.35);     // SL 4
-    RA_DMOD_[4] = Units::from(Units::NM,0.55);     // SL 5
-    RA_DMOD_[5] = Units::from(Units::NM,0.8);      // SL 6
-    RA_DMOD_[6] = Units::from(Units::NM,1.1);      // SL 7
-    RA_DMOD_[7] = Units::from(Units::NM,1.1);      // SL 8
+    RA_DMOD_[2] = Units::from(Units::NM,real(0.2));      // SL 3
+    RA_DMOD_[3] = Units::from(Units::NM,real(0.35));     // SL 4
+    RA_DMOD_[4] = Units::from(Units::NM,real(0.55));     // SL 5
+    RA_DMOD_[5] = Units::from(Units::NM,real(0.8));      // SL 6
+    RA_DMOD_[6] = Units::from(Units::NM,real(1.1));      // SL 7
+    RA_DMOD_[7] = Units::from(Units::NM,real(1.1));      // SL 8
   }
   return RA_DMOD_;
 }
 
 /* TA ZTHR in internal units (0 if N/A) */
-const std::vector<double>& TCASTable::TA_ZTHR() {
-  static std::vector<double> TA_ZTHR_;
+const std::vector<real>& TCASTable::TA_ZTHR() {
+  static std::vector<real> TA_ZTHR_;
   if (TA_ZTHR_.empty()) {
     TA_ZTHR_.resize(8); // use resize since we are then using subscript assignment
     TA_ZTHR_[0] = 0;                               // SL 1                                          // 1
@@ -119,8 +120,8 @@ const std::vector<double>& TCASTable::TA_ZTHR() {
 }
 
 /* RA ZTHR in internal units (0 if N/A) */
-const std::vector<double>& TCASTable::RA_ZTHR() {
-  static std::vector<double> RA_ZTHR_;
+const std::vector<real>& TCASTable::RA_ZTHR() {
+  static std::vector<real> RA_ZTHR_;
   if (RA_ZTHR_.empty()) {
     RA_ZTHR_.resize(8); // use resize since we are then using subscript assignment
     RA_ZTHR_[0] = 0;                             // SL1
@@ -136,8 +137,8 @@ const std::vector<double>& TCASTable::RA_ZTHR() {
 }
 
 /* RA HMD in internal units (0 if N/A) */
-const std::vector<double>& TCASTable::RA_HMD() {
-  static std::vector<double> RA_HMD_;
+const std::vector<real>& TCASTable::RA_HMD() {
+  static std::vector<real> RA_HMD_;
   if (RA_HMD_.empty()) {
     RA_HMD_.resize(8); // use resize since we are then using subscript assignment
     RA_HMD_[0] = 0;                                // SL 1
@@ -153,11 +154,11 @@ const std::vector<double>& TCASTable::RA_HMD() {
 }
 
 void TCASTable::add_zeros() {
-  DMOD_.push_back(0.0);
-  HMD_.push_back(0.0);
-  ZTHR_.push_back(0.0);
-  TAU_.push_back(0.0);
-  TCOA_.push_back(0.0);
+  DMOD_.push_back(real(0.0));
+  HMD_.push_back(real(0.0));
+  ZTHR_.push_back(real(0.0));
+  TAU_.push_back(real(0.0));
+  TCOA_.push_back(real(0.0));
 }
 
 void TCASTable::default_units() {
@@ -226,7 +227,7 @@ void TCASTable::clear() {
  * Return sensitivity level from alt, specified in internal units.
  * Sensitivity levels are indexed from 1.
  */
-int TCASTable::getSensitivityLevel(double alt) const {
+int TCASTable::getSensitivityLevel(real alt) const {
   int i;
   for (i = 0; i < (int) levels_.size(); i++) {
     if (alt <= levels_[i]) {
@@ -237,7 +238,7 @@ int TCASTable::getSensitivityLevel(double alt) const {
 }
 
 /** Return sensitivity level from alt specified in u units */
-int TCASTable::getSensitivityLevel(double alt, const std::string& u) const {
+int TCASTable::getSensitivityLevel(real alt, const std::string& u) const {
   return getSensitivityLevel(Units::from(u,alt));
 }
 
@@ -246,7 +247,7 @@ int TCASTable::getSensitivityLevel(double alt, const std::string& u) const {
  */
 bool TCASTable::isValidSensitivityLevel(int sl) const {
   return 1 <= sl && sl <= (int) levels_.size()+1 &&
-      (sl > (int) levels_.size() || (int) levels_.size() != 0.0);
+      (sl > (int) levels_.size() || (int) levels_.size() != real(0.0));
 }
 
 /**
@@ -261,9 +262,9 @@ int TCASTable::getMaxSensitivityLevel() const {
  * Note this is an open bound (sl is valid for altitudes strictly greater than the return value)
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getLevelAltitudeLowerBound(int sl) const {
+real TCASTable::getLevelAltitudeLowerBound(int sl) const {
   if (isValidSensitivityLevel(sl)) {
-    for (--sl; sl > 0 && levels_[sl-1] == 0.0; --sl);
+    for (--sl; sl > 0 && levels_[sl-1] == real(0.0); --sl);
     if (sl > 0) {
       return levels_[sl-1];
     } else {
@@ -278,7 +279,7 @@ double TCASTable::getLevelAltitudeLowerBound(int sl) const {
  * Note this is an open bound (sl is valid for altitudes strictly greater than the return value)
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getLevelAltitudeLowerBound(int sl, const std::string& u) const {
+real TCASTable::getLevelAltitudeLowerBound(int sl, const std::string& u) const {
   return Units::to(u,getLevelAltitudeLowerBound(sl));
 }
 
@@ -287,7 +288,7 @@ double TCASTable::getLevelAltitudeLowerBound(int sl, const std::string& u) const
  * Note this is a closed bound (sl is valid for altitudes less than or equal to the return value)
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getLevelAltitudeUpperBound(int sl) const {
+real TCASTable::getLevelAltitudeUpperBound(int sl) const {
   if (isValidSensitivityLevel(sl)) {
     if (sl == getMaxSensitivityLevel()) {
       return INFINITY;
@@ -303,7 +304,7 @@ double TCASTable::getLevelAltitudeUpperBound(int sl) const {
  * Note this is a closed bound (sl is valid for altitudes less than or equal to the return value)
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getLevelAltitudeUpperBound(int sl, const std::string& u) const {
+real TCASTable::getLevelAltitudeUpperBound(int sl, const std::string& u) const {
   return Units::to(u,getLevelAltitudeUpperBound(sl));
 }
 
@@ -344,7 +345,7 @@ void TCASTable::setDefaultTCASIIThresholds(bool ra) {
  * Returns TAU threshold for sensitivity level sl in seconds.
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getTAU(int sl) const  {
+real TCASTable::getTAU(int sl) const  {
   if (isValidSensitivityLevel(sl)) {
     return TAU_[sl-1];
   }
@@ -355,7 +356,7 @@ double TCASTable::getTAU(int sl) const  {
  * Returns TCOA threshold for sensitivity level sl in seconds
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getTCOA(int sl) const  {
+real TCASTable::getTCOA(int sl) const  {
   if (isValidSensitivityLevel(sl)) {
     return TCOA_[sl-1];
   }
@@ -366,7 +367,7 @@ double TCASTable::getTCOA(int sl) const  {
  * Returns DMOD for sensitivity level sl in internal units.
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getDMOD(int sl) const  {
+real TCASTable::getDMOD(int sl) const  {
   if (isValidSensitivityLevel(sl)) {
     return DMOD_[sl-1];
   }
@@ -377,7 +378,7 @@ double TCASTable::getDMOD(int sl) const  {
  * Returns DMOD for sensitivity level sl in u units.
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getDMOD(int sl, const std::string& u) const  {
+real TCASTable::getDMOD(int sl, const std::string& u) const  {
   return Units::to(u,getDMOD(sl));
 }
 
@@ -385,7 +386,7 @@ double TCASTable::getDMOD(int sl, const std::string& u) const  {
  * Returns Z threshold for sensitivity level sl in internal units.
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getZTHR(int sl) const  {
+real TCASTable::getZTHR(int sl) const  {
   if (isValidSensitivityLevel(sl)) {
     return ZTHR_[sl-1];
   }
@@ -396,7 +397,7 @@ double TCASTable::getZTHR(int sl) const  {
  * Returns Z threshold for sensitivity level sl in u units.
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getZTHR(int sl, const std::string& u) const  {
+real TCASTable::getZTHR(int sl, const std::string& u) const  {
   return Units::to(u,getZTHR(sl));
 }
 
@@ -404,7 +405,7 @@ double TCASTable::getZTHR(int sl, const std::string& u) const  {
  * Returns HMD for sensitivity level sl in internal units.
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getHMD(int sl) const  {
+real TCASTable::getHMD(int sl) const  {
   if (isValidSensitivityLevel(sl)) {
     return HMD_[sl-1];
   }
@@ -415,16 +416,16 @@ double TCASTable::getHMD(int sl) const  {
  * Returns HMD for sensitivity level sl in u units.
  * This returns a negative value if an invalid level is input.
  */
-double TCASTable::getHMD(int sl, const std::string& u) const  {
+real TCASTable::getHMD(int sl, const std::string& u) const  {
   return Units::to(u,getHMD(sl));
 }
 
 /** Modify the value of Tau Threshold for a given sensitivity level
  * Parameter val is given in seconds. Val is >= 0. Return true is value was set.
  */
-bool TCASTable::setTAU(int sl, double val) {
+bool TCASTable::setTAU(int sl, real val) {
   if (isValidSensitivityLevel(sl)) {
-    TAU_[sl-1] = Util::max(0.0,val);
+    TAU_[sl-1] = Util::max(real(0.0),val);
     return true;
   }
   return false;
@@ -433,7 +434,7 @@ bool TCASTable::setTAU(int sl, double val) {
 /** Modify the value of Tau Threshold for a given sensitivity level
  * Parameter val is given in given units. Val is >= 0
  */
-void TCASTable::setTAU(int sl, double val, const std::string& u) {
+void TCASTable::setTAU(int sl, real val, const std::string& u) {
   if (setTAU(sl,Units::from(u,val))) {
     units_["TCAS_TAU"]=u;
   }
@@ -442,9 +443,9 @@ void TCASTable::setTAU(int sl, double val, const std::string& u) {
 /** Modify the value of TCOA Threshold for a given sensitivity level
  * Parameter val is given in seconds. Val is >= 0. Return true is value was set.
  */
-bool TCASTable::setTCOA(int sl, double val) {
+bool TCASTable::setTCOA(int sl, real val) {
   if (isValidSensitivityLevel(sl)) {
-    TCOA_[sl-1] = Util::max(0.0,val);
+    TCOA_[sl-1] = Util::max(real(0.0),val);
     return true;
   }
   return false;
@@ -453,7 +454,7 @@ bool TCASTable::setTCOA(int sl, double val) {
 /** Modify the value of TCOA Threshold for a given sensitivity level
  * Parameter val is given in given units. Val is >= 0
  */
-void TCASTable::setTCOA(int sl, double val, const std::string& u) {
+void TCASTable::setTCOA(int sl, real val, const std::string& u) {
   if (setTCOA(sl,Units::from(u,val))) {
     units_["TCAS_TCOA"]=u;
   }
@@ -462,9 +463,9 @@ void TCASTable::setTCOA(int sl, double val, const std::string& u) {
 /** Modify the value of DMOD for a given sensitivity level
  * Parameter val is given in internal units. Val is >= 0. Return true is value was set.
  */
-bool TCASTable::setDMOD(int sl, double val) {
+bool TCASTable::setDMOD(int sl, real val) {
   if (isValidSensitivityLevel(sl)) {
-    DMOD_[sl-1] = Util::max(0.0,val);
+    DMOD_[sl-1] = Util::max(real(0.0),val);
     return true;
   }
   return false;
@@ -473,7 +474,7 @@ bool TCASTable::setDMOD(int sl, double val) {
 /** Modify the value of DMOD for a given sensitivity level
  * Parameter val is given in u units. Val is >= 0.
  */
-void TCASTable::setDMOD(int sl, double val, const std::string& u) {
+void TCASTable::setDMOD(int sl, real val, const std::string& u) {
   if (setDMOD(sl,Units::from(u,val))) {
     units_["TCAS_DMOD"]=u;
   }
@@ -482,9 +483,9 @@ void TCASTable::setDMOD(int sl, double val, const std::string& u) {
 /** Modify the value of ZTHR for a given sensitivity level
  * Parameter val is given in internal units. Val is >= 0. Return true is value was set.
  */
-bool TCASTable::setZTHR(int sl, double val) {
+bool TCASTable::setZTHR(int sl, real val) {
   if (isValidSensitivityLevel(sl)) {
-    ZTHR_[sl-1] = Util::max(0.0,val);
+    ZTHR_[sl-1] = Util::max(real(0.0),val);
     return true;
   }
   return false;
@@ -493,7 +494,7 @@ bool TCASTable::setZTHR(int sl, double val) {
 /** Modify the value of ZTHR for a given sensitivity level
  * Parameter val is given in u units. Val is >= 0.
  */
-void TCASTable::setZTHR(int sl, double val, const std::string& u) {
+void TCASTable::setZTHR(int sl, real val, const std::string& u) {
   if (setZTHR(sl,Units::from(u,val))) {
     units_["TCAS_ZTHR"]=u;
   }
@@ -503,9 +504,9 @@ void TCASTable::setZTHR(int sl, double val, const std::string& u) {
  * Modify the value of HMD for a given sensitivity level
  * Parameter val is given in internal units. Val is >= 0. Return true is value was set.
  */
-bool TCASTable::setHMD(int sl, double val) {
+bool TCASTable::setHMD(int sl, real val) {
   if (isValidSensitivityLevel(sl)) {
-    HMD_[sl-1] = Util::max(0.0,val);
+    HMD_[sl-1] = Util::max(real(0.0),val);
     return true;
   }
   return false;
@@ -515,7 +516,7 @@ bool TCASTable::setHMD(int sl, double val) {
  * Modify the value of HMD for a given sensitivity level
  * Parameter val is given in u units. Val is >= 0.
  */
-void TCASTable::setHMD(int sl, double val,const std::string& u) {
+void TCASTable::setHMD(int sl, real val,const std::string& u) {
   if (setHMD(sl,Units::from(u,val))) {
     units_["TCAS_HMD"]=u;
   }
@@ -527,7 +528,7 @@ void TCASTable::setHMD(int sl, double val,const std::string& u) {
  * Add value 0 to DMOD,HMD,ZTHR,TAUMOD,TCOA
  * Either returns index of new maximum sensitivity level or 0 (if requires is false)
  */
-int TCASTable::addSensitivityLevel(double alt) {
+int TCASTable::addSensitivityLevel(real alt) {
   if (levels_.empty() || alt > levels_[levels_.size()-1]) {
     levels_.push_back(alt);
     add_zeros();
@@ -542,7 +543,7 @@ int TCASTable::addSensitivityLevel(double alt) {
  * Either returns index of new maximum sensitivity level
  */
 int TCASTable::addSensitivityLevel() {
-  levels_.push_back(0.0);
+  levels_.push_back(real(0.0));
   add_zeros();
   return levels_.size()+1;
 }
@@ -553,7 +554,7 @@ int TCASTable::addSensitivityLevel() {
  * Add value 0 to DMOD,HMD,ZTHR,TAUMOD,TCOA
  * Either returns new sensitivity level or 0 (if requires is false)
  */
-int TCASTable::addSensitivityLevel(double alt, const std::string& u) {
+int TCASTable::addSensitivityLevel(real alt, const std::string& u) {
   int sl=addSensitivityLevel(Units::from(u,alt));
   if (sl > 0) {
     units_["TCAS_level"]=u;
@@ -599,7 +600,7 @@ bool TCASTable::isTAStandard() const {
   return ta;
 }
 
-std::string TCASTable::list_units(const std::string& units, const std::vector<double>& v) {
+std::string TCASTable::list_units(const std::string& units, const std::vector<real>& v) {
   std::string s="";
   bool comma = false;
   for (int i=0; i<(int)v.size(); ++i) {
@@ -629,7 +630,7 @@ std::string TCASTable::toString() const {
   return s;
 }
 
-std::string TCASTable::pvs_list(const std::vector<double>& v) const {
+std::string TCASTable::pvs_list(const std::vector<real>& v) const {
   std::string s="(: ";
   bool comma = false;
   for (int i=0; i<(int)v.size(); ++i) {

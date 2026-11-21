@@ -12,24 +12,25 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "CD2D.h"
 #include "Util.h"
 
 namespace larcfm {
 
 // tau_vv = tau*v^2 [defined such that it's continuous everywhere]
-double tau_vv(const Vect2& s, const Vect2& v,
-    const double B, const double T) {
+real tau_vv(const Vect2& s, const Vect2& v,
+    const real B, const real T) {
   return Util::min(Util::max(B*v.sqv(),-(s*v)),T*v.sqv());
 }
 
 // omega_vv = omega*v^2 - D^2*v^2 [defined such that it's continuous everywhere]
-double omega_vv(const Vect2& s, const Vect2& v,
-    const double D, const double B, const double T) {
+real omega_vv(const Vect2& s, const Vect2& v,
+    const real D, const real B, const real T) {
   if (Util::almost_equals(s.sqv(),sq(D)) && Util::almost_equals(B,0)) {
     return s.dot(v);
   } else {
-    double tau = tau_vv(s,v,B,T);
+    real tau = tau_vv(s,v,B,T);
     return v.sqv()*s.sqv() + (2*tau)*(s*v) + sq(tau) - sq(D)*v.sqv();
   }
 }
@@ -37,7 +38,7 @@ double omega_vv(const Vect2& s, const Vect2& v,
 /**
  * violation(s,D) IFF there is an horizontal loss of separation at current time
  */
-bool CD2D::violation(const Vect2& s, const double D) {
+bool CD2D::violation(const Vect2& s, const real D) {
   return s.sqv() < sq(D);
 }
 
@@ -46,9 +47,9 @@ bool CD2D::violation(const Vect2& s, const double D) {
  * (t_in,t_out) in [B,T], where 0 <= B < T
  */
 LossData CD2D::detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
-    const double D, const double B, const double T) {
-  double t_in  = T+1;
-  double t_out = B;
+    const real D, const real B, const real T) {
+  real t_in  = T+1;
+  real t_out = B;
   if (B >= 0 && B < T) {
     if (vo.almostEquals(vi) && Horizontal::almost_horizontal_los(s,D)) {
       t_in = B;
@@ -56,8 +57,8 @@ LossData CD2D::detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
     } else {
       Vect2 v = vo - vi;
       if (Horizontal::Delta(s,v,D) > 0) {
-        double tin  = Horizontal::Theta_D(s,v,larcfm::Entry,D);
-        double tout = Horizontal::Theta_D(s,v,larcfm::Exit,D);
+        real tin  = Horizontal::Theta_D(s,v,larcfm::Entry,D);
+        real tout = Horizontal::Theta_D(s,v,larcfm::Exit,D);
         t_in  = Util::min(Util::max(tin,B),T);
         t_out = Util::max(Util::min(tout,T),B);
       } 
@@ -71,7 +72,7 @@ LossData CD2D::detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
  * (t_in,t_out) in [0,T], where 0 <= B < T.
  */
 LossData CD2D::detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
-    const double D, const double T) {
+    const real D, const real T) {
   return detection(s,vo,vi,D,0,T);
 }
 
@@ -80,7 +81,7 @@ LossData CD2D::detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
  * (t_in,t_out) in [0,...).
  */
 LossData CD2D::detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
-    const double D) {
+    const real D) {
   return detection(s,vo,vi,D,0,PINFINITY);
 }
 
@@ -89,7 +90,7 @@ LossData CD2D::detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
  * interval [B,T], where 0 <= B < T.
  */
 bool CD2D::cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
-    const double D, const double B, const double T) {
+    const real D, const real B, const real T) {
   if (ISINF(T)) return cd2d(s,vo,vi,D);
   if (B < 0 || B >= T) return false;
   Vect2 v = vo - vi;
@@ -102,7 +103,7 @@ bool CD2D::cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
  * interval [0,T], where T > 0.
  */
 bool CD2D::cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
-    const double D, const double T) {
+    const real D, const real T) {
   return cd2d(s,vo,vi,D,0,T);
 }
 
@@ -111,7 +112,7 @@ bool CD2D::cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
  * interval [0,...).
  */
 bool CD2D::cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
-    const double D) {
+    const real D) {
   Vect2 v = vo-vi;
   return Horizontal::almost_horizontal_los(s,D) || (Horizontal::Delta(s,v,D) > 0 && s*v < 0);
 }
@@ -120,12 +121,12 @@ bool CD2D::cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
  * Returns the time to horizontal closest point of approach for s,vo,vi during the
  * interval [B,T], where 0 <= B < T.
  */
-double CD2D::tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi,  const double B, const double T) {
+real CD2D::tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi,  const real B, const real T) {
   if (vo.almostEquals(vi))
     return B;
   else {
     Vect2 v = vo-vi;
-    double tau = -(s.dot(v))/v.sqv();
+    real tau = -(s.dot(v))/v.sqv();
     return Util::min(T,Util::max(B,tau));
   }
 }
@@ -134,7 +135,7 @@ double CD2D::tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi,  const doubl
  * Returns the time to horizontal closest point of approach for s,vo,vi, for
  * interval [0,T], where T > 0.
  */
-double CD2D::tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi, double T) {
+real CD2D::tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi, real T) {
   return tcpa(s,vo,vi,0,T);
 }
 
@@ -142,7 +143,7 @@ double CD2D::tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi, double T) {
  * Returns the time to horizontal closest point of approach for s,vo,vi, for
  * interval [0,...).
  */
-double CD2D::tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi) {
+real CD2D::tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi) {
   return tcpa(s,vo,vi,0,PINFINITY);
 }
 

@@ -14,6 +14,7 @@
 
 #ifndef VERTICAL_H_
 #define VERTICAL_H_
+#include "Real.h"
 
 #include "Consts.h"
 #include "Vect3.h"
@@ -25,19 +26,19 @@ class Vertical {
 public:
 
   /** z solution */
-  double  z;
+  real  z;
 
   /** Construct a vertical solution */
   Vertical();
 
   /** Construct a vertical solution */
-  explicit Vertical(const double vz);
+  explicit Vertical(const real vz);
 
   /** Is this solution undefined? */
   bool undef() const;
 
   /** method */
-  Vertical add_this(const double vz);
+  Vertical add_this(const real vz);
 
   /** Exact equality */
   bool operator == (const Vertical& v) const;
@@ -48,15 +49,15 @@ public:
   static const Vertical& NoVerticalSolution();
 
   /** */
-  static bool almost_vertical_los(const double sz,const double H);
+  static bool almost_vertical_los(const real sz,const real H);
 
   /** */
-  static double Theta_H(const double sz, const double v, const int eps, const double H);
+  static real Theta_H(const real sz, const real v, const int eps, const real H);
 
-  static double time_coalt(double sz, double vz);
+  static real time_coalt(real sz, real vz);
 
   /* Vertical miss distance within lookahead time */
-  static double vmd(double sz, double vz, double T);
+  static real vmd(real sz, real vz, real T);
 
   /** Solve the following equation on vz:
    *   sz+t*vz = eps*H,
@@ -65,15 +66,15 @@ public:
    * eps determines the bottom, i.e.,-1, or top, i.e., 1, circle.
    */
   static Vertical vs_circle(const Vect3& s, const Vect3& vo, const Vect3& vi,
-      const int eps, const double D, const double H);
+      const int eps, const real D, const real H);
 
   /** */
-  static Vertical vs_circle_at(const double sz, const double viz,
-      const double t, const int eps, const int dir, const double H);
+  static Vertical vs_circle_at(const real sz, const real viz,
+      const real t, const int eps, const int dir, const real H);
 
   /** */
   static Vertical vs_los_recovery(const Vect3& s, const Vect3& vo, const Vect3& vi,
-      const double H, const double t, int epsv);
+      const real H, const real t, int epsv);
 
   std::string toString();
 

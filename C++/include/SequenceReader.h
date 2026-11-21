@@ -10,6 +10,7 @@
  */
 #ifndef SEQUENCEREADER_H
 #define SEQUENCEREADER_H
+#include "Real.h"
 
 #include "StateReader.h"
 #include "AircraftState.h"
@@ -66,20 +67,20 @@ class SequenceReader : public StateReader {
 private:
 	typedef std::pair<Position, Velocity> DataPoint;
 	typedef std::map<std::string, DataPoint> SequenceEntry;
-	typedef std::map<double, SequenceEntry> SequenceEntryMap;
+	typedef std::map<real, SequenceEntry> SequenceEntryMap;
 
 	int windowSize;
 	SequenceEntryMap sequenceTable;
 	std::vector<std::string> nameIndex;
 	std::set<std::string> names;
 	
-	typedef std::map<Triple<double,std::string,int>,Triple<double,bool,std::string> > allExtraTblType;
+	typedef std::map<Triple<real,std::string,int>,Triple<real,bool,std::string> > allExtraTblType;
 	allExtraTblType allExtracolumnValues;
 
 
 
 	void loadfile();
-	void buildActive(double tm);
+	void buildActive(real tm);
 	
 public:
     /** A new, empty StateReader.  This may be used to store parameters, but nothing else. */
@@ -114,7 +115,7 @@ public:
 	 * Given a sequence key, set the active set of states.  If no such key exists, the active set is left empty.
 	 * @param tm Sequence key (time)
 	 */
-	void setActive(double tm);
+	void setActive(real tm);
 	
 	/**
 	 * Set the first entry to be the active one.
@@ -131,21 +132,21 @@ public:
 	 * @param time 
 	 * @return true, if aircraft exists
 	 * */
-	bool hasEntry(const std::string& name, double time);
+	bool hasEntry(const std::string& name, real time);
 	
 	/** Returns the Position entry for a given name and time.  If no entry for this name and time, returns a zero position and sets a warning. 
 	 * @param name 
 	 * @param time 
 	 * @return position
 	 * */
-	Position getSequencePosition(const std::string& name, double time);
+	Position getSequencePosition(const std::string& name, real time);
 
 	/** Returns the Velocity entry for a given name and time.  If no entry for this name and time, returns a zero velocity and sets a warning. 
 	 * @param name 
 	 * @param time 
 	 * @return velocity
 	 * */
-	Velocity getSequenceVelocity(const std::string& name, double time);
+	Velocity getSequenceVelocity(const std::string& name, real time);
 
 
 	/** sets a particular entry without reading in from a file 
@@ -153,7 +154,7 @@ public:
 	 * @param name 
 	 * @param p 
 	 * @param v */
-	void setEntry(double time, const std::string& name, const Position& p, const Velocity& v);
+	void setEntry(real time, const std::string& name, const Position& p, const Velocity& v);
 
 	/** remove any time-point entries for which there is only one aircraft (and so no chance of conflict) */
 	void clearSingletons();
@@ -168,10 +169,10 @@ public:
 	/**
 	 *  Returns a sorted list of all sequence keys
 	 */
-	std::vector<double> sequenceKeys();
+	std::vector<real> sequenceKeys();
 
 	/** a list of n > 0 sequence keys, stopping at the given time (inclusive) */ 
-	std::vector<double> sequenceKeysUpTo(int n, double tm);
+	std::vector<real> sequenceKeysUpTo(int n, real tm);
 
 	// otherwise the StateReader versions are hidden, despite having distinct signatures.
 	using StateReader::hasExtraColumnData;
@@ -186,7 +187,7 @@ public:
 	 * @param colname
 	 * @return true, if extra data is available
 	 */
-	bool hasExtraColumnData(double time, const std::string& acName, const std::string& colname) const;
+	bool hasExtraColumnData(real time, const std::string& acName, const std::string& colname) const;
 
 	/**
 	 * Returns the column value associated with a given aircraft at a given time, interpreted as a double, or NaN if there is no info  
@@ -195,7 +196,7 @@ public:
 	 * @param colname 
 	 * @return information
 	 */
-	double getExtraColumnValue(double time, const std::string& acName, const std::string& colname) const;
+	real getExtraColumnValue(real time, const std::string& acName, const std::string& colname) const;
 
 	/**
 	 * Returns the column value associated with a given aircraft at a given time, interpreted as a boolean, or false if there is no info  
@@ -204,7 +205,7 @@ public:
 	 * @param colname 
 	 * @return information
 	 */
-	bool getExtraColumnBool(double time, const std::string& acName, const std::string& colname) const;
+	bool getExtraColumnBool(real time, const std::string& acName, const std::string& colname) const;
 
 	/**
 	 * Returns the column value associated with a given aircraft at a given time, interpreted as a string, or the empty string if there is no info  
@@ -213,7 +214,7 @@ public:
 	 * @param colname 
 	 * @return information
 	 */
-	std::string getExtraColumnString(double time, const std::string& acName, const std::string& colname) const;
+	std::string getExtraColumnString(real time, const std::string& acName, const std::string& colname) const;
 
 
 //    std::string toString() const;

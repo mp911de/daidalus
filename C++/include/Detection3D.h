@@ -13,6 +13,7 @@
 
 #ifndef DETECTION3D_H_
 #define DETECTION3D_H_
+#include "Real.h"
 
 #include "Vect3.h"
 #include "ParameterData.h"
@@ -58,7 +59,7 @@ public:
    * @param T   end of detection time (if T < 0 then use an "infinite" lookahead time)
    * @return true if there is a conflict within times B to T
    */
-  bool conflict(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const;
+  bool conflict(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const;
 
   /**
    * This functional call returns a ConflictData object detailing the conflict between times B and T from now (relative), if any.
@@ -72,7 +73,7 @@ public:
    * @param T   end of detection time (if T < 0 then use an "infinite" lookahead time)
    * @return a ConflictData object detailing the conflict
    */
-  virtual ConflictData conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const = 0;
+  virtual ConflictData conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const = 0;
 
   /**
    * This functional call returns true if there is a violation at time t.
@@ -81,7 +82,7 @@ public:
    * @param t      time in seconds
    * @return    true if there is a violation at time t
    */
-  bool violationAtWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, double t) const;
+  bool violationAtWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real t) const;
 
   /**
    * This functional call returns true if there will be a violation between times B and T from now (relative).
@@ -91,7 +92,7 @@ public:
    * @param T   end of detection time (if T < 0 then use an "infinite" lookahead time)
    * @return true if there is a conflict within times B to T
    */
-  bool conflictWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, double B, double T) const;
+  bool conflictWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const;
 
   /**
    * This functional call returns a ConflictData object detailing the conflict between times B and T from now (relative), if any.
@@ -103,7 +104,7 @@ public:
    * @param T   end of detection time (if T < 0 then use an "infinite" lookahead time)
    * @return a ConflictData object detailing the conflict
    */
-  virtual ConflictData conflictDetectionWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, double B, double T) const;
+  virtual ConflictData conflictDetectionWithTrafficState(const TrafficState& ownship, const TrafficState& intruder, real B, real T) const;
 
   /** This returns a pointer to a new instance of this type of Detector3D.  You are responsible for destroying this instance when it is no longer needed. */
   virtual Detection3D* copy() const = 0;
@@ -157,7 +158,7 @@ public:
    * approximation of the actual contours defined by the violation and detection methods.
    */
   void horizontalContours(std::vector<std::vector<Position> >& blobs, const TrafficState& ownship, const TrafficState& intruder,
-      double thr, double T) const;
+      real thr, real T) const;
 
   /**
    * Return a list of points (polygon) that approximates the horizontal hazard zone
@@ -175,7 +176,7 @@ public:
    * hazard zone.
    */
   virtual void horizontalHazardZone(std::vector<Position>& haz, const TrafficState& ownship, const TrafficState& intruder,
-      double T) const;
+      real T) const;
 
 private:
   static void add_blob(std::vector<std::vector<Position> >& blobs, std::vector<Position>& vin, std::vector<Position>& vout);

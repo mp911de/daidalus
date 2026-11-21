@@ -11,6 +11,7 @@
 
 #ifndef BANDSHYSTERESIS_H_
 #define BANDSHYSTERESIS_H_
+#include "Real.h"
 
 #include "BandsRegion.h"
 #include "BandsRange.h"
@@ -26,23 +27,23 @@ public:
    */
   BandsHysteresis();
 
-  void setMod(double mod);
+  void setMod(real mod);
 
-  void initialize(double hysteresis_time,
-      double persistence_time, bool bands_persistence,
+  void initialize(real hysteresis_time,
+      real persistence_time, bool bands_persistence,
       int m, int n);
 
-  double getLastTime() const;
+  real getLastTime() const;
 
   bool getLastPreferredDirection() const;
 
-  double getLastResolutionLow() const;
+  real getLastResolutionLow() const;
 
-  double getLastResolutionUp() const;
+  real getLastResolutionUp() const;
 
-  double getRawResolutionLow() const;
+  real getRawResolutionLow() const;
 
-  double getRawResolutionUp() const;
+  real getRawResolutionUp() const;
 
   int getLastNFactorLow() const;
 
@@ -59,49 +60,49 @@ public:
    * Reset object if current time is older than hysteresis time with
    * respect to last time
    */
-  void resetIfCurrentTime(double current_time);
+  void resetIfCurrentTime(real current_time);
 
   // Implement MofN logic for bands
   void m_of_n(std::vector<ColorValue>& lcvs);
 
   // Implement persistence logic for bands. Return index in ranges of current value
-  int bandsPersistence(std::vector<BandsRange>& ranges, std::vector<ColorValue>& lcvs, bool recovery, double val);
+  int bandsPersistence(std::vector<BandsRange>& ranges, std::vector<ColorValue>& lcvs, bool recovery, real val);
 
   void resolutionsHysteresis(const std::vector<BandsRange>& ranges,
       BandsRegion::Region corrective_region,
-      double delta, int nfactor,
-      double val, int idx_l, int idx_u);
+      real delta, int nfactor,
+      real val, int idx_l, int idx_u);
 
-  void preferredDirectionHysteresis(double delta, double nfactor, double val);
+  void preferredDirectionHysteresis(real delta, real nfactor, real val);
 
   void bandsHysteresis(const std::vector<BandsRange>& ranges,
       BandsRegion::Region corrective_region,
-      double delta, int nfactor, double val, int idx);
+      real delta, int nfactor, real val, int idx);
 
   std::string toString(const std::string& u="unitless") const;
 
   virtual ~BandsHysteresis() {}
 
 private:
-  double  mod_;
-  double  mod2_;
-  double hysteresis_time_;
-  double persistence_time_;
+  real  mod_;
+  real  mod2_;
+  real hysteresis_time_;
+  real persistence_time_;
   bool   bands_persistence_;
-  double last_time_;
+  real last_time_;
   int    m_;
   int    n_;
   std::vector<BandsMofN> bands_mofn_; // Color values for computation of MofN bands logic
 
   /* Parameters for hysteresis of preferred direction */
   bool    preferred_dir_; // Returned preferred direction after hysteresis
-  double  time_of_dir_;   // Time of current preferred direction
+  real  time_of_dir_;   // Time of current preferred direction
 
   // Following variables are used in bands persistence
   BandsRegion::Region conflict_region_;  // Last conflict region
-  double conflict_region_low_; // If last region is conflict band, lower bound of conflict band
-  double conflict_region_up_;  // If last region is conflict band, upper bound of conflict band
-  double time_of_conflict_region_; // Time of last region
+  real conflict_region_low_; // If last region is conflict band, lower bound of conflict band
+  real conflict_region_up_;  // If last region is conflict band, upper bound of conflict band
+  real time_of_conflict_region_; // Time of last region
 
   /*
    * resolution_up_,resolution_low_ are the resolution interval computed from all regions that are at least
@@ -109,10 +110,10 @@ private:
    * NaN means no resolutions are computed (either because there is no conflict or
    * because of invalid inputs)
    */
-  double resolution_up_;
-  double resolution_low_;
-  double raw_up_; // Resolution up without hysteresis
-  double raw_low_; // Resolution low without hysteresis
+  real resolution_up_;
+  real resolution_low_;
+  real raw_up_; // Resolution up without hysteresis
+  real raw_low_; // Resolution low without hysteresis
   // nfactor >= 0 means recovery bands. It's the reduction factor for the internal cylinder
   int    nfactor_up_;
   int    nfactor_low_;
@@ -121,7 +122,7 @@ private:
 
   // Returns true if a is to the left of b (modulo mod). If mod is 0, this is the same a < b
   // Note that, by definition, if a is almost equal to b, then a is to the left of b.
-  bool to_the_left(double a, double b) const;
+  bool to_the_left(real a, real b) const;
 
   // check if region is below corrective region
   static bool is_below_corrective_region(BandsRegion::Region corrective_region, BandsRegion::Region region);
@@ -134,7 +135,7 @@ private:
   // check if region is above corrective region (corrective or above)
   static bool is_up_from_corrective_region(BandsRegion::Region corrective_region, BandsRegion::Region region);
 
-  void switch_dir(bool dir, double nfactor);
+  void switch_dir(bool dir, real nfactor);
 
 };
 

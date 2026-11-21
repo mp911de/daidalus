@@ -11,6 +11,7 @@
 
 #ifndef STATEREADER_H
 #define STATEREADER_H
+#include "Real.h"
 
 #include "ErrorLog.h"
 #include "ErrorReporter.h"
@@ -93,7 +94,7 @@ protected:
 	};
 	static const int definedColumns = TM_CLK + 1;
 
-	typedef std::map<std::pair<int,int>, Triple<double,bool, std::string> > extraTblType;
+	typedef std::map<std::pair<int,int>, Triple<real,bool, std::string> > extraTblType;
 	extraTblType extracolumnValues;
 
 	mutable ErrorLog error;
@@ -119,7 +120,7 @@ protected:
 	 * @param s the string to be parsed
 	 * @return
 	 */
-	double parseClockTime(const std::string& s) const;
+	real parseClockTime(const std::string& s) const;
 	int getIndex(const std::string& s) const;
 
 public:
@@ -167,7 +168,7 @@ public:
 	 */
 	std::string getName(int ac) const;
 
-	double getTime(int ac) const;
+	real getTime(int ac) const;
 
 	bool isLatLon() const;
 
@@ -199,7 +200,7 @@ public:
 	/**
 	 * Returns the column value associated with a given aircraft, interpreted as a double, or NaN if there is no info
 	 */
-	double getExtraColumnValue(int ac, const std::string& colname) const;
+	real getExtraColumnValue(int ac, const std::string& colname) const;
 
 	/**
 	 * Returns the column value associated with a given aircraft, interpreted as a boolean, or false if there is no info

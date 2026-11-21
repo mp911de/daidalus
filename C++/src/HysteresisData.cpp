@@ -9,6 +9,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "HysteresisData.h"
 
 #include "Util.h"
@@ -21,12 +22,12 @@ namespace larcfm {
 /*
  * Creates an empty object
  */
-HysteresisData::HysteresisData():hysteresis_time_(0.0),persistence_time_(0.0),
+HysteresisData::HysteresisData():hysteresis_time_(real(0.0)),persistence_time_(real(0.0)),
                                  init_time_(NaN),last_time_(NaN),last_value_(-1),outdated_(true) {}
 
 void HysteresisData::init() {
-  hysteresis_time_ = 0.0;
-  persistence_time_ = 0.0;
+  hysteresis_time_ = real(0.0);
+  persistence_time_ = real(0.0);
   init_time_ = NaN;
   last_time_ = NaN;
   last_value_ = -1;
@@ -40,7 +41,7 @@ bool HysteresisData::isValid() const {
 /*
  * Creates an object for given values of hysteresis, persistence time, and M of N parameters
  */
-void HysteresisData::setHysteresisData(double hysteresis_time, double persistence_time, int m, int n) {
+void HysteresisData::setHysteresisData(real hysteresis_time, real persistence_time, int m, int n) {
   mofn_.setMofN(m,n);
   hysteresis_time_ = hysteresis_time;
   persistence_time_ = persistence_time;
@@ -50,22 +51,22 @@ void HysteresisData::setHysteresisData(double hysteresis_time, double persistenc
   outdated_ = true;
 }
 
-void HysteresisData::outdateIfCurrentTime(double current_time) {
+void HysteresisData::outdateIfCurrentTime(real current_time) {
   if (!ISNAN(last_time_) && last_time_ >= current_time) {
     outdated_ = true;
   }
 }
 
-bool HysteresisData::isUpdatedAtCurrentTime(double current_time) const {
+bool HysteresisData::isUpdatedAtCurrentTime(real current_time) const {
   return last_time_ == current_time && !outdated_;
 }
 
-double HysteresisData::getInitTime() const {
+real HysteresisData::getInitTime() const {
   return init_time_;
 }
 
 
-double HysteresisData::getLastTime() const {
+real HysteresisData::getLastTime() const {
   return last_time_;
 }
 
@@ -87,7 +88,7 @@ void HysteresisData::reset(int val) {
 /*
  * In addition of m_of_n, this also applies hysteresis and persistence
  */
-int HysteresisData::applyHysteresisLogic(int current_value, double current_time) {
+int HysteresisData::applyHysteresisLogic(int current_value, real current_time) {
   if (ISNAN(last_time_) ||
       current_time <= last_time_ || current_time-last_time_ > hysteresis_time_) {
     // Reset hysteresis if current_time is in the past of later than deadline

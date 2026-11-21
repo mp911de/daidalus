@@ -9,16 +9,17 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Vect4.h"
 
 namespace larcfm {
 
-  Vect4::Vect4(const double xx, const double yy, const double zz, const double tt) : x(xx), y(yy), z(zz), t(tt) {}
+  Vect4::Vect4(const real xx, const real yy, const real zz, const real tt) : x(xx), y(yy), z(zz), t(tt) {}
 
-  Vect4::Vect4(const Vect3& v, double vt) : x(v.x()), y(v.y()), z(v.z()), t(vt) {}
+  Vect4::Vect4(const Vect3& v, real vt) : x(v.x()), y(v.y()), z(v.z()), t(vt) {}
 
   bool Vect4::isZero() const {
-    return x == 0.0 && y == 0.0 && z == 0.0 && t == 0.0;
+    return x == real(0.0) && y == real(0.0) && z == real(0.0) && t == real(0.0);
   }
 
   bool Vect4::almostEquals(const Vect4& v) const {
@@ -41,11 +42,11 @@ namespace larcfm {
     return Vect4(-x,-y,-z,-t);
   }
 
-  Vect4 Vect4::operator * (const double k) const {
+  Vect4 Vect4::operator * (const real k) const {
 	  return this->Scal(k);
   }
 
-  double Vect4::operator * (const Vect4& v) const { // Dot product
+  real Vect4::operator * (const Vect4& v) const { // Dot product
     return dot(v.x,v.y,v.z,v.t);
   }
 
@@ -78,33 +79,33 @@ namespace larcfm {
       return Vect4(-x,-y,-z,-t);
   }
 
-  Vect4 Vect4::Scal(double k) const {
+  Vect4 Vect4::Scal(real k) const {
 	  return Vect4(k*x,k*y,k*z,k*t);
   }
 
-  Vect4 Vect4::ScalAdd(const double k, const Vect4& v) const {
+  Vect4 Vect4::ScalAdd(const real k, const Vect4& v) const {
 	  return Vect4(k*x+v.x,k*y+v.y,k*z+v.z,k*t+v.t);
   }
 
-  double Vect4::dot(const double x, const double y, const double z, const double t) const {
+  real Vect4::dot(const real x, const real y, const real z, const real t) const {
     return this->x*x + this->y*y + this->z*z + this->t*t;
   }
 
-  double Vect4::sqv() const {
+  real Vect4::sqv() const {
     return dot(x,y,z,t);
   }
 
-  double Vect4::norm() const {
+  real Vect4::norm() const {
     return sqrt_safe(sqv());
   }
     
 
-  double Vect4::lat() const {
+  real Vect4::lat() const {
     return y;
   }
   
   
-  double Vect4::lon() const {
+  real Vect4::lon() const {
     return x;
   }
   
@@ -116,7 +117,7 @@ namespace larcfm {
 }
 
   const Vect4& Vect4::ZERO() {
-		const static Vect4 v(0.0,0.0,0.0,0.0);
+		const static Vect4 v(real(0.0),real(0.0),real(0.0),real(0.0));
 		return v;
   }
 

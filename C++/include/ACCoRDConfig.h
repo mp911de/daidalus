@@ -12,6 +12,7 @@
 
 #ifndef ACCORDCONFIG_H_
 #define ACCORDCONFIG_H_
+#include "Real.h"
 
 namespace larcfm {
 
@@ -25,21 +26,21 @@ private:
 
 public:
 
-  static const double minHorizExitSpeedLoS_default;   //  = Units.from("kn",100.0);
-  static const double minVertExitSpeedLoS_default;
-  static const double maxGs_default;                  //  = Units.from("kn",700.0);
-  static const double minGs_default;                  // = Units.from("kn",150.0);       // must be greater than 0
-  static const double maxVs_default;
-  static double gsSearchLosDiscard;     // = Units.from("nm",1.5);
-  static double vsDiscretization_default; //  = Units::from("fpm",10.0);
+  static const real minHorizExitSpeedLoS_default;   //  = Units.from("kn",100.0);
+  static const real minVertExitSpeedLoS_default;
+  static const real maxGs_default;                  //  = Units.from("kn",700.0);
+  static const real minGs_default;                  // = Units.from("kn",150.0);       // must be greater than 0
+  static const real maxVs_default;
+  static real gsSearchLosDiscard;     // = Units.from("nm",1.5);
+  static real vsDiscretization_default; //  = Units::from("fpm",10.0);
 
-  static const double NMAC_D; // Defined in RTCA SC-147
-  static const double NMAC_H; // Defined in RTCA SC-147
+  static const real NMAC_D; // Defined in RTCA SC-147
+  static const real NMAC_H; // Defined in RTCA SC-147
 
   static void setLosRepulsiveCrit(bool flag);
   static void setNewCesarAlgorithm(bool flag);
 
-  static void setGsSearchLosDiscard(double val);
+  static void setGsSearchLosDiscard(real val);
 
 }; // ACCORDCONFIG
 }

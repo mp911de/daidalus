@@ -12,6 +12,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Vect3.h"
 #include "Units.h"
 #include <limits>
@@ -22,30 +23,30 @@
 
 namespace larcfm {
 
-Vect3::Vect3(double xx, double yy, double zz) : v2_(xx,yy), z_(zz) {}
+Vect3::Vect3(real xx, real yy, real zz) : v2_(xx,yy), z_(zz) {}
 
-Vect3::Vect3(const Vect2&v, double vz) : v2_(v),z_(vz) {}
+Vect3::Vect3(const Vect2&v, real vz) : v2_(v),z_(vz) {}
 
-Vect3 Vect3::makeXYZ(double x, const std::string& ux, double y, const std::string& uy, double z, const std::string& uz) {
+Vect3 Vect3::makeXYZ(real x, const std::string& ux, real y, const std::string& uy, real z, const std::string& uz) {
 	return Vect3(Units::from(ux,x),Units::from(uy,y),Units::from(uz,z));
 }
 
-Vect3 Vect3::mkXYZ(double x, double y, double z) {
+Vect3 Vect3::mkXYZ(real x, real y, real z) {
 	return Vect3(x,y,z);
 }
 
-Vect3 Vect3::mkX(double nx) {
+Vect3 Vect3::mkX(real nx) {
 	return Vect3(nx,y(),z());
 }
-Vect3 Vect3::mkY(double ny) {
+Vect3 Vect3::mkY(real ny) {
 	return Vect3(x(),ny,z());
 }
-Vect3 Vect3::mkZ(double nz) {
+Vect3 Vect3::mkZ(real nz) {
 	return Vect3(x(),y(),nz);
 }
 
 bool Vect3::isZero() const {
-	return x() == 0.0 && y() == 0.0 && z() == 0.0;
+	return x() == real(0.0) && y() == real(0.0) && z() == real(0.0);
 }
 
 bool Vect3::almostEquals(const Vect3& v) const {
@@ -56,11 +57,11 @@ bool Vect3::almostEquals(const Vect3& v, INT64FM maxUlps) const {
 	return Util::almost_equals(x(),v.x(),maxUlps) && Util::almost_equals(y(),v.y(),maxUlps) && Util::almost_equals(z(),v.z(),maxUlps);
 }
 
-bool Vect3::almostEquals2D(const Vect3& v, double horizEps) const {
+bool Vect3::almostEquals2D(const Vect3& v, real horizEps) const {
 	return (vect2().Sub(v.vect2())).norm() < horizEps;
 }
 
-bool Vect3::within_epsilon(const Vect3& v2, double epsilon) const {
+bool Vect3::within_epsilon(const Vect3& v2, real epsilon) const {
 	if (std::abs(x() - v2.x()) > epsilon) return false;
 	if (std::abs(y() - v2.y()) > epsilon) return false;
 	if (std::abs(z() - v2.z()) > epsilon) return false;
@@ -80,11 +81,11 @@ Vect3 Vect3::operator - () const {
 	return Vect3(-x(),-y(),-z());
 }
 
-Vect3 Vect3::operator * (const double k) const {
+Vect3 Vect3::operator * (const real k) const {
 	return this->Scal(k);
 }
 
-double Vect3::operator * (const Vect3& v) const { // Dot product
+real Vect3::operator * (const Vect3& v) const { // Dot product
 	return dot(v.x(),v.y(),v.z());
 }
 
@@ -97,8 +98,8 @@ bool Vect3::operator != (const Vect3& v) const {  // strict disequality
 }
 
 Vect3 Vect3::Hat() const {
-	double n = norm();
-	if ( n == 0.0 ) { // this is only checking the divide by zero case, so an exact comparison is correct.
+	real n = norm();
+	if ( n == real(0.0) ) { // this is only checking the divide by zero case, so an exact comparison is correct.
 		return ZERO();
 	}
 	return Vect3(x()/n, y()/n, z()/n);
@@ -124,15 +125,15 @@ Vect3 Vect3::Neg() const {
 	return Vect3(-x(),-y(),-z());
 }
 
-Vect3 Vect3::Scal(double k) const {
+Vect3 Vect3::Scal(real k) const {
 	return Vect3(k*x(),k*y(),k*z());
 }
 
-Vect3 Vect3::ScalAdd(const double k, const Vect3& v) const {
+Vect3 Vect3::ScalAdd(const real k, const Vect3& v) const {
 	return Vect3(k*x()+v.x(), k*y()+v.y(), k*z()+v.z());
 }
 
-Vect3 Vect3::AddScal(double k, const Vect3& v) const {
+Vect3 Vect3::AddScal(real k, const Vect3& v) const {
 	return Vect3(x()+k*v.x(), y()+k*v.y(), z()+k*v.z());
 }
 
@@ -144,39 +145,39 @@ Vect3 Vect3::PerpL() const {
 	return Vect3(-y(),x(), 0);
 }
 
-Vect3 Vect3::linear(const Vect3& v, double t) const {
+Vect3 Vect3::linear(const Vect3& v, real t) const {
 	return Vect3(x()+v.x()*t, y()+v.y()*t, z()+v.z()*t);
 }
 
-Vect3 Vect3::linearByDist2D(double track, double d) const {
-	return Vect3(x()+d*sin(track), y()+d*cos(track), z());
+Vect3 Vect3::linearByDist2D(real track, real d) const {
+	return Vect3(x()+d*std::sin(track), y()+d*std::cos(track), z());
 }
 
 
-double Vect3::dot(const double xx, const double yy, const double zz) const {
+real Vect3::dot(const real xx, const real yy, const real zz) const {
 	return x()*xx + y()*yy + z()*zz;
 }
 
-double Vect3::dot(const Vect3& v) const {
+real Vect3::dot(const Vect3& v) const {
 	return dot(v.x(), v.y(), v.z());
 }
 
-double Vect3::sqv() const {
+real Vect3::sqv() const {
 	return dot(x(),y(),z());
 }
 
-double Vect3::norm() const {
+real Vect3::norm() const {
 	return std::sqrt(sqv());
 }
 
-double Vect3::cyl_norm(const double d, const double h) const {
+real Vect3::cyl_norm(const real d, const real h) const {
 	return Util::max(vect2().sqv()/sq(d),sq(z()/h));
 }
 
-double Vect3::distanceH(const Vect3& w) const {
+real Vect3::distanceH(const Vect3& w) const {
 	return (vect2()-w.vect2()).norm();
 }
-double Vect3::distanceV(const Vect3& w) const {
+real Vect3::distanceV(const Vect3& w) const {
 	return z() - w.z();
 }
 
@@ -222,13 +223,13 @@ std::string Vect3::toPVS(int precision) const {
  * @param vi velocity of two
  * @return time of closest point of approach
  */
-double Vect3::tcpa(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi) {
-	double t;
+real Vect3::tcpa(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi) {
+	real t;
 	Vect3 s = so.Sub(si);
 	Vect3 v = vo.Sub(vi);
-	double nv = v.sqv();
+	real nv = v.sqv();
 	if (nv > 0)
-		t = Util::max(0.0,-s.dot(v)/nv);
+		t = Util::max(real(0.0),-s.dot(v)/nv);
 	else
 		t = 0;
 	return t;
@@ -242,7 +243,7 @@ bool Vect3::isInvalid() const {
 }
 
 const Vect3& Vect3::ZERO() {
-	const static Vect3 v(0.0,0.0,0.0);
+	const static Vect3 v(real(0.0),real(0.0),real(0.0));
 	return v;
 }
 
@@ -270,28 +271,28 @@ Vect3 Vect3::parse(const std::string& s) {
  * Two dimensional calculations on Vect3s.  z components will be ignored or set to zero.
  */
 
-double Vect3::det2D(const Vect3& v) const {
+real Vect3::det2D(const Vect3& v) const {
 	return x()*v.y() - y()*v.x();
 }
 
-double Vect3::dot2D(const Vect3& v) const {
+real Vect3::dot2D(const Vect3& v) const {
 	return x()*v.x() + y()*v.y();
 }
 
-double Vect3::sqv2D() const {
+real Vect3::sqv2D() const {
 	return x()*x()+y()*y();
 }
 
-double Vect3::norm2D() const {
+real Vect3::norm2D() const {
 	return std::sqrt(sqv2D());
 }
 
 Vect3 Vect3::Hat2D() const {
-	double n = norm2D();
-	if (n == 0.0) { // this is only checking the divide by zero case, so an exact comparison is correct.
+	real n = norm2D();
+	if (n == real(0.0)) { // this is only checking the divide by zero case, so an exact comparison is correct.
 		return ZERO();
 	}
-	return Vect3(x()/n, y()/n, 0.0);
+	return Vect3(x()/n, y()/n, real(0.0));
 }
 
 }

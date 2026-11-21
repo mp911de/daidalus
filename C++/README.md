@@ -51,6 +51,8 @@ sign `$` represents the prompt of a Unix terminal)
 $ make 
 ```
 
+For single precision, run `make PRECISION=float` and compile callers with `-DDAIDALUS_SINGLE_PRECISION`.
+
 Running example applications
 -------------------------
 

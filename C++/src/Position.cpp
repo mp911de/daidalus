@@ -10,6 +10,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Position.h"
 #include "LatLonAlt.h"
 #include "GreatCircle.h"
@@ -27,7 +28,7 @@ using std::cout;
 using std::endl;
 
 
-const double minDist = 1E-9;
+const real minDist = real(1E-9);
 
 // the follow is to avoid the static initialization fiasco
 
@@ -48,29 +49,29 @@ Position::Position() : latlon(true), ll(LatLonAlt::ZERO()) , s3(Vect3::ZERO()) {
 
 Position::Position(const LatLonAlt& lla) : latlon(true), ll(lla) , s3(lla.lon(), lla.lat(), lla.alt()) {}
 
-Position::Position(double x, double y, double z) : latlon(false), ll(LatLonAlt::mk(y, x, z)) , s3(x, y, z) {}
+Position::Position(real x, real y, real z) : latlon(false), ll(LatLonAlt::mk(y, x, z)) , s3(x, y, z) {}
 
 Position::Position(const Vect3& v) : latlon(false), ll(LatLonAlt::mk(v.y(), v.x(), v.z())) , s3(v.x(), v.y(), v.z()) {}
 
 Position::Position(const Position& p) : latlon(p.latlon), ll(LatLonAlt::mk(p.lat(), p.lon(), p.alt())) , s3(p.x(), p.y(), p.z()) {}
 
-Position Position::makeLatLonAlt(double lat, double lon, double alt) {
+Position Position::makeLatLonAlt(real lat, real lon, real alt) {
 	return Position(LatLonAlt::make(lat,lon,alt));
 }
 
-Position Position::mkLatLonAlt(double lat, double lon, double alt) {
+Position Position::mkLatLonAlt(real lat, real lon, real alt) {
 	return Position(LatLonAlt::mk(lat,lon,alt));
 }
 
-Position Position::makeLatLonAlt(double lat, const std::string& lat_unit, double lon, const std::string& lon_unit, double alt, const std::string& alt_unit) {
+Position Position::makeLatLonAlt(real lat, const std::string& lat_unit, real lon, const std::string& lon_unit, real alt, const std::string& alt_unit) {
 	return Position(LatLonAlt::make(lat, lat_unit, lon, lon_unit, alt, alt_unit));
 }
 
-Position Position::mkXYZ(double x, double y, double z) {
+Position Position::mkXYZ(real x, real y, real z) {
 	return Position(x,y,z);
 }
 
-Position Position::makeXYZ(double x, const std::string& x_unit, double y, const std::string& y_unit, double z, const std::string& z_unit) {
+Position Position::makeXYZ(real x, const std::string& x_unit, real y, const std::string& y_unit, real z, const std::string& z_unit) {
 	return Position(Units::from(x_unit, x), Units::from(y_unit, y), Units::from(z_unit,z));
 }
 
@@ -95,7 +96,7 @@ bool Position::almostEquals(const Position& v) const {
 }
 
 
-bool Position::almostEquals(const Position& pp, double epsilon_horiz, double epsilon_vert) const {
+bool Position::almostEquals(const Position& pp, real epsilon_horiz, real epsilon_vert) const {
 	if (latlon) {
 	  return GreatCircle::almostEquals(lla(),pp.lla(),epsilon_horiz,epsilon_vert);
 	} else {
@@ -103,7 +104,7 @@ bool Position::almostEquals(const Position& pp, double epsilon_horiz, double eps
 	}
 }
 
-bool Position::almostEquals2D(const Position& pp, double epsilon_horiz) const {
+bool Position::almostEquals2D(const Position& pp, real epsilon_horiz) const {
 	if (latlon) {
 	  return GreatCircle::almostEquals2D(lla(),pp.lla(),epsilon_horiz);
 	} else {
@@ -140,51 +141,51 @@ const LatLonAlt& Position::lla() const {
 	return ll;
 }
 
-double Position::x() const {
+real Position::x() const {
 	return s3.x();
 }
 
-double Position::y() const {
+real Position::y() const {
 	return s3.y();
 }
 
-double Position::z() const {
+real Position::z() const {
 	return s3.z();
 }
 
-double Position::lat() const {
+real Position::lat() const {
 	return ll.lat();
 }
 
-double Position::lon() const {
+real Position::lon() const {
 	return ll.lon();
 }
 
-double Position::alt() const {
+real Position::alt() const {
 	return ll.alt();
 }
 
-double Position::latitude(const std::string& units) const {
+real Position::latitude(const std::string& units) const {
 	return ll.latitude(units);
 }
 
-double Position::longitude(const std::string& units) const {
+real Position::longitude(const std::string& units) const {
 	return ll.longitude(units);
 }
 
-double Position::altitude(const std::string& units) const {
+real Position::altitude(const std::string& units) const {
 	return ll.altitude(units);
 }
 
-double Position::xCoordinate(const std::string& units) const {
+real Position::xCoordinate(const std::string& units) const {
 	return Units::to(units, s3.x());
 }
 
-double Position::yCoordinate(const std::string& units) const {
+real Position::yCoordinate(const std::string& units) const {
 	return Units::to(units, s3.y());
 }
 
-double Position::zCoordinate(const std::string& units) const {
+real Position::zCoordinate(const std::string& units) const {
 	return Units::to(units, s3.z());
 }
 
@@ -192,7 +193,7 @@ bool Position::isLatLon() const {
 	return latlon;
 }
 
-const Position Position::mkX(double x) const {
+const Position Position::mkX(real x) const {
 	if (latlon) {
 		return Position(LatLonAlt::mk(ll.lat(), x, ll.alt()));
 	} else {
@@ -200,11 +201,11 @@ const Position Position::mkX(double x) const {
 	}
 }
 
-const Position Position::mkLon(double lon) const {
+const Position Position::mkLon(real lon) const {
 	return mkX(lon);
 }
 
-const Position Position::mkY(double y) const {
+const Position Position::mkY(real y) const {
 	if (latlon) {
 		return Position(LatLonAlt::mk(y, ll.lon(), ll.alt()));
 	} else {
@@ -212,11 +213,11 @@ const Position Position::mkY(double y) const {
 	}
 }
 
-const Position Position::mkLat(double lat) const {
+const Position Position::mkLat(real lat) const {
 	return mkY(lat);
 }
 
-const Position Position::mkZ(double z) const {
+const Position Position::mkZ(real z) const {
 	if (latlon) {
 		return Position(LatLonAlt::mk(ll.lat(), ll.lon(), z));
 	} else {
@@ -224,7 +225,7 @@ const Position Position::mkZ(double z) const {
 	}
 }
 
-const Position Position::mkAlt(double alt) const {
+const Position Position::mkAlt(real alt) const {
 	return mkZ(alt);
 }
 
@@ -232,7 +233,7 @@ const Position Position::zeroAlt() const {
 	return mkZ(0);
 }
 
-double Position::distanceH(const Position& p) const {
+real Position::distanceH(const Position& p) const {
 	if (latlon && p.latlon) {
 		return GreatCircle::distance(ll,p.ll);
 	} else if (!latlon && !p.latlon) {
@@ -242,11 +243,11 @@ double Position::distanceH(const Position& p) const {
 	}
 }
 
-double Position::distanceV(const Position& p) const {
+real Position::distanceV(const Position& p) const {
 	return std::abs(s3.z() - p.s3.z());
 }
 
-double Position::distanceChordH(const Position& p) const {
+real Position::distanceChordH(const Position& p) const {
 	if (latlon && p.latlon) {
 		return GreatCircle::chord_distance(ll,p.ll);
 	} else if (!latlon && !p.latlon) {
@@ -256,7 +257,7 @@ double Position::distanceChordH(const Position& p) const {
 	}
 }
 
-const Position Position::linear(const Velocity& v, double time) const {
+const Position Position::linear(const Velocity& v, real time) const {
 	if (time == 0 || v.isZero()) {
 		return latlon ? Position(ll) : Position(s3);
 	}
@@ -267,7 +268,7 @@ const Position Position::linear(const Velocity& v, double time) const {
 	}
 }
 
-const Position Position::linearEst(double dn, double de) const {
+const Position Position::linearEst(real dn, real de) const {
 	Position newNP;
 	if (latlon) {
 		newNP = Position(lla().linearEst(dn,de));
@@ -277,7 +278,7 @@ const Position Position::linearEst(double dn, double de) const {
 	return newNP;
 }
 
-const Position Position::linearEst(const Velocity& vo, double time) const {
+const Position Position::linearEst(const Velocity& vo, real time) const {
 	Position newNP;
 	if (latlon) {
 		if (lat() > Units::from("deg",85) || lat() < Units::from("deg",-85)) {
@@ -291,27 +292,27 @@ const Position Position::linearEst(const Velocity& vo, double time) const {
 	return newNP;
 }
 
-const std::pair<Position,Velocity> Position::linearDist2D(double track, double d, double gsAt_d) const {
+const std::pair<Position,Velocity> Position::linearDist2D(real track, real d, real gsAt_d) const {
 	  //f.pln(" $$$$$$ linearDist: v.track = "+Units::str("deg",v.compassAngle()));
 	  if (latlon) {
 		  LatLonAlt sEnd = lla();
-		  double finalTrk = track;
+		  real finalTrk = track;
 		  if (d > minDist) {  // final course has problems if no distance between points (USE 1E-9), 1E-10 NOT GOOD
 			  sEnd = GreatCircle::linear_initial(ll,track,d);
 			  finalTrk = GreatCircle::final_course(ll, sEnd);
 		  }
 		  //f.pln(" $$$$$$ linearDist: v = "+v+" finalTrk = "+Units::str("deg",finalTrk)+" d = "+Units::str("ft",d));
-		  Velocity vEnd = Velocity::mkTrkGsVs(finalTrk,gsAt_d,0.0);
+		  Velocity vEnd = Velocity::mkTrkGsVs(finalTrk,gsAt_d,real(0.0));
 		  return std::pair<Position,Velocity>(Position(sEnd),vEnd);
 	  } else {
 		  Vect3 sNew = s3.linearByDist2D(track,d);
-		  Velocity vNew = Velocity::mkTrkGsVs(track,gsAt_d,0.0);
+		  Velocity vNew = Velocity::mkTrkGsVs(track,gsAt_d,real(0.0));
 		  return std::pair<Position,Velocity>(Position(sNew),vNew);
 	  }
 
 }
 
-const Position Position::linearDist2D(double track, double d) const {
+const Position Position::linearDist2D(real track, real d) const {
 	  if (latlon) {
 		  LatLonAlt sEnd = GreatCircle::linear_initial(ll,track,d);
 		  return Position(sEnd);
@@ -323,13 +324,13 @@ const Position Position::linearDist2D(double track, double d) const {
 
 const Position Position::midPoint(const Position& p2) const{
 	if (latlon) {
-		return Position(GreatCircle::interpolate(ll,p2.lla(),0.5));
+		return Position(GreatCircle::interpolate(ll,p2.lla(),real(0.5)));
 	} else {
 		return Position(VectFuns::midPoint(s3,p2.vect3()));
 	}
 }
 
-Position Position::interpolate(const Position& p2, double f) const {
+Position Position::interpolate(const Position& p2, real f) const {
   if (latlon) {
     return Position(GreatCircle::interpolate(ll,p2.lla(),f));
   } else {
@@ -337,7 +338,7 @@ Position Position::interpolate(const Position& p2, double f) const {
   }
 }
 
-double Position::track(const Position& p) const {
+real Position::track(const Position& p) const {
 	if (p.latlon != latlon) {
 		fdln("Position.track call given an inconsistent argument.");
 		return 0;
@@ -350,34 +351,34 @@ double Position::track(const Position& p) const {
 	}
 }
 
-Velocity Position::initialVelocity(const Position& p, double dt) const {
+Velocity Position::initialVelocity(const Position& p, real dt) const {
 	if (dt<=0) {
 		return Velocity::ZERO();
 	} else {
 		if (isLatLon()) {
 			return GreatCircle::velocity_initial(lla(), p.lla(), dt);
 		} else {
-			return Velocity::make((p.vect3().Sub(vect3())).Scal(1.0/dt));
+			return Velocity::make((p.vect3().Sub(vect3())).Scal(real(1.0)/dt));
 		}
 	}
 }
 
-Velocity Position::finalVelocity(const Position& p, double dt) const {
+Velocity Position::finalVelocity(const Position& p, real dt) const {
 	if (dt<=0) {
 		return Velocity::ZERO();
 	} else {
 		if (isLatLon()) {
 			return GreatCircle::velocity_final(lla(), p.lla(), dt);
 		} else {
-			return Velocity::make((p.vect3().Sub(vect3())).Scal(1.0/dt));
+			return Velocity::make((p.vect3().Sub(vect3())).Scal(real(1.0)/dt));
 		}
 	}
 }
 
-double Position::representativeTrack(const Position& p) const {
+real Position::representativeTrack(const Position& p) const {
 	if (p.latlon != latlon) {
 		fdln("Position.representativeTrack call given an inconsistent argument.");
-		return 0.0;
+		return real(0.0);
 	}
 	if (latlon) {
 		return GreatCircle::representative_course(ll,p.ll);
@@ -389,17 +390,17 @@ double Position::representativeTrack(const Position& p) const {
 
 // returns intersection point and time of intersection relative to position so
 // a negative time indicates that the intersection occurred in the past (relative to directions of travel of so1)
-std::pair<Position,double> Position::intersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi) {
+std::pair<Position,real> Position::intersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi) {
 	if (so.latlon != si.latlon) {
 		fdln("Position.intersection call was given an inconsistent argument.");
-		return std::pair<Position,double>(Position::INVALID(),-1.0);
+		return std::pair<Position,real>(Position::INVALID(),-real(1.0));
 	}
 	if (so.latlon) {
-		std::pair<LatLonAlt,double> pgc = GreatCircle::intersection(so.lla(),vo, si.lla(),vi);
-		return std::pair<Position,double>(Position(pgc.first),pgc.second );
+		std::pair<LatLonAlt,real> pgc = GreatCircle::intersection(so.lla(),vo, si.lla(),vi);
+		return std::pair<Position,real>(Position(pgc.first),pgc.second );
 	} else {
-		std::pair<Vect3,double> pvt = VectFuns::intersection(so.vect3(),vo.vect3(),si.vect3(),vi.vect3());
-		return std::pair<Position,double>(Position(pvt.first),pvt.second );
+		std::pair<Vect3,real> pvt = VectFuns::intersection(so.vect3(),vo.vect3(),si.vect3(),vi.vect3());
+		return std::pair<Position,real>(Position(pvt.first),pvt.second );
 	}
 }
 
@@ -407,17 +408,17 @@ std::pair<Position,double> Position::intersection(const Position& so, const Velo
  *  for time return value, it assumes that an aircraft travels from so1 to so2 in dto seconds and the other aircraft from si to si2
  *  a negative time indicates that the intersection occurred in the past (relative to directions of travel of so1)
  */
-std::pair<Position,double> Position::intersection(const Position& so, const Position& so2, double dto, const Position& si, const Position& si2) {
+std::pair<Position,real> Position::intersection(const Position& so, const Position& so2, real dto, const Position& si, const Position& si2) {
 	if (so.latlon != si.latlon && so2.latlon != si2.latlon && so.latlon != so2.latlon) {
 		fdln("Position.intersection call was given an inconsistent argument.");
-		return std::pair<Position,double>(Position::INVALID(),-1.0);
+		return std::pair<Position,real>(Position::INVALID(),-real(1.0));
 	}
 	if (so.latlon) {
-		std::pair<LatLonAlt,double> lgc = GreatCircle::intersectionAvgAlt(so.lla(),so2.lla(), dto, si.lla(),si2.lla());
-		return std::pair<Position,double>(Position(lgc.first),lgc.second);
+		std::pair<LatLonAlt,real> lgc = GreatCircle::intersectionAvgAlt(so.lla(),so2.lla(), dto, si.lla(),si2.lla());
+		return std::pair<Position,real>(Position(lgc.first),lgc.second);
 	} else {
-		std::pair<Vect3,double> pvt = VectFuns::intersectionAvgZ(so.vect3(),so2.vect3(),dto,si.vect3(),si2.vect3());
-		return std::pair<Position,double>(Position(pvt.first),pvt.second);
+		std::pair<Vect3,real> pvt = VectFuns::intersectionAvgZ(so.vect3(),so2.vect3(),dto,si.vect3(),si2.vect3());
+		return std::pair<Position,real>(Position(pvt.first),pvt.second);
 	}
 }
 
@@ -434,7 +435,7 @@ Position Position::intersection2D(const Position& so, const Position& so2, const
 		LatLonAlt lgc = GreatCircle::intersection(so.lla(),so2.lla(), si.lla(), si2.lla());
 		return Position(lgc);
 	} else {
-		std::pair<Vect2,double> pvt = VectFuns::intersection2D(so.vect2(),so2.vect2(),1.0,si.vect2(),si2.vect2());
+		std::pair<Vect2,real> pvt = VectFuns::intersection2D(so.vect2(),so2.vect2(),real(1.0),si.vect2(),si2.vect2());
 		Vect3 p3 = Vect3(pvt.first,so.z());
 		return Position(p3);
 	}
@@ -442,7 +443,7 @@ Position Position::intersection2D(const Position& so, const Position& so2, const
 }
 
 /** Return the average velocity between the current position and the given position, with the given speed [internal units]. */
-Velocity Position::averageVelocity(const Position& p2, double speed) const {
+Velocity Position::averageVelocity(const Position& p2, real speed) const {
   if (p2.latlon != latlon) {
 	fpln("Position.averageVelocity call given an inconsistent argument.");
     return Velocity::ZERO();
@@ -455,7 +456,7 @@ Velocity Position::averageVelocity(const Position& p2, double speed) const {
 }
 
 /** Return the average velocity between the current position and the given position, with the given delta time dt. */
-Velocity Position::avgVelocity(const Position& p2, double dt) const {
+Velocity Position::avgVelocity(const Position& p2, real dt) const {
   if (p2.latlon != latlon) {
     fpln("Position.averageVelocity call given an inconsistent argument.");
     return Velocity::ZERO();
@@ -475,14 +476,14 @@ bool Position::isWest(const Position& a) const {
 	  }
 }
 
-bool Position::LoS(const Position& p2, double D, double H) {
+bool Position::LoS(const Position& p2, real D, real H) {
 	if (p2.isInvalid()) return false;
 	if (p2.latlon != latlon) {
 		fdln("Position.LoS call given an inconsistent argument: "+toString()+" "+p2.toString());
 		return false;
 	}
-	double distH = distanceH(p2);
-	double distV = distanceV(p2);
+	real distH = distanceH(p2);
+	real distV = distanceV(p2);
 	//f.pln ("distH "+distH+"  distV "+distV+" D "+D+" H "+H);
 	return (distH < D && distV < H);
 }

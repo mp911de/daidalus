@@ -13,6 +13,7 @@
 
 #ifndef URGENCYSTRATEGY_H_
 #define URGENCYSTRATEGY_H_
+#include "Real.h"
 
 #include "Detection3D.h"
 #include "TrafficState.h"
@@ -31,7 +32,7 @@ public:
    * If index <= -1, then no aircraft is the most urgent
    */
 
-  virtual int mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, double T) const = 0;
+  virtual int mostUrgentAircraft(const TrafficState& ownship, const std::vector<TrafficState>& traffic, real T) const = 0;
   virtual UrgencyStrategy* copy() const = 0;
 };
 

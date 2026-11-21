@@ -6,6 +6,7 @@
  */
 #ifndef WCV_TAUMOD_SUM_H_
 #define WCV_TAUMOD_SUM_H_
+#include "Real.h"
 
 #include "WCV_TAUMOD.h"
 #include "DaidalusParameters.h"
@@ -56,31 +57,31 @@ public:
   static const WCV_TAUMOD_SUM& DO_365_DWC_Non_Coop();
 
   virtual ConflictData conflictDetectionWithTrafficState(const TrafficState& ownship, const TrafficState& intruder,
-      double B, double T) const;
+      real B, real T) const;
 
 private:
 
-  double  h_pos_z_score_;          // Number of horizontal position standard deviations
+  real  h_pos_z_score_;          // Number of horizontal position standard deviations
   bool h_pos_z_score_enabled_;     // True if value has been set independently. Otherwise,
   // value will be overwritten using global parameter
-  double  h_vel_z_score_min_;      // Minimum number of horizontal velocity standard deviations
+  real  h_vel_z_score_min_;      // Minimum number of horizontal velocity standard deviations
   bool h_vel_z_score_min_enabled_; // True if value has been set independently. Otherwise,
   // value will be overwritten using global parameter
-  double  h_vel_z_score_max_;      // Maximum number of horizontal velocity standard deviations
+  real  h_vel_z_score_max_;      // Maximum number of horizontal velocity standard deviations
   bool h_vel_z_score_max_enabled_; // True if value has been set independently. Otherwise,
   // value will be overwritten using global parameter
-  double  h_vel_z_distance_;       // Distance at which h_vel_z_score scales from min to max as range decreases
+  real  h_vel_z_distance_;       // Distance at which h_vel_z_score scales from min to max as range decreases
   std::string  h_vel_z_distance_units_;    // Units of distance at which h_vel_z_score scales from min to max as range decreases
   bool h_vel_z_distance_enabled_;  // True if value has been set independently. Otherwise,
   // value will be overwritten using global parameter
-  double  v_pos_z_score_;          // Number of vertical position standard deviations
+  real  v_pos_z_score_;          // Number of vertical position standard deviations
   bool v_pos_z_score_enabled_;     // True if value has been set independently. Otherwise,
   // value will be overwritten using global parameter
-  double  v_vel_z_score_;          // Number of vertical velocity standard deviations
+  real  v_vel_z_score_;          // Number of vertical velocity standard deviations
   bool v_vel_z_score_enabled_;     // True if value has been set independently. Otherwise,
   // value will be overwritten using global parameter
 
-  static double MinError;
+  static real MinError;
 
   void initSUM();
 
@@ -92,43 +93,43 @@ private:
 
   std::pair<Vect2,Vect2> optimal_pair(const Vect2& v1, const Vect2& v2, const Vect2& w1, const Vect2& w2) const;
 
-  std::pair<Vect2,Vect2> optimal_wcv_pair_comp_init(const Vect2& v1, const Vect2& v2, double s_err, double v_err) const;
+  std::pair<Vect2,Vect2> optimal_wcv_pair_comp_init(const Vect2& v1, const Vect2& v2, real s_err, real v_err) const;
 
-  std::pair<Vect2,Vect2> optimal_wcv_pair(const Vect2& s, const Vect2& v, double s_err, double v_err, int eps1, int eps2) const;
+  std::pair<Vect2,Vect2> optimal_wcv_pair(const Vect2& s, const Vect2& v, real s_err, real v_err, int eps1, int eps2) const;
 
-  bool horizontal_wcv_taumod_uncertain(const Vect2& s, const Vect2& v, double s_err, double v_err) const;
+  bool horizontal_wcv_taumod_uncertain(const Vect2& s, const Vect2& v, real s_err, real v_err) const;
 
-  bool vertical_WCV_uncertain(double sz, double vz, double sz_err, double vz_err) const;
+  bool vertical_WCV_uncertain(real sz, real vz, real sz_err, real vz_err) const;
 
-  double horizontal_wcv_taumod_uncertain_entry(const Vect2& s, const Vect2& v, double s_err, double v_err, double T) const;
+  real horizontal_wcv_taumod_uncertain_entry(const Vect2& s, const Vect2& v, real s_err, real v_err, real T) const;
 
-  double Theta_D_uncertain(const Vect2& s, const Vect2& v, double s_err, double v_err, int eps) const;
+  real Theta_D_uncertain(const Vect2& s, const Vect2& v, real s_err, real v_err, int eps) const;
 
-  double horizontal_wcv_taumod_uncertain_exit(const Vect2& s, const Vect2& v,double s_err, double v_err, double T) const;
+  real horizontal_wcv_taumod_uncertain_exit(const Vect2& s, const Vect2& v,real s_err, real v_err, real T) const;
 
-  LossData horizontal_wcv_taumod_uncertain_interval(const Vect2& s, const Vect2& v,double s_err, double v_err, double T) const;
+  LossData horizontal_wcv_taumod_uncertain_interval(const Vect2& s, const Vect2& v,real s_err, real v_err, real T) const;
 
-  LossData vertical_WCV_uncertain_full_interval_szpos_vzpos(double T, double minsz/*,double maxsz*/, double minvz/*, double maxvz*/) const;
+  LossData vertical_WCV_uncertain_full_interval_szpos_vzpos(real T, real minsz/*,double maxsz*/, real minvz/*, double maxvz*/) const;
 
-  LossData vertical_WCV_uncertain_full_interval_szpos_vzneg(double T, double minsz,double maxsz, double minvz, double maxvz) const;
+  LossData vertical_WCV_uncertain_full_interval_szpos_vzneg(real T, real minsz,real maxsz, real minvz, real maxvz) const;
 
-  LossData vertical_WCV_uncertain_full_interval_szpos(double T, double minsz,double maxsz, double minvz, double maxvz) const;
+  LossData vertical_WCV_uncertain_full_interval_szpos(real T, real minsz,real maxsz, real minvz, real maxvz) const;
 
-  LossData vertical_WCV_uncertain_full_interval_split(double T, double minsz,double maxsz, double minvz, double maxvz) const;
+  LossData vertical_WCV_uncertain_full_interval_split(real T, real minsz,real maxsz, real minvz, real maxvz) const;
 
-  LossData vertical_WCV_uncertain_interval(double B, double T, double sz, double vz, double sz_err, double vz_err) const;
+  LossData vertical_WCV_uncertain_interval(real B, real T, real sz, real vz, real sz_err, real vz_err) const;
 
   bool containsSUM(const WCV_TAUMOD_SUM& wcv) const;
 
-  double relativeHorizontalPositionError(const TrafficState& own, const TrafficState& ac) const;
+  real relativeHorizontalPositionError(const TrafficState& own, const TrafficState& ac) const;
 
-  double relativeVerticalPositionError(const TrafficState& own, const TrafficState& ac) const;
+  real relativeVerticalPositionError(const TrafficState& own, const TrafficState& ac) const;
 
-  double weighted_z_score(double range) const;
+  real weighted_z_score(real range) const;
 
-  double relativeHorizontalSpeedError(const TrafficState& own, const TrafficState& ac, double s_err) const;
+  real relativeHorizontalSpeedError(const TrafficState& own, const TrafficState& ac, real s_err) const;
 
-  double relativeVerticalSpeedError(const TrafficState& own, const TrafficState& ac) const;
+  real relativeVerticalSpeedError(const TrafficState& own, const TrafficState& ac) const;
 
 public:
 
@@ -143,13 +144,13 @@ public:
 
   virtual std::string getSimpleClassName() const;
 
-  bool WCV_taumod_uncertain(const Vect3& s, const Vect3& v, double s_err, double sz_err, double v_err, double vz_err) const;
+  bool WCV_taumod_uncertain(const Vect3& s, const Vect3& v, real s_err, real sz_err, real v_err, real vz_err) const;
 
-  LossData WCV_taumod_uncertain_interval(double B, double T, const Vect3& s, const Vect3& v,
-      double s_err, double sz_err, double v_err, double vz_err) const;
+  LossData WCV_taumod_uncertain_interval(real B, real T, const Vect3& s, const Vect3& v,
+      real s_err, real sz_err, real v_err, real vz_err) const;
 
-  bool WCV_taumod_uncertain_detection(double B, double T, const Vect3& s, const Vect3& v,
-      double s_err, double sz_err, double v_err, double vz_err) const;
+  bool WCV_taumod_uncertain_detection(real B, real T, const Vect3& s, const Vect3& v,
+      real s_err, real sz_err, real v_err, real vz_err) const;
 
   virtual bool contains(const Detection3D& cd) const;
 
@@ -160,72 +161,72 @@ public:
   /**
    * @return get z-score (number of standard deviations) for horizontal position
    */
-  double getHorizontalPositionZScore() const;
+  real getHorizontalPositionZScore() const;
 
   /**
    * @return set z-score (number of standard deviations) for horizontal position (non-negative value)
    */
-  void setHorizontalPositionZScore(double val);
+  void setHorizontalPositionZScore(real val);
 
   /**
    * @return get min z-score (number of standard deviations) for horizontal velocity
    */
-  double getHorizontalVelocityZScoreMin() const;
+  real getHorizontalVelocityZScoreMin() const;
 
   /**
    * @return set min z-score (number of standard deviations) for horizontal velocity (non-negative value)
    */
-  void setHorizontalVelocityZScoreMin(double val);
+  void setHorizontalVelocityZScoreMin(real val);
 
   /**
    * @return get max z-score (number of standard deviations) for horizontal velocity
    */
-  double getHorizontalVelocityZScoreMax() const;
+  real getHorizontalVelocityZScoreMax() const;
 
   /**
    * @return set max z-score (number of standard deviations) for horizontal velocity (non-negative value)
    */
-  void setHorizontalVelocityZScoreMax(double val);
+  void setHorizontalVelocityZScoreMax(real val);
 
   /**
    * @return Distance (in internal units) at which h_vel_z_score scales from min to max as range decreases
    */
-  double getHorizontalVelocityZDistance() const;
+  real getHorizontalVelocityZDistance() const;
 
   /**
    * @return Set distance (in internal units) at which h_vel_z_score scales from min to max as range decreases
    */
-  void setHorizontalVelocityZDistance(double val);
+  void setHorizontalVelocityZDistance(real val);
 
   /**
    * @return Distance (in given units) at which h_vel_z_score scales from min to max as range decreases
    */
-  double getHorizontalVelocityZDistance(const std::string& u) const;
+  real getHorizontalVelocityZDistance(const std::string& u) const;
 
   /**
    * @return Set distance (in given units) at which h_vel_z_score scales from min to max as range decreases
    */
-  void setHorizontalVelocityZDistance(double val, const std::string& u);
+  void setHorizontalVelocityZDistance(real val, const std::string& u);
 
   /**
    * @return get z-score (number of standard deviations) for vertical position
    */
-  double getVerticalPositionZScore() const;
+  real getVerticalPositionZScore() const;
 
   /**
    * @return set z-score (number of standard deviations) for vertical position (non-negative value)
    */
-  void setVerticalPositionZScore(double val);
+  void setVerticalPositionZScore(real val);
 
   /**
    * @return get z-score (number of standard deviations) for vertical velocity
    */
-  double getVerticalSpeedZScore() const;
+  real getVerticalSpeedZScore() const;
 
   /**
    * @return set z-score (number of standard deviations) for vertical velocity (non-negative value)
    */
-  void setVerticalSpeedZScore(double val);
+  void setVerticalSpeedZScore(real val);
 
   std::string toString() const;
 

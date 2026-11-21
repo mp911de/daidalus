@@ -8,6 +8,7 @@
 
 #ifndef AIRCRAFTSTATE_H_
 #define AIRCRAFTSTATE_H_
+#include "Real.h"
 
 #include "Position.h"
 #include "Velocity.h"
@@ -50,9 +51,9 @@ class AircraftState : public ErrorReporter {
 
   
     /** The percent difference in altitude that is assumed to be acceptable, used in prune() */
-    static double MAX_RELATIVE_DIFF;
+    static real MAX_RELATIVE_DIFF;
   
-    static double minClimbVelocity;    // used to determine when a climb/descent occurs
+    static real minClimbVelocity;    // used to determine when a climb/descent occurs
   
     int bufferSize;    // the number of possible elements
     int oldest;        // the internal index to the oldest element
@@ -66,29 +67,29 @@ class AircraftState : public ErrorReporter {
     // internal data structure, users use s(), v()
     Position* s_list;
     Velocity* v_list;
-    double* t_list;
+    real* t_list;
     
     // Euclidean positions and velocities created by a projection function  
     EuclideanProjection sp;
     Vect2* projS2;
-    double* projH;
+    real* projH;
     Vect2* projV2;
-    double* projVZ;
-    double* projT;
+    real* projVZ;
+    real* projT;
     bool projection_initialized;
     bool projection_done;
     bool regression_done;
     
     // Regression parameters
 	int    recentInd;               // Index of most recent time from the aircraft
-	double horizvelintercept;
-	double horizvelslope;
-	double vertvelintercept;
-	double vertvelslope;
+	real horizvelintercept;
+	real horizvelslope;
+	real vertvelintercept;
+	real vertvelslope;
 
-	double ls_t;
-	double ls_trk;
-	double lastZeroTrackRateThreshold;
+	real ls_t;
+	real ls_trk;
+	real lastZeroTrackRateThreshold;
 
 
     void init(const std::string& name, int buffer_size);
@@ -100,15 +101,15 @@ class AircraftState : public ErrorReporter {
   // 1. 0 <= i < size
   // 2. i is the correct place to insert the data; time is correctly ordered: t(i) < tm < t(i+1)
   // 3. the projection_done flag is set by somewhere else
-  void insertAt(int i, const Position& ss, const Velocity& vv, double tm); 
+  void insertAt(int i, const Position& ss, const Velocity& vv, real tm);
 
   // assumes that all arrays are the same length and have at least "length" elements
   // assumes the arrays are sorted in increasing time order.
-  void calc(const Vect2* vel2, const double* velZ, const double* timevar, int length);
+  void calc(const Vect2* vel2, const real* velZ, const real* timevar, int length);
 	
-  Vect3 predS(double t) const;
+  Vect3 predS(real t) const;
   
-  Velocity predV(double t) const;
+  Velocity predV(real t) const;
   
   int ext2int(int i) const;
   
@@ -187,7 +188,7 @@ class AircraftState : public ErrorReporter {
      * @param time time
      * @return an index
      */
-    int find(double time) const;
+    int find(real time) const;
     
     /** Return the number of data elements 
      * @return size
@@ -207,7 +208,7 @@ class AircraftState : public ErrorReporter {
      * @param vv the velocity at the given time
      * @param tm the time of the position and velocity
      */
-	void add(const Position& ss, const Velocity& vv, double tm);
+	void add(const Position& ss, const Velocity& vv, real tm);
 	
 
 	/**
@@ -254,7 +255,7 @@ class AircraftState : public ErrorReporter {
 	 * @param i index
 	 * @return time
 	 */
-	double time(int i) const;
+	real time(int i) const;
 
 	/** 
 	 * The latest (i.e., last) position in this object.
@@ -279,7 +280,7 @@ class AircraftState : public ErrorReporter {
 	 * @return last time
 	 * 
 	 */
-	double timeLast() const;
+	real timeLast() const;
 	
 
 
@@ -290,7 +291,7 @@ class AircraftState : public ErrorReporter {
 
     /** remove any data older than the given time 
      * @param time value of time */
-    void removeUpToTime(double time);
+    void removeUpToTime(real time);
 
     /** remove the latest (i.e. newest) data point */
     void removeLast();
@@ -334,7 +335,7 @@ class AircraftState : public ErrorReporter {
 	 * @param t time
 	 * @return position and velocity vector
 	 */
-	StateVector pred(double t);
+	StateVector pred(real t);
 
 
 	/**
@@ -349,7 +350,7 @@ class AircraftState : public ErrorReporter {
 	 * @param t time
 	 * @return position and velocity vector
 	 */
-   StateVector predLinear(double t);
+   StateVector predLinear(real t);
 
 	/*
 	 * Return a Position for a given time, linearly projected, based on the most recent data at or before time t.
@@ -357,7 +358,7 @@ class AircraftState : public ErrorReporter {
 	 *
 	 * A warning is generated if all data points are at times greater than t and an INVALID position is returned.
 	 */
-	Position positionLinear(double t) const;
+	Position positionLinear(real t) const;
 
 	/**
 	 * Returns the velocity data from the most recent entry at or before time t.
@@ -366,7 +367,7 @@ class AircraftState : public ErrorReporter {
 	 * @param t time
 	 * @return velocity
 	 */
-	Velocity velocityAt(double t) const;
+	Velocity velocityAt(real t) const;
 
 	//
 	// Methods to check the "integrity" of the data
@@ -390,21 +391,21 @@ class AircraftState : public ErrorReporter {
 	 * 
 	 * @return time
 	 */
-	double lastStraightTime() const;
+	real lastStraightTime() const;
 
 
 	/** Track Rate calculation
 	 * @param i      index (0..size()-1)
 	 * @return track rate at ith data location
 	 */
-	double trackRate(int i);
+	real trackRate(int i);
 
 	/** EXPERIMENTAL
 	 * returns time when track rate was near zero.  This method cannot return a value older than bufferSize. The companion
 	 * method lastStraightTime is not as limited.
 	 * @return time
 	 */
-	double timeLastZeroTrackRate();
+	real timeLastZeroTrackRate();
 
 
 	/** EXPERIMENTAL
@@ -413,7 +414,7 @@ class AircraftState : public ErrorReporter {
 	 * @param numPtsTrkRateCalc   number of data points used in the average, must be at least 2
 	 * @return signed track rate (if insufficient number of points, return 0);
 	 */
-	double avgTrackRate(int numPtsTrkRateCalc);
+	real avgTrackRate(int numPtsTrkRateCalc);
 
 	/** EXPERIMENTAL
 	 * Estimate rate of change of vertical speed from sequence of velocity vectors stored in this object.  
@@ -421,7 +422,7 @@ class AircraftState : public ErrorReporter {
 	 * @param numPtsVsRateCalc   number of data points used in the average, must be at least 2
 	 * @return signed vertical speed rate (if insufficient number of points, return 0);
 	 */
-	double avgVsRate(int numPtsVsRateCalc);
+	real avgVsRate(int numPtsVsRateCalc);
 
 	/**
 	 * Throw away old points that have accelerations "significantly" different from the latest

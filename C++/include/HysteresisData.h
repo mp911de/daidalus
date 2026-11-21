@@ -11,6 +11,7 @@
 
 #ifndef HYSTERESISDATA_H_
 #define HYSTERESISDATA_H_
+#include "Real.h"
 
 #include "MofN.h"
 #include <deque>
@@ -31,15 +32,15 @@ public:
   /*
    * Set given values of hysteresis, persistence time, and M of N parameters
    */
-  void setHysteresisData(double hysteresis_time, double persistence_time, int m, int n);
+  void setHysteresisData(real hysteresis_time, real persistence_time, int m, int n);
 
-  void outdateIfCurrentTime(double current_time);
+  void outdateIfCurrentTime(real current_time);
 
-  bool isUpdatedAtCurrentTime(double current_time) const;
+  bool isUpdatedAtCurrentTime(real current_time) const;
 
-  double getInitTime() const;
+  real getInitTime() const;
 
-  double getLastTime() const;
+  real getLastTime() const;
 
   int getLastValue() const;
 
@@ -48,16 +49,16 @@ public:
   /*
    * In addition of m_of_n, this function applies persistence logic
    */
-  int applyHysteresisLogic(int current_value, double current_time);
+  int applyHysteresisLogic(int current_value, real current_time);
 
   virtual ~HysteresisData() {}
 
 private:
   MofN   mofn_;
-  double hysteresis_time_;
-  double persistence_time_;
-  double init_time_;
-  double last_time_;
+  real hysteresis_time_;
+  real persistence_time_;
+  real init_time_;
+  real last_time_;
   int    last_value_;
   /* When this flag is true, setting a value at current time resets hysteresis values */
   bool outdated_;

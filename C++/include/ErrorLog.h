@@ -12,6 +12,7 @@
 
 #ifndef ERRORLOG_H_
 #define ERRORLOG_H_
+#include "Real.h"
 
 #include "ErrorReporter.h"
 #include <string>
@@ -93,7 +94,7 @@ public:
    * @param val value
    * @return true, if value is positive
    */
-	bool isPositive(const std::string& method, double val);
+	bool isPositive(const std::string& method, real val);
 
   /** 
    * Checks if a value is non negative and, in that case, returns true. Otherwise, 
@@ -103,7 +104,7 @@ public:
    * @param val value
    * @return true, if value is non-negative
    */
-	bool isNonNegative(const std::string& method, double val);
+	bool isNonNegative(const std::string& method, real val);
 
   /** 
    * Checks if a value is non positive and, in that case, returns true. Otherwise, 
@@ -113,7 +114,7 @@ public:
    * @param val value
    * @return true, if value is non-positive
    */
-	bool isNonPositive(const std::string& method, double val);
+	bool isNonPositive(const std::string& method, real val);
 
   /** 
    * Checks if a value is less than value in internal units. Otherwise,
@@ -124,7 +125,7 @@ public:
    * @param thr value #2
    * @return true, if value #1 is less than value #2
    */
-	bool isLessThan(const std::string& method, double val, double thr);
+	bool isLessThan(const std::string& method, real val, real thr);
 
   /** 
    * Checks if a value is between lb and ub. Otherwise, adds an error message 
@@ -136,7 +137,7 @@ public:
    * @param ub  upper bound
    * @return true, if value is between upper and lower bound
    */
-	bool isBetween(const std::string& method, double val, double lb, double ub);
+	bool isBetween(const std::string& method, real val, real lb, real ub);
 
 	/** 
 	 * Checks EXPERIMENTAL_FEATURES flag is enabled. Otherwise, 

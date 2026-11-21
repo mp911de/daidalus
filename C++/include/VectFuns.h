@@ -9,6 +9,7 @@
 
 #ifndef VECTFUNS_H
 #define VECTFUNS_H
+#include "Real.h"
 
 #include "Vect3.h"
 #include "Velocity.h"
@@ -29,7 +30,7 @@ public:
 	 *
 	 * @return true, if aircraft are in loss of separation
 	 */
-	static bool LoS(const Vect3& so, const Vect3& si, double D, double H);
+	static bool LoS(const Vect3& so, const Vect3& si, real D, real H);
 
 
 	/**
@@ -65,7 +66,7 @@ public:
 	 * @param f a fraction.  Should be between 0 and 1 to interpolate. If 0, then v1 is returned, if 1 then v2 is returned.
 	 * @return interpolated vector
 	 */
-	static Vect3 interpolate(const Vect3& v1, const Vect3& v2, double f);
+	static Vect3 interpolate(const Vect3& v1, const Vect3& v2, real f);
 
 	// f should be between 0 and 1 to interpolate
 	/**
@@ -75,11 +76,11 @@ public:
 	 * @param f a fraction.  Should be between 0 and 1 to interpolate. If 0, then v1 is returned, if 1 then v2 is returned.
 	 * @return interpolated vector
 	 */
-	static Velocity interpolateVelocity(const Velocity& v1, const Velocity& v2, double f);
+	static Velocity interpolateVelocity(const Velocity& v1, const Velocity& v2, real f);
 
-	static double angle_between(const Vect2& v1, const Vect2& v2);
+	static real angle_between(const Vect2& v1, const Vect2& v2);
 
-	static double angle_between(const Vect2& v1, const Vect2& v2, const Vect2& v3);
+	static real angle_between(const Vect2& v1, const Vect2& v2, const Vect2& v3);
 
 	/**
 	 * determines if divergent and relative speed is greater than a specified minimum relative speed
@@ -90,8 +91,8 @@ public:
 	 * @param minRelSpeed  the desired minimum relative speed
 	 * @return   true iff divergent and relative speed is greater than a specified minimum relative speed
 	 */
-	static bool divergentHorizGt(const Vect2& s, const Vect2& vo, const Vect2& vi, double minRelSpeed);
-	static bool divergentHorizGt(const Vect3& s, const Vect3& vo, const Vect3& vi, double minRelSpeed);
+	static bool divergentHorizGt(const Vect2& s, const Vect2& vo, const Vect2& vi, real minRelSpeed);
+	static bool divergentHorizGt(const Vect3& s, const Vect3& vo, const Vect3& vi, real minRelSpeed);
 
 	/**
 	 * Return if two aircraft in the given state are divergent in the horizontal plane
@@ -119,7 +120,7 @@ public:
 	 * @param vi velocity of second aircraft
 	 * @return rate of closure
 	 */
-	static double rateOfClosureHorizontal(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi) ;
+	static real rateOfClosureHorizontal(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi) ;
 
 	/**
 	 * Return the vertical rate of closure of two aircraft in the given state
@@ -129,7 +130,7 @@ public:
 	 * @param vi velocity of second aircraft
 	 * @return rate of closure
 	 */
-	static double rateOfClosureVertical(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi);
+	static real rateOfClosureVertical(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi);
 
 	/** time of closest approach, if parallel return Double.MAX_VALUE
 	 * @param s    relative position of aircraft
@@ -137,7 +138,7 @@ public:
 	 * @param vi   velocity of traffic
 	 * @return     time of closest approach  (can be negative)
 	 */
-	static double tau(const Vect3& s, const Vect3& vo, const Vect3& vi);
+	static real tau(const Vect3& s, const Vect3& vo, const Vect3& vi);
 
 	/**
 	 * distance at time of closest approach
@@ -148,7 +149,7 @@ public:
 	 * @return     distance at time of closest approach
 	 */
 
-	static double distAtTau(const Vect3& s, const Vect3& vo, const Vect3& vi, bool futureOnly);
+	static real distAtTau(const Vect3& s, const Vect3& vo, const Vect3& vi, bool futureOnly);
 	
 
 	/**
@@ -160,9 +161,9 @@ public:
 	 * @return Pair (2-dimensional point of intersection with 3D projection, relative time of intersection, relative to the so3)
 	 * If the lines are parallel, this returns the pair (0,NaN).
 	 */
-	static std::pair<Vect3,double> intersection(const Vect3& so3, const Vect3& vo3, const Vect3& si3, const Vect3& vi3);
+	static std::pair<Vect3,real> intersection(const Vect3& so3, const Vect3& vo3, const Vect3& si3, const Vect3& vi3);
 
-	static std::pair<Vect2,double> intersection2D(const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
+	static std::pair<Vect2,real> intersection2D(const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
 
 	 /**
      * Calculate the horizontal distance between two points.
@@ -171,7 +172,7 @@ public:
      * @param soB   point B 
      * @return horizontal distance between points.
      */
-	static double distanceH(const Vect3& soA, const Vect3& soB);
+	static real distanceH(const Vect3& soA, const Vect3& soB);
 
 	/**
 	 * Computes 2D intersection point of two lines, but also finds z component as average of the closest end point of each line)
@@ -185,11 +186,11 @@ public:
 	 * Note the intersection may be in the past (i.e. negative time)
 	 * If the lines are parallel, this returns the pair (0,NaN).
 	 */
-	static std::pair<Vect3,double> intersectionAvgZ(const Vect3& so1, const Vect3& so2, double dto, const Vect3& si1, const Vect3& si2);
+	static std::pair<Vect3,real> intersectionAvgZ(const Vect3& so1, const Vect3& so2, real dto, const Vect3& si1, const Vect3& si2);
 
-	static std::pair<Vect2,double> intersection2D(const Vect2& so1, const Vect2& so2, double dto, const Vect2& si1, const Vect2& si2);
+	static std::pair<Vect2,real> intersection2D(const Vect2& so1, const Vect2& so2, real dto, const Vect2& si1, const Vect2& si2);
 
-	static std::pair<Vect2,double> intersectSegments(const Vect2& so, const Vect2& so2, const Vect2& si, const Vect2& si2);
+	static std::pair<Vect2,real> intersectSegments(const Vect2& so, const Vect2& so2, const Vect2& si, const Vect2& si2);
 
 	/**
 	 * Return the closest point on the line a-b to point so as a 3D norm
@@ -221,9 +222,9 @@ public:
 
 	static Vect3 closestPointOnSegment3(const Vect3& a, const Vect3& b, const Vect3& so);
 
-	static std::pair<Vect3,double> closestPointOnSegment3_extended(const Vect3& a, const Vect3& b, const Vect3& so);
+	static std::pair<Vect3,real> closestPointOnSegment3_extended(const Vect3& a, const Vect3& b, const Vect3& so);
 
-	static double distanceToSegment(const Vect2& a, const Vect2& b, const Vect2& so);
+	static real distanceToSegment(const Vect2& a, const Vect2& b, const Vect2& so);
 
 	/**
 	 * Computes 2D intersection point of two infinite lines
@@ -234,7 +235,7 @@ public:
 	 * @return time the OWNSHIP (so3) will reach the point.  Note that the intruder (si3) may have already passed this point.
 	 * If the lines are parallel, this returns NaN.
 	 */
-	static double timeOfIntersection(const Vect3& so3, const Velocity& vo3, const Vect3& si3, const Velocity& vi3);
+	static real timeOfIntersection(const Vect3& so3, const Velocity& vo3, const Vect3& si3, const Velocity& vi3);
 
 	/**
 	 * Returns true if x is "behind" so , that is, x is within the region behind the perpendicular line to vo through so.  

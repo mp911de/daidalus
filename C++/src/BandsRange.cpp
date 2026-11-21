@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "DaidalusParameters.h"
 #include "BandsRange.h"
 #include "format.h"
@@ -42,7 +43,7 @@ void BandsRange::makeRangesFromColorValues(std::vector<BandsRange>& ranges, cons
  * Return index in ranges_ where val is found, -1 if invalid input or not found. Notice that values at
  * the limits may be included or not depending on the regions.
  */
-int BandsRange::index_of(const std::vector<BandsRange>& ranges, double val, double mod) {
+int BandsRange::index_of(const std::vector<BandsRange>& ranges, real val, real mod) {
   val = Util::safe_modulo(val,mod);
   int last_index = ranges.size()-1;
   // In the following loop is important that RECOVERY and NONE both have the order 0,

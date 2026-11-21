@@ -13,6 +13,7 @@
 
 #ifndef UTIL_H_
 #define UTIL_H_
+#include "Real.h"
 
 #include <iostream>
 #include <sstream>
@@ -27,42 +28,41 @@
 #include "stdint.h" // you may need to download this header file to use with MS Visual Studio
 #include <algorithm>
 
-typedef long long INT64FM;
+typedef larcfm::real_bits INT64FM;
 #ifndef M_PI
 # define M_PI 3.141592653589793
 #endif
-static const double Pi  = M_PI;
+static const larcfm::real Pi  = larcfm::real(M_PI);
 
-const unsigned long lnan[2]={0xffffffff, 0x7fffffff};
-#define NaN *( double* )lnan
-#define PINFINITY std::numeric_limits<double>::infinity()
-#define NINFINITY -std::numeric_limits<double>::infinity()
+#define NaN std::numeric_limits<larcfm::real>::quiet_NaN()
+#define PINFINITY std::numeric_limits<larcfm::real>::infinity()
+#define NINFINITY -std::numeric_limits<larcfm::real>::infinity()
 //#define MAXDOUBLE numeric_limits<double>::max()
-#define MAXDOUBLE DBL_MAX
+#define MAXDOUBLE std::numeric_limits<larcfm::real>::max()
 #define MAXINTEGER std::numeric_limits<int>::max();
 #define ISNAN _isnan
 #define ISINF !_finite
 
 // this is a "signaling NaN" that may throw a fp exception, but this is implementation dependent (and the flag can be set by other libraries).  In general, don't use this.
-#define SIGNaN std::numeric_limits<double>::signaling_NaN()
+#define SIGNaN std::numeric_limits<larcfm::real>::signaling_NaN()
 
 #define CONSTEXPR constexpr
 
 #else /* ********** GCC *************** */
 
 #include <inttypes.h>
-typedef int64_t INT64FM;
+typedef larcfm::real_bits INT64FM;
 
-#define NaN std::numeric_limits<double>::quiet_NaN()
-#define PINFINITY std::numeric_limits<double>::infinity()
-#define NINFINITY -std::numeric_limits<double>::infinity()
-#define MAXDOUBLE std::numeric_limits<double>::max()
+#define NaN std::numeric_limits<larcfm::real>::quiet_NaN()
+#define PINFINITY std::numeric_limits<larcfm::real>::infinity()
+#define NINFINITY -std::numeric_limits<larcfm::real>::infinity()
+#define MAXDOUBLE std::numeric_limits<larcfm::real>::max()
 #define MAXINTEGER std::numeric_limits<int>::max()
 #define ISNAN std::isnan
 #define ISINF std::isinf
 
 // this is a "signaling NaN" that may throw a fp exception, but this is implementation dependent (and the flag can be set by other libraries).  In general, don't use this.
-#define SIGNaN std::numeric_limits<double>::signaling_NaN()
+#define SIGNaN std::numeric_limits<larcfm::real>::signaling_NaN()
 
 #define CONSTEXPR 
 
@@ -74,22 +74,15 @@ typedef int64_t INT64FM;
 
 namespace larcfm {
 
-#if defined(_MSC_VER)
-static const INT64FM PRECISION13 = 16348;
-static const INT64FM PRECISION5 = 1ULL << 40;
-static const INT64FM PRECISION7 = 1ULL << 34;
-static const INT64FM PRECISION9 = 1ULL << 27;
-static const INT64FM PRECISION_DEFAULT = PRECISION13;
-static const INT64FM HIGH_BIT = 0x8000000000000000ULL;
-# else
-static const double Pi  = M_PI;
-static const INT64FM PRECISION13 = 16348;
-static const INT64FM PRECISION5 = 1ULL << 40; // UINT64_C(1) << 40; //1LLU << 40;
-static const INT64FM PRECISION7 = 1LLU << 34;
-static const INT64FM PRECISION9 = 1LLU << 27;
-static const INT64FM PRECISION_DEFAULT = PRECISION13;
-static const INT64FM HIGH_BIT = 0x8000000000000000LLU;
+#if !defined(_MSC_VER)
+static const real Pi  = real(M_PI);
 #endif
+static const INT64FM PRECISION13 = REAL_ULPS13;
+static const INT64FM PRECISION5 = REAL_ULPS5;
+static const INT64FM PRECISION7 = REAL_ULPS7;
+static const INT64FM PRECISION9 = REAL_ULPS9;
+static const INT64FM PRECISION_DEFAULT = PRECISION13;
+static const INT64FM HIGH_BIT = REAL_HIGH_BIT;
 
 // M_PI = 3.1415926535897931
 // Java = 3.141592653589793
@@ -106,7 +99,7 @@ public:
 	 * @param b another number
 	 * @return true, if almost_less
 	 */
-	static bool almost_less(double a, double b);
+	static bool almost_less(real a, real b);
 
 	/**
 	 * Determines if a &lt; b, without being almost equal, according to the
@@ -117,7 +110,7 @@ public:
 	 * @param maxUlps maximum units of least precision
 	 * @return true, if almost_less
 	 */
-	static bool almost_less(double a, double b, INT64FM maxUlps);
+	static bool almost_less(real a, real b, INT64FM maxUlps);
 
 	/**
 	 * Determines if a &gt; b, without being almost equal, according to the
@@ -127,7 +120,7 @@ public:
 	 * @param b another number
 	 * @return true, if almost_greater
 	 */
-	static bool almost_greater(double a, double b);
+	static bool almost_greater(real a, real b);
 
 	/**
 	 * Determines if a &gt; b, without being almost equal, according to the
@@ -138,7 +131,7 @@ public:
 	 * @param maxUlps maximum units of least precision
 	 * @return true, if almost_greater
 	 */
-	static bool almost_greater(double a, double b, INT64FM maxUlps);
+	static bool almost_greater(real a, real b, INT64FM maxUlps);
 
 	/**
 	 * Determines if a is greater than or almost equal to b, according to the
@@ -149,7 +142,7 @@ public:
 	 * @param maxUlps maximum units of least precision
 	 * @return true, if almost greater or equal
 	 */
-	static bool almost_geq(double a, double b, INT64FM maxUlps);
+	static bool almost_geq(real a, real b, INT64FM maxUlps);
 
 	/**
 	 * Determines if a is greater than or almost equal to b, according to the
@@ -159,7 +152,7 @@ public:
 	 * @param b another number
 	 * @return true, if almost great or equal
 	 */
-	static bool almost_geq(double a, double b);
+	static bool almost_geq(real a, real b);
 
 	/**
 	 * Determines if a is less than or almost equal to b, according to the
@@ -170,7 +163,7 @@ public:
 	 * @param maxUlps maximum units of least precision
 	 * @return true, if almost less or equal
 	 */
-	static bool almost_leq(double a, double b, INT64FM maxUlps);
+	static bool almost_leq(real a, real b, INT64FM maxUlps);
 
 	/**
 	 * Determines if a is less than or almost equal to b, according to the
@@ -180,7 +173,7 @@ public:
 	 * @param b another number
 	 * @return true, if almost less or equal
 	 */
-	static bool almost_leq(double a, double b);
+	static bool almost_leq(real a, real b);
 
 	/**
 	 * Determines if these two doubles, relative to each other, are almost
@@ -214,7 +207,7 @@ public:
 	 * @param maxUlps the precision, or more specifically, the maximum units of least precision
 	 * @return true, if almost equals
 	 */
-	static bool almost_equals(double a, double b, INT64FM maxUlps);
+	static bool almost_equals(real a, real b, INT64FM maxUlps);
 
 	/** Are these two numbers almost equal, given the PRECISION_DEFAULT
 	 *
@@ -222,7 +215,7 @@ public:
 	 * @param b another number
 	 * @return true, if almost equals
 	 */
-	static bool almost_equals(double a, double b);
+	static bool almost_equals(real a, real b);
 
 
 	/**
@@ -235,7 +228,7 @@ public:
 	 * @param epsilon maximum difference
 	 * @return true, if values are within epsilon
 	 */
-	static bool within_epsilon(double a, double b, double epsilon);
+	static bool within_epsilon(real a, real b, real epsilon);
 
 	/**
 	 * Returns true if the magnitude of a is less than epsilon. Epsilon must be positive.
@@ -244,7 +237,7 @@ public:
 	 * @param epsilon maximum value
 	 * @return true, if value is within epsilon
 	 */
-	static bool within_epsilon(double a, double epsilon);
+	static bool within_epsilon(real a, real epsilon);
 
 
 	/**
@@ -254,14 +247,14 @@ public:
 	 * @param discreteUnits     the size of discretization, e.g. 0.1, 1.0, 10.0, 100.0  etc
 	 * @return       nvoz discretized to units if discreteUnits
 	 */
-	static double discretizeDir(double voz, double nvoz, double discreteUnits);
+	static real discretizeDir(real voz, real nvoz, real discreteUnits);
 
 	/** Square
 	 *
 	 * @param x value
 	 * @return square of value
 	 */
-	static double sq(const double x);
+	static real sq(const real x);
 	/** return the absolute value */
 	static INT64FM llabs(const INT64FM x);
 	/** a safe (won't return NaN or throw exceptions) version of square root
@@ -269,7 +262,7 @@ public:
 	 * @param x value
 	 * @return square root of value
 	 */
-	static double sqrt_safe(const double x);
+	static real sqrt_safe(const real x);
 
 	//	/**
 	//	 * Fast inverse square root approximation, as presented in https://en.wikipedia.org/wiki/Fast_inverse_square_root
@@ -282,18 +275,18 @@ public:
 	 * @param x abscissa coordinate
 	 * @return arc-tangent
 	 */
-	static double atan2_safe(const double y, const double x);
+	static real atan2_safe(const real y, const real x);
 	/** a safe (won't return NaN or throw exceptions) version of arc-sine
 	 * @param x value
 	 * @return arc-sine of value
 	 * */
-	static double asin_safe(double x);
+	static real asin_safe(real x);
 	/** a safe (won't return NaN or throw exceptions) version of arc-cosine
 	 *
 	 * @param x angle
 	 * @return the arc-cosine of x, between [0,pi)
 	 */
-	static double acos_safe(double x);
+	static real acos_safe(real x);
 	/** Discriminant of a quadratic
 	 *
 	 * @param a a coefficient of quadratic
@@ -301,7 +294,7 @@ public:
 	 * @param c c coefficient of quadratic
 	 * @return discriminant
 	 */
-	static double discr(const double a, const double b, const double c);
+	static real discr(const real a, const real b, const real c);
 	/** Quadratic equation, eps = -1 or +1
 	 *
 	 * @param a a coefficient of quadratic
@@ -310,7 +303,7 @@ public:
 	 * @param eps -1 or +1 (to indicate which solution you want)
 	 * @return root of quadratic
 	 */
-	static double root(const double a, const double b, const double c, int eps);
+	static real root(const real a, const real b, const real c, int eps);
 	/** root2b(a,b,c,eps) = root(a,2*b,c,eps) , eps = -1 or +1
 	 *
 	 * @param a a coefficient of quadratic
@@ -319,7 +312,7 @@ public:
 	 * @param eps -1 or +1 (to indicate which solution you want)
 	 * @return root of quadratic
 	 */
-	static double root2b(const double a, const double b, const double c, const int eps);
+	static real root2b(const real a, const real b, const real c, const int eps);
 
 	/** Assumes {@code c < 0}, {@code b > 0}
 	 *
@@ -330,7 +323,7 @@ public:
 	 *
 	 * NOTE: {@code c < 0}, {@code b > 0} and use of positive root (eps == 1) insures that the returned root is non-negative when discriminant is non-negative!
 	 */
-	static double rootNegC(const double a, const double b, const double c);
+	static real rootNegC(const real a, const real b, const real c);
 
 
 	static int    sign(const bool b);
@@ -351,14 +344,14 @@ public:
 	 * @param x value
 	 * @return sign of value
 	 */
-	static int    sign(const double x);
+	static int    sign(const real x);
 
 	/**
 	 * Return +1 if the value is greater than 0, -1 if it is less than 0, or 0.
 	 * @param x value to be checked
 	 * @return sign as a number (including 0)
 	 */
-	static int signTriple(const double x);
+	static int signTriple(const real x);
 
 	/**
 	 * A minimum function that has the same behavior as the Java Math.min function:
@@ -393,7 +386,7 @@ public:
 	 * @param mod denominator, assumed/required to be non-zero
 	 * @return modulo value
 	 */
-	static double modulo(double val, double mod);
+	static real modulo(real val, real mod);
 
 	/**
 	 * Computes the modulo of val and mod. If mod > 0, the returned value is in the r
@@ -403,7 +396,7 @@ public:
 	 * @param mod denominator
 	 * @return modulo value
 	 */
-	static double safe_modulo(double val, double mod);
+	static real safe_modulo(real val, real mod);
 
 	/**
 	 * Converts <code>rad</code> radians to the range
@@ -415,7 +408,7 @@ public:
 	 * @return <code>rad</code> in the range
 	 * (-<code>pi</code>, <code>pi</code>].
 	 */
-	static double to_pi(double rad);
+	static real to_pi(real rad);
 
 	/**
 	 * Converts <code>deg</code> degrees to the range
@@ -425,7 +418,7 @@ public:
 	 *
 	 * @return <code>deg</code> in the range [<code>0</code>, <code>360</code>).
 	 */
-	static double to_360(double deg);
+	static real to_360(real deg);
 
 	/**
 	 * Converts <code>rad</code> radians to the range
@@ -438,7 +431,7 @@ public:
 	 * @return <code>rad</code> in the range
 	 * [<code>0</code>, <code>2*pi</code>).
 	 */
-	static double to_2pi(double rad);
+	static real to_2pi(real rad);
 
 	/**
 	 * Converts <code>rad</code> radians to the range
@@ -449,7 +442,7 @@ public:
 	 *
 	 * @return <code>rad</code> in the range [<code>-Math.PI/2</code>, <code>Math.PI/2</code>).
 	 */
-	static double to_pi2_cont(double rad);
+	static real to_pi2_cont(real rad);
 
 	/**
 	 * Converts <code>deg</code> degrees to the range
@@ -459,7 +452,7 @@ public:
 	 *
 	 * @return <code>deg</code> in the range (<code>-180</code>, <code>180</code>].
 	 */
-	static double to_180(double deg);
+	static real to_180(real deg);
 
 
 	/** Returns true if string s1 is less than or equal to string s2.
@@ -479,7 +472,7 @@ public:
 	 * @param beta another angle
 	 * @return true, if clockwise
 	 */
-	static bool clockwise(double alpha, double beta);
+	static bool clockwise(real alpha, real beta);
 
 	/**
 	 * Returns 1 if the minimal turn to goalTrack (i.e. less than pi) is to the right, else -1
@@ -487,7 +480,7 @@ public:
 	 * @param goalTrack   target track [rad]
 	 * @return +1 for right, -1 for left
 	 */
-	static int turnDir(double initTrack, double goalTrack);
+	static int turnDir(real initTrack, real goalTrack);
 
 
 	/**
@@ -499,7 +492,7 @@ public:
 	 * @param beta another angle
 	 * @return non-negative difference in angle
 	 */
-	static double turnDelta(double alpha, double beta);
+	static real turnDelta(real alpha, real beta);
 
 
 	/**
@@ -510,7 +503,7 @@ public:
 	 * @param beta another angle
 	 * @return angle difference
 	 */
-	static double signedTurnDelta(double alpha, double beta);
+	static real signedTurnDelta(real alpha, real beta);
 
 
 	/**
@@ -522,7 +515,7 @@ public:
 	 * @param turnRight when true, measure angles from the right
 	 * @return angle difference
 	 */
-	static double turnDelta(double alpha, double beta, bool turnRight);
+	static real turnDelta(real alpha, real beta, bool turnRight);
 
 	/**
 	 * Returns the angle between two tracks when turning in direction indicated by turnRight flag [0,2PI]
@@ -533,7 +526,7 @@ public:
 	 * @param dir +1 = right, -1 = left
 	 * @return angle difference
 	 */
-	static double turnDelta(double alpha, double beta, int dir);
+	static real turnDelta(real alpha, real beta, int dir);
 
 	static bool is_double(const std::string& str);
 
@@ -551,12 +544,12 @@ public:
 	 * on some platforms, "1abc" will return 1.  If one wants to know
 	 * the fact that the string is not a number, then use Util.is_double() method.
 	 */
-	static double parse_double(const std::string& str);
+	static real parse_double(const std::string& str);
 
 	/** @param degMinSec  Lat/Lon String of the form "46:55:00"  or "-111:57:00"
       @return   numbers of degrees in decimal form
 	 */
-	static double decimalDegrees(const std::string& degMinSec);
+	static real decimalDegrees(const std::string& degMinSec);
 
 	/* Reads in a clock string and converts it to seconds.  If clock is true, then format is hh:mm:ss
 	 * Otherwise, string must be a single decimal number
@@ -568,7 +561,7 @@ public:
 	 * @param s string value
 	 * @return time in [s]
 	 */
-	static double parse_time(const std::string& s);
+	static real parse_time(const std::string& s);
 
 	/**
 	 * Convert the decimal time (in seconds) into a 0:00:00 string. This prints as many
@@ -578,7 +571,7 @@ public:
 	 * @param t time in seconds
 	 * @return String of hours:mins:secs
 	 */
-	static std::string hoursMinutesSeconds(double t);
+	static std::string hoursMinutesSeconds(real t);
 
 	/**
 	 * The behavior of the x%y operator is different between Java and C++ if either x or y is negative.  Use this to always return a value between 0 and y.
@@ -616,7 +609,7 @@ void remove(T a[], int i, int size) {
 /**
  * \deprecated {Use Util:: version.}
  * Square */
-double sq(const double x);
+real sq(const real x);
 /**
  * \deprecated {Use Util:: version.}
  * return the absolute value */
@@ -624,35 +617,35 @@ INT64FM llabs(const INT64FM x);
 /**
  * \deprecated {Use Util:: version.}
  * a safe (won't return NaN or throw exceptions) of square root */
-double sqrt_safe(const double x);
+real sqrt_safe(const real x);
 /**
  * \deprecated {Use Util:: version.}
  * a safe (won't return NaN or throw exceptions) of arc-tangent */
-double atan2_safe(const double y, const double x);
+real atan2_safe(const real y, const real x);
 /**
  * \deprecated {Use Util:: version.}
  * a safe (won't return NaN or throw exceptions) of arc-sine */
-double asin_safe(double x);
+real asin_safe(real x);
 /**
  * \deprecated {Use Util:: version.}
  * a safe (won't return NaN or throw exceptions) of arc-cosine */
-double acos_safe(double x);
+real acos_safe(real x);
 /**
  * \deprecated {Use Util:: version.}
  * Discriminant of a quadratic */
-double discr(const double a, const double b, const double c);
+real discr(const real a, const real b, const real c);
 /**
  * \deprecated {Use Util:: version.}
  * Quadratic equation */
-double root(const double a, const double b, const double c, int eps);
+real root(const real a, const real b, const real c, int eps);
 /**
  * \deprecated {Use Util:: version.}
  * root2b(a,b,c,eps) = root(a,2*b,c,eps) */
-double root2b(const double a, const double b, const double c, const int eps);
+real root2b(const real a, const real b, const real c, const int eps);
 /**
  * \deprecated {Use Util:: version.}
  * Returns +1 if the arguement is positive or 0, -1 otherwise */
-int    sign(const double x);
+int    sign(const real x);
 
 /**
  * \deprecated {Use Util:: version.}
@@ -664,7 +657,7 @@ int    sign(const double x);
  * @return <code>rad</code> in the range
  * [-<code>pi</code>, <code>pi</code>].
  */
-double to_pi(double rad);
+real to_pi(real rad);
 
 /**
  * \deprecated {Use Util:: version.}
@@ -675,7 +668,7 @@ double to_pi(double rad);
  *
  * @return <code>deg</code> in the range [<code>0</code>, <code>360</code>).
  */
-double to_360(double deg);
+real to_360(real deg);
 
 /**
  * \deprecated {Use Util:: version.}
@@ -687,7 +680,7 @@ double to_360(double deg);
  * @return <code>rad</code> in the range
  * [-<code>0</code>, <code>2*pi</code>).
  */
-double to_2pi(double rad);
+real to_2pi(real rad);
 
 /**
  * \deprecated {Use Util:: version.}
@@ -699,7 +692,7 @@ double to_2pi(double rad);
  *
  * @return <code>rad</code> in the range [<code>-Math.PI/2</code>, <code>Math.PI/2</code>).
  */
-double to_pi2_cont(double rad);
+real to_pi2_cont(real rad);
 
 /**
  * \deprecated {Use Util:: version.}
@@ -710,7 +703,7 @@ double to_pi2_cont(double rad);
  *
  * @return <code>deg</code> in the range (<code>-180</code>, <code>180</code>].
  */
-double to_180(double deg);
+real to_180(real deg);
 
 }
 

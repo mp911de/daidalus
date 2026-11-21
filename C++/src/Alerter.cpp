@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Alerter.h"
 #include "ParameterData.h"
 #include "Detection3DParameterReader.h"
@@ -365,7 +366,7 @@ const Alerter& Alerter::Buffered_DWC_Phase_I() {
  * @return alerting thresholds for single bands given by detector,
  * alerting time, and lookahead time. The single bands region is NEAR
  */
-Alerter Alerter::SingleBands(const Detection3D& detector, double alerting_time, double lookahead_time,
+Alerter Alerter::SingleBands(const Detection3D& detector, real alerting_time, real lookahead_time,
     const std::string& name) {
   Alerter alerter(name);
   alerter.addLevel(AlertThresholds(detector,alerting_time,lookahead_time,BandsRegion::NEAR));

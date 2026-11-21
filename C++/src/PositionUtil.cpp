@@ -6,6 +6,7 @@
  */
 
 
+#include "Real.h"
 #include "PositionUtil.h"
 #include "Position.h"
 #include "Velocity.h"
@@ -25,7 +26,7 @@ namespace larcfm {
 	}
 	
 	// f should be between 0 and 1 to interpolate
-	Position PositionUtil::interpolate(const Position & v1, const Position & v2, double f) {
+	Position PositionUtil::interpolate(const Position & v1, const Position & v2, real f) {
 		if (v1.isLatLon()) {
 			return  Position(GreatCircle::interpolate(v1.lla(), v2.lla(), f));
 		} else {
@@ -41,7 +42,7 @@ namespace larcfm {
 	 * @param p3 point 3
 	 * @return angle between two lines
 	 */
-	double PositionUtil::angle_between(const Position & p1, const Position & p2, const Position & p3) {
+	real PositionUtil::angle_between(const Position & p1, const Position & p2, const Position & p3) {
 		if (p1.isLatLon()) {
 			return GreatCircle::angle_between(p1.lla(), p2.lla(), p3.lla());
 		} else {
@@ -50,24 +51,24 @@ namespace larcfm {
 	}
 	
 
-	std::pair<Position,double> PositionUtil::intersection(const Position & so, const Velocity & vo, const Position & si, const Velocity & vi) {
+	std::pair<Position,real> PositionUtil::intersection(const Position & so, const Velocity & vo, const Position & si, const Velocity & vi) {
 		if (so.isLatLon()) {
-			std::pair<LatLonAlt, double> p = GreatCircle::intersection(so.lla(), vo, si.lla(), vi);
-			return std::pair<Position,double>( Position(p.first), p.second);
+			std::pair<LatLonAlt, real> p = GreatCircle::intersection(so.lla(), vo, si.lla(), vi);
+			return std::pair<Position,real>( Position(p.first), p.second);
 		} else {
-			std::pair<Vect3, double> p = VectFuns::intersection(so.vect3(), vo.vect3(), si.vect3(), vi.vect3());
-			return std::pair<Position,double>( Position(p.first), p.second);
+			std::pair<Vect3, real> p = VectFuns::intersection(so.vect3(), vo.vect3(), si.vect3(), vi.vect3());
+			return std::pair<Position,real>( Position(p.first), p.second);
 		}
 	}
 
 
-	std::pair<Position,double> PositionUtil::intersection(const Position & so1, const Position & so2, double dto, const Position & si1, const Position & si2) {
+	std::pair<Position,real> PositionUtil::intersection(const Position & so1, const Position & so2, real dto, const Position & si1, const Position & si2) {
 		if (so1.isLatLon()) {
-			std::pair<LatLonAlt, double> p = GreatCircle::intersectionAvgAlt(so1.lla(), so2.lla(), dto, si1.lla(), si2.lla());
-			return std::pair<Position,double>( Position(p.first), p.second);
+			std::pair<LatLonAlt, real> p = GreatCircle::intersectionAvgAlt(so1.lla(), so2.lla(), dto, si1.lla(), si2.lla());
+			return std::pair<Position,real>( Position(p.first), p.second);
 		} else {
-			std::pair<Vect3, double> p = VectFuns::intersectionAvgZ(so1.vect3(), so2.vect3(), dto, si1.vect3(), si2.vect3());
-			return std::pair<Position,double>( Position(p.first), p.second);
+			std::pair<Vect3, real> p = VectFuns::intersectionAvgZ(so1.vect3(), so2.vect3(), dto, si1.vect3(), si2.vect3());
+			return std::pair<Position,real>( Position(p.first), p.second);
 		}
 	}
 	

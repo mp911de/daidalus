@@ -6,6 +6,7 @@
  */
 #ifndef WCV_TCPA_H_
 #define WCV_TCPA_H_
+#include "Real.h"
 
 #include "Detection3D.h"
 #include "Vect3.h"
@@ -33,9 +34,9 @@ public:
    */
   static const WCV_TCPA& A_WCV_TCPA();
 
-  double horizontal_tvar(const Vect2& s, const Vect2& v) const;
+  real horizontal_tvar(const Vect2& s, const Vect2& v) const;
 
-  LossData horizontal_WCV_interval(double T, const Vect2& s, const Vect2& v) const ;
+  LossData horizontal_WCV_interval(real T, const Vect2& s, const Vect2& v) const ;
 
   Detection3D* make() const;
 
@@ -49,7 +50,7 @@ public:
   bool contains(const Detection3D& cd) const;
 
   virtual void hazard_zone_far_end(std::vector<Position>& haz,
-      const Position& po, const Velocity& v, const Vect3& pu, double T) const;
+      const Position& po, const Velocity& v, const Vect3& pu, real T) const;
 
 };
 }

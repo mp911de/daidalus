@@ -6,6 +6,7 @@
  */
 #ifndef ALERTTHRESHOLDS_H_
 #define ALERTTHRESHOLDS_H_
+#include "Real.h"
 
 #include "Detection3D.h"
 #include "CDCylinder.h"
@@ -25,16 +26,16 @@ class AlertThresholds : public ParameterTable {
 
 private:
   std::unique_ptr<Detection3D> detector_; // State-based detector
-  double  alerting_time_; // Alerting_time
+  real  alerting_time_; // Alerting_time
   // If alerting_time > 0, alert is based on detection
   // If alerting_time = 0, alert is based on violation
-  double early_alerting_time_; // Early alerting time (for maneuver guidance). If zero, same as alerting_time
+  real early_alerting_time_; // Early alerting time (for maneuver guidance). If zero, same as alerting_time
   BandsRegion::Region region_;  // Guidance region for this alert
  	// Spread alerting -- EXPERIMENTAL FEATURE
-  double spread_hdir_;  // Alert when direction band within spread (non-negative value)
-  double spread_hs_;   // Alert when horizontal speed band within spread (non-negative value)
-  double spread_vs_;   // Alert when vertical speed band within speed (non-negative value)
-  double spread_alt_;  // Alert when altitude  band within spread (non-negative value)
+  real spread_hdir_;  // Alert when direction band within spread (non-negative value)
+  real spread_hs_;   // Alert when horizontal speed band within spread (non-negative value)
+  real spread_vs_;   // Alert when vertical speed band within speed (non-negative value)
+  real spread_alt_;  // Alert when altitude  band within spread (non-negative value)
   std::map<std::string,std::string> units_;
 
   void copyFrom(const AlertThresholds& athr);
@@ -58,7 +59,7 @@ public:
    * region is the type of guidance
    */
   AlertThresholds(const Detection3D& det,
-      double alerting_time, double early_alerting_time,
+      real alerting_time, real early_alerting_time,
       BandsRegion::Region region);
 
   AlertThresholds(const AlertThresholds& athr);
@@ -83,42 +84,42 @@ public:
   /**
    * Return alerting time in seconds.
    */
-  double getAlertingTime() const;
+  real getAlertingTime() const;
 
   /**
    * Return alerting time in specified units.
    */
-  double getAlertingTime(const std::string& u) const;
+  real getAlertingTime(const std::string& u) const;
 
   /**
    * Set alerting time in seconds. Alerting time is non-negative number.
    */
-  void setAlertingTime(double val);
+  void setAlertingTime(real val);
 
   /**
    * Set alerting time in specified units. Alerting time is non-negative number.
    */
-  void setAlertingTime(double val, const std::string& u);
+  void setAlertingTime(real val, const std::string& u);
 
   /**
    * Return early alerting time in seconds.
    */
-  double getEarlyAlertingTime() const;
+  real getEarlyAlertingTime() const;
 
   /**
    * Return early alerting time in specified units.
    */
-  double getEarlyAlertingTime(const std::string& u) const;
+  real getEarlyAlertingTime(const std::string& u) const;
 
   /**
    * Set early alerting time in seconds. Early alerting time is a positive number >= alerting time
    */
-  void setEarlyAlertingTime(double val);
+  void setEarlyAlertingTime(real val);
 
   /**
    * Set early alerting time in specified units. Early alerting time is a positive number >= alerting time
    */
-  void setEarlyAlertingTime(double val, const std::string& u);
+  void setEarlyAlertingTime(real val, const std::string& u);
 
   /**
    * Return guidance region.
@@ -134,97 +135,97 @@ public:
    * Get track spread in internal units [rad] -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's track
    */
-  double getHorizontalDirectionSpread() const;
+  real getHorizontalDirectionSpread() const;
 
   /**
    * Get track spread in given units [u] -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's track
    */
-  double getHorizontalDirectionSpread(const std::string& u) const;
+  real getHorizontalDirectionSpread(const std::string& u) const;
 
   /**
    * Set track spread in internal units -- EXPERIMENTAL FEATURE 
    * Spread is relative to ownship's track and is expected to be in [0,pi].
    */
-  void setHorizontalDirectionSpread(double spread);
+  void setHorizontalDirectionSpread(real spread);
 
   /**
    * Set track spread in given units -- EXPERIMENTAL FEATURE 
    * Spread is relative to ownship's track and is expected to be in [0,pi] [u].
    */
-  void setHorizontalDirectionSpread(double spread, const std::string& u);
+  void setHorizontalDirectionSpread(real spread, const std::string& u);
 
   /**
    * Get ground speed spread in internal units [m/s] -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's ground speed
    */
-  double getHorizontalSpeedSpread() const;
+  real getHorizontalSpeedSpread() const;
 
   /**
    * Get ground speed spread in given units -- EXPERIMENTAL FEATURE 
    * Spread is relative to ownship's ground speed
    */
-  double getHorizontalSpeedSpread(const std::string& u) const;
+  real getHorizontalSpeedSpread(const std::string& u) const;
 
   /**
    * Set ground speed spread in internal units [m/s] -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's ground speed and is expected to be non-negative
    */
-  void setHorizontalSpeedSpread(double spread);
+  void setHorizontalSpeedSpread(real spread);
 
   /**
    * Set ground speed spread in given units -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's ground speed and is expected to be non-negative
    */
-  void setHorizontalSpeedSpread(double spread, const std::string& u);
+  void setHorizontalSpeedSpread(real spread, const std::string& u);
 
   /**
    * Get vertical speed spread in internal units [m/s] -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's vertical speed
    */
-  double getVerticalSpeedSpread() const;
+  real getVerticalSpeedSpread() const;
 
   /**
    * Get vertical speed spread in given units -- EXPERIMENTAL FEATURE 
    * Spread is relative to ownship's vertical speed
    */
-  double getVerticalSpeedSpread(const std::string& u) const;
+  real getVerticalSpeedSpread(const std::string& u) const;
 
   /**
    * Set vertical speed spread in internal units [m/s] -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's vertical speed and is expected to be non-negative
    */
-  void setVerticalSpeedSpread(double spread);
+  void setVerticalSpeedSpread(real spread);
 
   /**
    * Set vertical speed spread in given units -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's vertical speed and is expected to be non-negative
    */
-  void setVerticalSpeedSpread(double spread, const std::string& u);
+  void setVerticalSpeedSpread(real spread, const std::string& u);
 
   /**
    * Get altitude spread in internal units [m] -- EXPERIMENTAL FEATURE 
    * Spread is relative to ownship's altitude
    */
-  double getAltitudeSpread() const;
+  real getAltitudeSpread() const;
 
   /**
    * Get altitude spread in given units -- EXPERIMENTAL FEATURE 
    * Spread is relative to ownship's altitude
    */
-  double getAltitudeSpread(const std::string& u) const;
+  real getAltitudeSpread(const std::string& u) const;
 
   /**
    * Set altitude spread in internal units [m] -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's altitude and is expected to be non-negative
    */
-  void setAltitudeSpread(double spread);
+  void setAltitudeSpread(real spread);
 
   /**
    * Set altitude spread in given units -- EXPERIMENTAL FEATURE
    * Spread is relative to ownship's altitude and is expected to be non-negative
    */
-  void setAltitudeSpread(double spread, const std::string& u);
+  void setAltitudeSpread(real spread, const std::string& u);
 
   std::string toString() const;
 

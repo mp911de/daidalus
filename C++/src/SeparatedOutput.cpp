@@ -9,6 +9,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "SeparatedOutput.h"
 #include "string_util.h"
 #include "format.h"
@@ -251,14 +252,14 @@ namespace larcfm {
     /**
      * Sets the next column value equal to the given value. The value is in internal units.
      */
-	void SeparatedOutput::setColumn(int i, double val) {
+	void SeparatedOutput::setColumn(int i, real val) {
 		setColumn(i, FmPrecision(Units::to(getUnit(i), val),1));
 	}
 	
     /**
      * Sets the next column value equal to the given value.  The value is in internal units.
      */
-	void SeparatedOutput::setColumn(double val) {
+	void SeparatedOutput::setColumn(real val) {
 		setColumn(++column_count, val);
     }
 

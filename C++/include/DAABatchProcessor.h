@@ -7,6 +7,7 @@
 
 #ifndef DAABATCHPROCESSOR_H_
 #define DAABATCHPROCESSOR_H_
+#include "Real.h"
 
 #include "Daidalus.h"
 #include "DaidalusFileWalker.h"
@@ -19,9 +20,9 @@ class DAABatchProcessor {
 private:
 	static const int DEFAULT_PRECISION;
 	int sfrom_; // 0 is absolute, > 0 is from beggining, < 0 is from end
-	double ufrom_; // from
+	real ufrom_; // from
 	int sto_; // 0 is absolute, > 0 is from beggining, < 0 is from end
-	double uto_; // to	double from_;
+	real uto_; // to	double from_;
 	std::string ownship_;
 	bool skip_;
 	std::vector<std::string> traffic_;
@@ -29,8 +30,8 @@ private:
 	std::string output_file_;
  	bool do_inst_;
 	bool no_hyst_;
-	double lat_; // In decimal degrees
-	double lon_; // In decimal degrees
+	real lat_; // In decimal degrees
+	real lon_; // In decimal degrees
 	std::map<std::string,std::string> units_;
 	std::map<std::string,bool> format_;
 	int precision_;
@@ -48,7 +49,7 @@ private:
 	void parse_units(const std::string& keys);
 	void parse_format(const std::string& keys);
 	void parse_location(const std::string& arga);
-	static double parse_double(const std::string& arga, const std::string& units = "");
+	static real parse_double(const std::string& arga, const std::string& units = "");
 
 public:
 	std::set<std::string> ignoreset; // Ignore options

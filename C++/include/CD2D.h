@@ -14,6 +14,7 @@
 
 #ifndef CD2D_H_
 #define CD2D_H_
+#include "Real.h"
 
 #include "Consts.h"
 #include "Horizontal.h"
@@ -60,67 +61,67 @@ public:
    * (t_in,t_out) in [B,T], where 0 <= B < T
    */
   static LossData detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double D, const double B, const double T);
+      const real D, const real B, const real T);
 
   /**
    * detection(s,vo,vi,D,T) computes the horizontal conflict time interval
    * (t_in,t_out) in [0,T], where 0 <= B < T.
    */
   static LossData detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double D, const double T);
+      const real D, const real T);
 
   /**
    * detection(s,vo,vi,D) computes the horizontal conflict time interval
    * (t_in,t_out) in [0,...).
    */
   static LossData detection(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double D);
+      const real D);
 
   /**
    * violation(s,D) IFF there is an horizontal loss of separation at current time
    */
-  static bool violation(const Vect2& s, const double D);
+  static bool violation(const Vect2& s, const real D);
 
   /**
    * cd2d(s,vo,vi,D,B,T) IFF there is an horizontal conflict in the time
    * interval [B,T], where 0 <= B < T.
    */
   static bool cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double D, const double B, const double T);
+      const real D, const real B, const real T);
 
   /**
    * cd2d(s,vo,vi,D,T) IFF there is an horizontal conflict in the time
    * interval [0,T], where T > 0.
    */
   static bool cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double D, const double T);
+      const real D, const real T);
 
   /**
    * cd2d(s,vo,vi,D) IFF there is an horizontal conflict in the time
    * interval [0,...).
    */
   static bool cd2d(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double D);
+      const real D);
 
   /**
    * Returns the time to horizontal closest point of approach for s,vo,vi during the
    * interval [B,T], where 0 <= B < T.
    */
-  static double tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double B, const double T);
+  static real tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi,
+      const real B, const real T);
 
   /**
    * Returns the time to horizontal closest point of approach for s,vo,vi, for
    * interval [0,T], where T > 0.
    */
-  static double tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double T);
+  static real tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi,
+      const real T);
 
   /**
    * Returns the time to horizontal closest point of approach for s,vo,vi, for
    * interval [0,...).
    */
-  static double tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi);
+  static real tcpa(const Vect2& s, const Vect2& vo, const Vect2& vi);
 
 };
 

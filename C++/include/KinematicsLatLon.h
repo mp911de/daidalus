@@ -9,6 +9,7 @@
 
 #ifndef KINEMATICS_LATLON_H_
 #define KINEMATICS_LATLON_H_
+#include "Real.h"
 
 #include "Vect3.h"
 #include "Velocity.h"
@@ -43,7 +44,7 @@ public:
 	 * @return linear projection of sv0 to time t
 	 */
 
-	static std::pair<LatLonAlt,Velocity> linear(const LatLonAlt& so, const Velocity& vo, double t);
+	static std::pair<LatLonAlt,Velocity> linear(const LatLonAlt& so, const Velocity& vo, real t);
 
 	/**
 	 * Linearly project the given position and velocity to a new position and velocity
@@ -51,7 +52,7 @@ public:
 	 * @param t   time
 	 * @return linear projection of sv0 to time t
 	 */
-	static std::pair<LatLonAlt,Velocity> linear(std::pair<LatLonAlt,Velocity> sv0, double t);
+	static std::pair<LatLonAlt,Velocity> linear(std::pair<LatLonAlt,Velocity> sv0, real t);
 
 	/**
 	 * Determine the earth-surface radius of a turn given the ground speed and omega (angular velocity).
@@ -59,7 +60,7 @@ public:
 	 * @param omega
 	 * @return turn radius
 	 */
-	static double turnRadiusByRate(double speed, double omega);
+	static real turnRadiusByRate(real speed, real omega);
 
 	
 	/**
@@ -70,7 +71,7 @@ public:
 	 * @param omega       rate of change of track, sign indicates direction
 	 * @return Position/Velocity after t time
 	 */
-	static std::pair<LatLonAlt,Velocity> turnOmega(const LatLonAlt& so, const Velocity& vo, double t, double omega);
+	static std::pair<LatLonAlt,Velocity> turnOmega(const LatLonAlt& so, const Velocity& vo, real t, real omega);
 
 	/**
 	 * Position/Velocity after turning t time units according to track rate omega
@@ -80,7 +81,7 @@ public:
 	 * @param omega       rate of change of track, sign indicates direction
 	 * @return Position/Velocity after t time
 	 */
-	static std::pair<LatLonAlt,Velocity> turnOmega(std::pair<LatLonAlt,Velocity> sv0, double t, double omega) ;
+	static std::pair<LatLonAlt,Velocity> turnOmega(std::pair<LatLonAlt,Velocity> sv0, real t, real omega) ;
 
 //	static std::pair<LatLonAlt,Velocity> turnRadius(const LatLonAlt& so, const Velocity& vo, double t, double signedRadius);
 
@@ -95,7 +96,7 @@ public:
 	 * @param d           distance into turn (sign indicates direction)
 	 * @return Position/Velocity after turning distance d
 	 */
-	static std::pair<LatLonAlt,Velocity> turnByDist2D(const LatLonAlt& so, const LatLonAlt& center, int dir, double d, double gsAtd);
+	static std::pair<LatLonAlt,Velocity> turnByDist2D(const LatLonAlt& so, const LatLonAlt& center, int dir, real d, real gsAtd);
 
 	/** 
 	 * Position/Velocity after turning (does not compute altitude!!)
@@ -108,7 +109,7 @@ public:
 	 * @param d           distance into turn (non-negative)
 	 * @return            Position/Velocity after turning distance d
 	 */
-	static LatLonAlt turnByDist2D(const LatLonAlt& so, const LatLonAlt& center, int dir, double d);
+	static LatLonAlt turnByDist2D(const LatLonAlt& so, const LatLonAlt& center, int dir, real d);
 
 	/** 
 	 * Position/Velocity after turning (does not compute altitude!!)
@@ -120,7 +121,7 @@ public:
 	 * @param alpha       angle
 	 * @return            Position/Velocity after turning distance d
 	 */
-	static LatLonAlt turnByAngle2D(const LatLonAlt& so, const LatLonAlt& center, double alpha);
+	static LatLonAlt turnByAngle2D(const LatLonAlt& so, const LatLonAlt& center, real alpha);
 
 	/**
 	 * Position/Velocity after turning t time units right or left with radius R in the direction turnRight
@@ -131,7 +132,7 @@ public:
 	 * @param turnRight   true iff only turn direction is to the right
 	 * @return Position/Velocity after t time
 	 */
-	static std::pair<LatLonAlt,Velocity> turn(LatLonAlt s0, Velocity v0, double t, double R, bool turnRight);
+	static std::pair<LatLonAlt,Velocity> turn(LatLonAlt s0, Velocity v0, real t, real R, bool turnRight);
 
 	/**
 	 * Position/Velocity after turning t time units right or left with with radius R in the direction turnRight
@@ -141,7 +142,7 @@ public:
 	 * @param turnRight   true iff only turn direction is to the right
 	 * @return Position/Velocity pair after t time
 	 */
-	static std::pair<LatLonAlt,Velocity> turn(std::pair<LatLonAlt,Velocity> sv0, double t, double R, bool turnRight);
+	static std::pair<LatLonAlt,Velocity> turn(std::pair<LatLonAlt,Velocity> sv0, real t, real R, bool turnRight);
 
 	/**
 	 *  Position/Velocity after t time units turning at the rate of "omega," after that
@@ -152,7 +153,7 @@ public:
 	 * @param omega 	turn rate
 	 * @return Position/Velocity after time t
 	 */
-	static std::pair<LatLonAlt,Velocity> turnUntilTimeOmega(std::pair<LatLonAlt,Velocity> svo, double t, double turnTime, double omega) ;
+	static std::pair<LatLonAlt,Velocity> turnUntilTimeOmega(std::pair<LatLonAlt,Velocity> svo, real t, real turnTime, real omega) ;
 
 	/**
 	 *  Position/Velocity after t time units turning at the rate of "omega," after that
@@ -164,7 +165,7 @@ public:
 	 * @param omega 	turn rate
 	 * @return Position/Velocity after time t
 	 */
-	static std::pair<LatLonAlt,Velocity> turnUntilTimeOmega(const LatLonAlt& so, const Velocity& vo, double t, double turnTime, double omega) ;
+	static std::pair<LatLonAlt,Velocity> turnUntilTimeOmega(const LatLonAlt& so, const Velocity& vo, real t, real turnTime, real omega) ;
 
 	/**
 	 *  Position/Velocity after t time units turning in <b>minimal</b> direction until goalTrack is reached, after that
@@ -176,7 +177,7 @@ public:
 	 * @param maxBank    the maximum bank angle of the aircraft, must be in (0,pi/2)
 	 * @return Position and Velocity after time t
 	 */
-	static std::pair<LatLonAlt,Velocity> turnUntil(std::pair<LatLonAlt,Velocity> svo, double t, double goalTrack, double maxBank);
+	static std::pair<LatLonAlt,Velocity> turnUntil(std::pair<LatLonAlt,Velocity> svo, real t, real goalTrack, real maxBank);
 
 
 	/**
@@ -189,7 +190,7 @@ public:
 	 * @param maxBank    the bank angle of the aircraft making the turn (positive)
 	 * @return Position/Velocity after time t
 	 */
-	static std::pair<LatLonAlt,Velocity> turnUntil(const LatLonAlt& so, const Velocity& vo, double t, double goalTrack, double maxBank);
+	static std::pair<LatLonAlt,Velocity> turnUntil(const LatLonAlt& so, const Velocity& vo, real t, real goalTrack, real maxBank);
 
 	/**
 	 *  Position/Velocity after t time units turning in direction "turnRight" for a total of turnTime, after that
@@ -202,7 +203,7 @@ public:
 	 * @param turnRight  true iff only turn direction is to the right
 	 * @return Position/Velocity after time t
 	 */
-	static std::pair<LatLonAlt,Velocity> turnUntilTimeRadius(const std::pair<LatLonAlt,Velocity>& svo, double t, double turnTime, double R, bool turnRight);
+	static std::pair<LatLonAlt,Velocity> turnUntilTimeRadius(const std::pair<LatLonAlt,Velocity>& svo, real t, real turnTime, real R, bool turnRight);
 
 	/** 
 	 * return center of turn from position on turn (and it track) and radius
@@ -212,7 +213,7 @@ public:
 	 * @param dir +1 clockwise, -1 counterclockwise
 	 * @return turn center
 	 */
-	static LatLonAlt center(const LatLonAlt& s0, double trk, double radius, int dir);
+	static LatLonAlt center(const LatLonAlt& s0, real trk, real radius, int dir);
 	  /**
 	   * center of turn
 	   * @param s0 point on turn
@@ -220,7 +221,7 @@ public:
 	   * @param omega turn rate
 	   * @return turn center
 	   */
-	static LatLonAlt center(const LatLonAlt& s0, const Velocity& v0, double omega);
+	static LatLonAlt center(const LatLonAlt& s0, const Velocity& v0, real omega);
 	/**
 	 * EXPERMENTAL
 	 * Calculate when during the turn we will be closest to the given point.
@@ -232,7 +233,7 @@ public:
 	 * @return time on turn when we are closest to the given point x (in seconds), or -1 if we are precisely at the turn's center
 	 * This will be bounded by [0,endTime]
 	 */
-	static double closestTimeOnTurn(const LatLonAlt& s0, const Velocity& v0, double omega, const LatLonAlt& x, double endTime);
+	static real closestTimeOnTurn(const LatLonAlt& s0, const Velocity& v0, real omega, const LatLonAlt& x, real endTime);
 	/**
 	 * EXPERMENTAL
 	 * Calculate when during the turn we will be closest to the given point.
@@ -245,7 +246,7 @@ public:
 	 * @return dist on turn when we are closest to the given point x, or -1 if we are precisely at the turn's center
 	 * This will be bounded by [0,maxDist]
 	 */
-	static double closestDistOnTurn(const LatLonAlt& s0, const Velocity& v0, double R, int dir, const LatLonAlt& x, double maxDist);
+	static real closestDistOnTurn(const LatLonAlt& s0, const Velocity& v0, real R, int dir, const LatLonAlt& x, real maxDist);
 
 
 	// ****************************** Ground Speed KINEMATIC CALCULATIONS *******************************
@@ -259,7 +260,7 @@ public:
 	 * @param t          amount of time accelerating
 	 * @return           final position
 	 */
-	static std::pair<LatLonAlt,Velocity> gsAccel(const LatLonAlt& so, const Velocity& vo,  double t, double a) ;
+	static std::pair<LatLonAlt,Velocity> gsAccel(const LatLonAlt& so, const Velocity& vo,  real t, real a) ;
 
 
 	/**
@@ -273,7 +274,7 @@ public:
 	 * @param t          time point of interest
 	 * @return           Position-Velocity pair after time t
 	 */
-	static std::pair<LatLonAlt,Velocity> gsAccelUntil(const LatLonAlt& so, const Velocity& vo, double t, double goalGS, double gsAccel_d);
+	static std::pair<LatLonAlt,Velocity> gsAccelUntil(const LatLonAlt& so, const Velocity& vo, real t, real goalGS, real gsAccel_d);
 
 	/**
 	 *  Position after t time units where there is first an acceleration or deceleration to the target
@@ -285,7 +286,7 @@ public:
 	 * @param t          time point of interest
 	 * @return           Position-Velocity pair after time t
 	 */
-	static std::pair<LatLonAlt,Velocity> gsAccelUntil(std::pair<LatLonAlt,Velocity> sv0, double t, double goalGs, double gsAccel);
+	static std::pair<LatLonAlt,Velocity> gsAccelUntil(std::pair<LatLonAlt,Velocity> sv0, real t, real goalGs, real gsAccel);
 
 	// ****************************** Vertical Speed KINEMATIC CALCULATIONS *******************************
 
@@ -298,9 +299,9 @@ public:
 	 * @param a          acceleration,  i.e. a positive  or negative acceleration
 	 * @return           position/velocity at time t
 	 */
-	static std::pair<LatLonAlt,Velocity> vsAccel(const LatLonAlt& so, const Velocity& vo,  double t, double a) ;
+	static std::pair<LatLonAlt,Velocity> vsAccel(const LatLonAlt& so, const Velocity& vo,  real t, real a) ;
 
-	static std::pair<LatLonAlt,Velocity> vsAccel(std::pair<LatLonAlt,Velocity> svo,  double t, double a);
+	static std::pair<LatLonAlt,Velocity> vsAccel(std::pair<LatLonAlt,Velocity> svo,  real t, real a);
 	/**
 	 *  Position/Velocity after t time units where there is first an acceleration or deceleration to the target
 	 *  vertical speed goalVs and then continuing at that speed for the remainder of the time, if any.
@@ -312,9 +313,9 @@ public:
 	 * @param t          time of the point of interest
 	 * @return           Position after time t
 	 */
-	static std::pair<LatLonAlt,Velocity> vsAccelUntil(const LatLonAlt& so, const Velocity& vo, double t, double goalVs, double vsAccel);
+	static std::pair<LatLonAlt,Velocity> vsAccelUntil(const LatLonAlt& so, const Velocity& vo, real t, real goalVs, real vsAccel);
 
-	static std::pair<LatLonAlt,Velocity> vsAccelUntil(std::pair<LatLonAlt,Velocity> sv0, double t, double goalVs, double vsAccel);
+	static std::pair<LatLonAlt,Velocity> vsAccelUntil(std::pair<LatLonAlt,Velocity> sv0, real t, real goalVs, real vsAccel);
 
 
 	/** returns Pair that contains position and velocity at time t due to level out maneuver
@@ -328,14 +329,14 @@ public:
 	 * @param allowClimbRateChange allows climbRate to change to initial velocity if it can help.
 	 * @return
 	 */
-	static std::pair<LatLonAlt, Velocity> vsLevelOut(std::pair<LatLonAlt, Velocity> sv0, double t, double climbRate,
-			double targetAlt, double accelUp, double accelDown, bool allowClimbRateChange);
+	static std::pair<LatLonAlt, Velocity> vsLevelOut(std::pair<LatLonAlt, Velocity> sv0, real t, real climbRate,
+			real targetAlt, real accelUp, real accelDown, bool allowClimbRateChange);
 
-	static std::pair<LatLonAlt, Velocity> vsLevelOut(std::pair<LatLonAlt, Velocity> sv0, double t, double climbRate,
-			double targetAlt, double a, bool allowClimbRateChange) ;
+	static std::pair<LatLonAlt, Velocity> vsLevelOut(std::pair<LatLonAlt, Velocity> sv0, real t, real climbRate,
+			real targetAlt, real a, bool allowClimbRateChange) ;
 
-	static std::pair<LatLonAlt, Velocity> vsLevelOut(std::pair<LatLonAlt, Velocity> sv0, double t, double climbRate,
-			double targetAlt, double a) ;
+	static std::pair<LatLonAlt, Velocity> vsLevelOut(std::pair<LatLonAlt, Velocity> sv0, real t, real climbRate,
+			real targetAlt, real a) ;
 
 
 private:
@@ -352,7 +353,7 @@ private:
 	 * @return
 	 */
 	static std::pair<LatLonAlt, Velocity> vsLevelOutCalculation(std::pair<LatLonAlt,Velocity> sv0,
-			                                   double targetAlt, double a1, double a2, double t1, double t2, double t3,  double t);
+			                                   real targetAlt, real a1, real a2, real t1, real t2, real t3,  real t);
 
 
 };

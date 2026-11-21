@@ -4,6 +4,7 @@
  * is claimed in the United States under Title 17, U.S.Code. All Other
  * Rights Reserved.
  */
+#include "Real.h"
 #include "WCV_tvar.h"
 #include "Vect3.h"
 #include "Velocity.h"
@@ -42,91 +43,91 @@ void WCV_tvar::setWCVTable(const WCVTable& tab) {
   table_ = tab;
 }
 
-double WCV_tvar::getDTHR() const {
+real WCV_tvar::getDTHR() const {
   return table_.getDTHR();
 }
 
-double WCV_tvar::getDTHR(const std::string& u) const {
+real WCV_tvar::getDTHR(const std::string& u) const {
   return table_.getDTHR(u);
 }
 
-double WCV_tvar::getZTHR() const {
+real WCV_tvar::getZTHR() const {
   return table_.getZTHR();
 }
 
-double WCV_tvar::getZTHR(const std::string& u) const {
+real WCV_tvar::getZTHR(const std::string& u) const {
   return table_.getZTHR(u);
 }
 
-double WCV_tvar::getTTHR() const {
+real WCV_tvar::getTTHR() const {
   return table_.getTTHR();
 }
-double WCV_tvar::getTTHR(const std::string& u) const {
+real WCV_tvar::getTTHR(const std::string& u) const {
   return table_.getTTHR(u);
 }
 
-double WCV_tvar::getTCOA() const {
+real WCV_tvar::getTCOA() const {
   return table_.getTCOA();
 }
 
-double WCV_tvar::getTCOA(const std::string& u) const {
+real WCV_tvar::getTCOA(const std::string& u) const {
   return table_.getTCOA(u);
 }
 
-void WCV_tvar::setDTHR(double val) {
+void WCV_tvar::setDTHR(real val) {
   table_.setDTHR(val);
 }
-void WCV_tvar::setDTHR(double val, const std::string& u) {
+void WCV_tvar::setDTHR(real val, const std::string& u) {
   table_.setDTHR(val, u);
 }
 
-void WCV_tvar::setZTHR(double val) {
+void WCV_tvar::setZTHR(real val) {
   table_.setZTHR(val);
 }
-void WCV_tvar::setZTHR(double val, const std::string& u) {
+void WCV_tvar::setZTHR(real val, const std::string& u) {
   table_.setZTHR(val,u);
 }
 
-void WCV_tvar::setTTHR(double val) {
+void WCV_tvar::setTTHR(real val) {
   table_.setTTHR(val);
 }
 
-void WCV_tvar::setTTHR(double val, const std::string& u) {
+void WCV_tvar::setTTHR(real val, const std::string& u) {
   table_.setTTHR(val,u);
 }
 
-void WCV_tvar::setTCOA(double val) {
+void WCV_tvar::setTCOA(real val) {
   table_.setTCOA(val);
 }
 
-void WCV_tvar::setTCOA(double val, const std::string& u) {
+void WCV_tvar::setTCOA(real val, const std::string& u) {
   table_.setTCOA(val,u);
 }
 
 bool WCV_tvar::horizontal_WCV(const Vect2& s, const Vect2& v) const {
   if (s.norm() <= table_.getDTHR()) return true;
   if (Horizontal::dcpa(s,v) <= table_.getDTHR()) {
-    double tvar = horizontal_tvar(s,v);
+    real tvar = horizontal_tvar(s,v);
     return 0  <= tvar && tvar <= table_.getTTHR();
   }
   return false;
 }
 
-ConflictData WCV_tvar::conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const {
+ConflictData WCV_tvar::conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
   LossData ret = WCV3D(so,vo,si,vi,B,T);
-  double t_tca = (ret.getTimeIn() + ret.getTimeOut())/2;
-  double dist_tca = so.linear(vo, t_tca).Sub(si.linear(vi, t_tca)).cyl_norm(table_.getDTHR(),table_.getZTHR());
+  real t_tca = (ret.getTimeIn() + ret.getTimeOut())/2;
+  real dist_tca = so.linear(vo, t_tca).Sub(si.linear(vi, t_tca)).cyl_norm(table_.getDTHR(),table_.getZTHR());
   return ConflictData(ret, t_tca,dist_tca,so.Sub(si),vo.Sub(vi));
 }
 
-LossData WCV_tvar::WCV3D(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const {
+LossData WCV_tvar::WCV3D(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
   return WCV_interval(so,vo,si,vi,B,T);
 }
 
 // Assumes 0 <= B < T
-LossData WCV_tvar::WCV_interval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const {
-  double time_in = T;
-  double time_out = B;
+LossData WCV_tvar::WCV_interval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
+  real time_in = T;
+  real time_out = B;
 
   const Vect2& so2 = so.vect2();
   const Vect2& si2 = si.vect2();
@@ -134,8 +135,8 @@ LossData WCV_tvar::WCV_interval(const Vect3& so, const Vect3& vo, const Vect3& s
   const Vect2& vo2 = vo.vect2();
   const Vect2& vi2 = vi.vect2();
   Vect2 v2 = vo2.Sub(vi2);
-  double sz = so.z()-si.z();
-  double vz = vo.z()-vi.z();
+  real sz = so.z()-si.z();
+  real vz = vo.z()-vi.z();
 
   Interval ii = wcv_vertical_->vertical_WCV_interval(table_.getZTHR(),table_.getTCOA(),B,T,sz,vz);
 
@@ -195,7 +196,7 @@ void WCV_tvar::setIdentifier(const std::string& s) {
 }
 
 void WCV_tvar::horizontalHazardZone(std::vector<Position>& haz, const TrafficState& ownship, const TrafficState& intruder,
-    double T) const {
+    real T) const {
   haz.clear();
   const Position& po = ownship.getPosition();
   Velocity v = ownship.getAirVelocity().Sub(intruder.getAirVelocity().vect3());

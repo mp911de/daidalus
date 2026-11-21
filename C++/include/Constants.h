@@ -13,6 +13,7 @@
 
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
+#include "Real.h"
 
 #include "Units.h"
 #include "Util.h"
@@ -22,21 +23,21 @@ namespace larcfm {
 
 // these will all eventually be moved into the object initialization
 static const std::string FormalATM_version = "v2.7.5";
-static const double FormalATM_GPS_LIMIT_HORIZONTAL = Units::from("ft", 25.0); // in order to keep both versions tied to a single entry, this needs to be defined here.
-static const double FormalATM_GPS_LIMIT_VERTICAL = Units::from("ft", 25.0); // in order to keep both versions tied to a single entry, this needs to be defined here.
-static const double FormalATM_TIME_LIMIT_EPSILON = 1.0;// in order to keep both versions tied to a single entry, this needs to be defined here.
-static const double FormalATM_NO_TIME_LIMIT_EPSILON = -1;
-static const double FormalATM_NO_TIME = -1;
+static const real FormalATM_GPS_LIMIT_HORIZONTAL = Units::from("ft", real(25.0)); // in order to keep both versions tied to a single entry, this needs to be defined here.
+static const real FormalATM_GPS_LIMIT_VERTICAL = Units::from("ft", real(25.0)); // in order to keep both versions tied to a single entry, this needs to be defined here.
+static const real FormalATM_TIME_LIMIT_EPSILON = real(1.0);// in order to keep both versions tied to a single entry, this needs to be defined here.
+static const real FormalATM_NO_TIME_LIMIT_EPSILON = -1;
+static const real FormalATM_NO_TIME = -1;
 
 /** Key parameters for all of Util.  Despite the name, not everything is a constant.
  * 
  */
 class Constants {
 private:
-	static double HORIZONTAL_ACCURACY;
-	static double VERTICAL_ACCURACY;
-	static double HORIZONTAL_ACCURACY_RAD;
-	static double TIME_ACCURACY;
+	static real HORIZONTAL_ACCURACY;
+	static real VERTICAL_ACCURACY;
+	static real HORIZONTAL_ACCURACY_RAD;
+	static real TIME_ACCURACY;
 	static int    OUTPUT_PRECISION;
 	static bool   TRAILING_ZEROS;
 
@@ -87,53 +88,53 @@ public:
 	/**  WAAS specification requirements (25 ft) for horizontal
 	 *   accuracy, 95% of the time.  In practice, the actual accuracy is
 	 *   much better. */
-	static const double GPS_LIMIT_HORIZONTAL;
+	static const real GPS_LIMIT_HORIZONTAL;
 	/**  WAAS specification requirements (25 ft) for vertical
 	 *   accuracy, 95% of the time. */
-	static const double GPS_LIMIT_VERTICAL;
+	static const real GPS_LIMIT_VERTICAL;
 
 	/**  Most GPS units update with a frequency of at least 1 HZ.  */
-	static const double TIME_LIMIT_EPSILON;
+	static const real TIME_LIMIT_EPSILON;
 
-	static const double NO_TIME_LIMIT_EPSILON;
+	static const real NO_TIME_LIMIT_EPSILON;
 
-	static const double NO_TIME;
+	static const real NO_TIME;
 	/**
 	 * Set the time accuracy value.  This value means any two times that
 	 * are within this value of each other are considered the same [s].
 	 * 
 	 * @param acc accuracy
 	 */
-	static void set_time_accuracy(double acc);
+	static void set_time_accuracy(real acc);
 	/**
 	 * Set the horizontal accuracy value.  This value means any two positions that
 	 * are within this value of each other are considered the same [m].
 	 * @param acc accuracy
 	 */
-	static void set_horizontal_accuracy(double acc);
+	static void set_horizontal_accuracy(real acc);
 	/**
 	 * Set the vertical accuracy value.  This value means any two positions that
 	 * are within this value of each other are considered the same [m].
 	 * @param acc accuracy
 	 */
-	static void set_vertical_accuracy(double acc);
+	static void set_vertical_accuracy(real acc);
 	/** Return the time accuracy value (in seconds) 
 	 * @return time accuracy
 	 * */
-	static double get_time_accuracy();
+	static real get_time_accuracy();
 	/** Return the horizontal accuracy value (in meters) 
 	 * @return horizontal accuracy
 	 * */
-	static double get_horizontal_accuracy();
+	static real get_horizontal_accuracy();
 	/** Return the vertical accuracy value (in meters) 
 	 * @return vertical accuracy
 	 * */
-	static double get_vertical_accuracy();
+	static real get_vertical_accuracy();
 
 	/** Return the horizontal accuracy value (in radians) 
 	 * @return horizontal accuracy
 	 * */
-	static double get_latlon_accuracy();
+	static real get_latlon_accuracy();
 
 	/** return default precision for output values 
 	 * @return number of digits of precision
@@ -161,7 +162,7 @@ public:
 	 * @param t2 another time
 	 * @return true, if almost equals
 	 */
-	static bool almost_equals_time(double t1, double t2);
+	static bool almost_equals_time(real t1, real t2);
 	/** Return true, if these two positions [m] within the horizontal accuracy of each other 
 	 * 
 	 * @param x1 x coordinate for first value
@@ -170,103 +171,103 @@ public:
 	 * @param y2 y coordinate for second value
 	 * @return true, if xy values are almost equals
 	 */
-	static bool almost_equals_xy(double x1, double y1, double x2, double y2);
+	static bool almost_equals_xy(real x1, real y1, real x2, real y2);
 	/** Return true, if this distance [m] is within the horizontal accuracy of zero 
 	 * 
 	 * @param d distance
 	 * @return true, if almost equals
 	 */
-	static bool almost_equals_distance(double d);
+	static bool almost_equals_distance(real d);
 	/** Return true, if these two angles [rad] are within the horizontal accuracy of each other 
 	 * 
 	 * @param d1 a distance
 	 * @param d2 another distance
 	 * @return true, if almost equals
 	 */
-	static bool almost_equals_radian(double d1, double d2);
+	static bool almost_equals_radian(real d1, real d2);
 	/** Return true, if this angle [rad] is within the horizontal accuracy of zero 
 	 * 
 	 * @param d distance
 	 * @return true, if almost equals
 	 */
-	static bool almost_equals_radian(double d);
+	static bool almost_equals_radian(real d);
 	/** Return true, if these two altitudes are within the vertical accuracy of each other 
 	 * 
 	 * @param a1 an altitude
 	 * @param a2 another altitude
 	 * @return true, if almost equals
 	 */
-	static bool almost_equals_alt(double a1, double a2);
+	static bool almost_equals_alt(real a1, real a2);
 };
 
 /**
  * \deprecated {Use Constants:: version}
  * Most GPS units update with a frequency of at least 1 HZ.  */
-static const double TIME_LIMIT_EPSILON = FormalATM_TIME_LIMIT_EPSILON;// in order to keep both versions tied to a single entry, this needs to be defined here.
+static const real TIME_LIMIT_EPSILON = FormalATM_TIME_LIMIT_EPSILON;// in order to keep both versions tied to a single entry, this needs to be defined here.
 
 /**
  * \deprecated {Use Constants:: version}
  */
-static const double NO_TIME_LIMIT_EPSILON = FormalATM_NO_TIME_LIMIT_EPSILON;
+static const real NO_TIME_LIMIT_EPSILON = FormalATM_NO_TIME_LIMIT_EPSILON;
 
 /**
  * \deprecated {Use Constants:: version}
  */
-static const double NO_TIME = FormalATM_NO_TIME;
+static const real NO_TIME = FormalATM_NO_TIME;
 /**
  * \deprecated {Use Constants:: version}
  * Set the time accuracy value.  This value means any two times that
  * are within this value of each other are considered the same [s].
  */
-void set_time_accuracy(double acc);
+void set_time_accuracy(real acc);
 /**
  * \deprecated {Use Constants:: version}
  * Set the horizontal accuracy value.  This value means any two positions that
  * are within this value of each other are considered the same [m].
  */
-void set_horizontal_accuracy(double acc);
+void set_horizontal_accuracy(real acc);
 /**
  * \deprecated {Use Constants:: version}
  * Set the vertical accuracy value.  This value means any two positions that
  * are within this value of each other are considered the same [m].
  */
-void set_vertical_accuracy(double acc);
+void set_vertical_accuracy(real acc);
 /**
  * \deprecated {Use Constants:: version}
  * Return the time accuracy value */
-double get_time_accuracy();
+real get_time_accuracy();
 /**
  * \deprecated {Use Constants:: version}
  * Return the horizontal accuracy value */
-double get_horizontal_accuracy();
+real get_horizontal_accuracy();
 /**
  * \deprecated {Use Constants:: version}
  * Return the vertical accuracy value */
-double get_vertical_accuracy();
+real get_vertical_accuracy();
 /**
  * \deprecated {Use Constants:: version}
  * Return true, if these two times are within the time accuracy of each other */
-bool almost_equals_time(double t1, double t2);
+bool almost_equals_time(real t1, real t2);
 /**
  * \deprecated {Use Constants:: version}
  * Return true, if these two positions [m] within the horizontal accuracy of each other */
-bool almost_equals_xy(double x1, double y1, double x2, double y2);
+bool almost_equals_xy(real x1, real y1, real x2, real y2);
 /**
  * \deprecated {Use Constants:: version}
  * Return true, if this distance [m] is within the horizontal accuracy of zero */
-bool almost_equals_distance(double d);
+bool almost_equals_distance(real d);
 /**
  * \deprecated {Use Constants:: version}
  * Return true, if these two angles [rad] are within the horizontal accuracy of each other */
-bool almost_equals_radian(double d1, double d2);
+bool almost_equals_radian(real d1, real d2);
 /**
  * \deprecated {Use Constants:: version}
  * Return true, if this angle [rad] is within the horizontal accuracy of zero */
-bool almost_equals_radian(double d);
+bool almost_equals_radian(real d);
 /**
  * \deprecated {Use Constants:: version}
  * Return true, if these two altitudes are within the vertical accuracy of each other */
-bool almost_equals_alt(double a1, double a2);
+bool almost_equals_alt(real a1, real a2);
 
 }
 

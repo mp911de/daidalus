@@ -9,6 +9,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "ErrorLog.h"
 #include "ErrorReporter.h"
 #include "SeparatedInput.h"
@@ -108,9 +109,9 @@ void SequenceReader::loadfile() {
 	//int stateIndex = -1;
 
 	// save accuracy info in temp vars
-	double h = Constants::get_horizontal_accuracy();
-	double v = Constants::get_vertical_accuracy();
-	double t = Constants::get_time_accuracy();
+	real h = Constants::get_horizontal_accuracy();
+	real v = Constants::get_vertical_accuracy();
+	real t = Constants::get_time_accuracy();
 
 
 	while (!input.readLine()) {
@@ -188,7 +189,7 @@ void SequenceReader::loadfile() {
 
 		Position ss;
 		Velocity vv;
-		double tm = 0.0;
+		real tm = real(0.0);
 		if (head[TM_CLK] >= 0) {
 			tm = parseClockTime(input.getColumnString(head[TM_CLK]));
 		}
@@ -237,16 +238,16 @@ void SequenceReader::loadfile() {
 		// handle extra columns
 		for (int i = definedColumns; i < (int) head.size(); i++) {
 			int colnum = head[i];
-			Triple<double,std::string,int> newkey = Triple<double,std::string,int>(tm, thisName, colnum);
+			Triple<real,std::string,int> newkey = Triple<real,std::string,int>(tm, thisName, colnum);
 			allExtracolumnValues.erase(newkey); // remove old entry, if it exists
 			if (input.columnHasValue(colnum)) {
 				std::string str = input.getColumnString(colnum);
-				double val = input.getColumn(colnum, NaN, false);
+				real val = input.getColumn(colnum, NaN, false);
 				bool bol = false;
 				if (equalsIgnoreCase(str, "true")) {
 					bol = true;
 				}
-				allExtracolumnValues[newkey] = Triple<double,bool,std::string>(val, bol, str);
+				allExtracolumnValues[newkey] = Triple<real,bool,std::string>(val, bol, str);
 			}
 		}
 
@@ -285,7 +286,7 @@ int SequenceReader::getWindowSize() const {
 
 // remove any time entries with only one aircraft
 void SequenceReader::clearSingletons() {
-	vector<double> keys = sequenceKeys();
+	vector<real> keys = sequenceKeys();
 	for (int i = 0; i < (signed int)keys.size(); i++) {
 		if (sequenceTable[keys[i]].size() < 2) {
 			//fpln("removing singleton at time "+Fm1(keys[i]));
@@ -296,8 +297,8 @@ void SequenceReader::clearSingletons() {
 
 // we need to preserve the order of the aircraft as in the input file (because the first might be the only way we know which is the ownship)
 // so we build an vector states to us as the subset of all possible inputs
-void SequenceReader::buildActive(double tm) {
-	vector<double> times = sequenceKeysUpTo(windowSize,tm); // Note: this includes the last entry
+void SequenceReader::buildActive(real tm) {
+	vector<real> times = sequenceKeysUpTo(windowSize,tm); // Note: this includes the last entry
 	map<string, bool> included; // use to make sure there are no duplicates
 	states.clear();
 	extracolumnValues.clear();
@@ -305,7 +306,7 @@ void SequenceReader::buildActive(double tm) {
 	for (int i = 0; i < (signed int)nameIndex.size(); i++) { // work through the names in order
 		string name = nameIndex[i];
 		for (int j = 0; j < (signed int)times.size(); j++) { // for each name, work through the times in the window
-			double time = times[j];
+			real time = times[j];
 			SequenceEntry sequenceEntry = sequenceTable[time];
 			if (sequenceEntry.find(name) != sequenceEntry.end()) {	// name has an entry at this time
 				if (included.find(name) == included.end()) {  // name has not been added to the states list yet
@@ -322,9 +323,9 @@ void SequenceReader::buildActive(double tm) {
 				int colnum = head[k];
 				std::pair<int,int> key2 = std::pair<int,int>(i, colnum);
 				extracolumnValues.erase(key2); // only keep the most recent entry
-				Triple<double,std::string,int> key3 = Triple<double,std::string,int>(time, name, colnum);
+				Triple<real,std::string,int> key3 = Triple<real,std::string,int>(time, name, colnum);
 				if (allExtracolumnValues.find(key3) != allExtracolumnValues.end()) {
-					Triple<double,bool,std::string> entry = allExtracolumnValues[key3];
+					Triple<real,bool,std::string> entry = allExtracolumnValues[key3];
 					extracolumnValues[key2] = entry;
 				}
 			}
@@ -337,7 +338,7 @@ void SequenceReader::buildActive(double tm) {
  * Given a sequence key, set the active set of states.  If no such key exists, the active set is left empty.
  * @param tm Sequence key (time)
  */
-void SequenceReader::setActive(double tm) {
+void SequenceReader::setActive(real tm) {
 	states.clear();
 	if (sequenceTable.find(tm) != sequenceTable.end()) {
 		buildActive(tm);
@@ -348,7 +349,7 @@ void SequenceReader::setActive(double tm) {
  * Set the first entry to be the active one.
  */
 void SequenceReader::setFirstActive() {
-	vector<double> keys = sequenceKeys();
+	vector<real> keys = sequenceKeys();
 	if (keys.size() > 0)
 		buildActive(keys[0]);
 	else
@@ -359,7 +360,7 @@ void SequenceReader::setFirstActive() {
  * Set the last entry to be the active one.
  */
 void SequenceReader::setLastActive() {
-	vector<double> keys = sequenceKeys();
+	vector<real> keys = sequenceKeys();
 	if (keys.size() > 0)
 		buildActive(keys[keys.size()-1]);
 	else
@@ -370,8 +371,8 @@ void SequenceReader::setLastActive() {
 /**
  *  Returns a sorted list of all sequence keys
  */
-vector<double> SequenceReader::sequenceKeys() {
-	vector<double> arl;
+vector<real> SequenceReader::sequenceKeys() {
+	vector<real> arl;
 	SequenceEntryMap::iterator pos;
 	for (pos = sequenceTable.begin(); pos != sequenceTable.end(); ++pos) {
 		arl.push_back(pos->first);
@@ -381,8 +382,8 @@ vector<double> SequenceReader::sequenceKeys() {
 }
 
 /** a list of n > 0 sequence keys, stopping at the given time (inclusive) */
-vector<double> SequenceReader::sequenceKeysUpTo(int n, double tm) {
-	vector<double> arl;
+vector<real> SequenceReader::sequenceKeysUpTo(int n, real tm) {
+	vector<real> arl;
 	SequenceEntryMap::iterator pos;
 	for (pos = sequenceTable.begin(); pos != sequenceTable.end(); ++pos) {
 		if (pos->first <= tm) {
@@ -398,12 +399,12 @@ vector<double> SequenceReader::sequenceKeysUpTo(int n, double tm) {
 }
 
 /** Returns true if an entry exists for the given name and time */
-bool SequenceReader::hasEntry(const string& name, double time) {
+bool SequenceReader::hasEntry(const string& name, real time) {
 	return sequenceTable.find(time) != sequenceTable.end() && sequenceTable[time].find(name) != sequenceTable[time].end();
 }
 
 /** Returns the Position entry for a given name and time.  If no entry for this name and time, returns a zero position and sets a warning. */
-Position SequenceReader::getSequencePosition(const string& name, double time) {
+Position SequenceReader::getSequencePosition(const string& name, real time) {
 	if (hasEntry(name,time)) {
 		return sequenceTable[time][name].first;
 	} else {
@@ -413,7 +414,7 @@ Position SequenceReader::getSequencePosition(const string& name, double time) {
 }
 
 /** Returns the Velocity entry for a given name and time.  If no entry for this name and time, returns a zero velocity and sets a warning. */
-Velocity SequenceReader::getSequenceVelocity(const string& name, double time) {
+Velocity SequenceReader::getSequenceVelocity(const string& name, real time) {
 	if (hasEntry(name,time)) {
 		return sequenceTable[time][name].second;
 	} else {
@@ -422,7 +423,7 @@ Velocity SequenceReader::getSequenceVelocity(const string& name, double time) {
 	}
 }
 
-void SequenceReader::setEntry(double time, const std::string& name, const Position& p, const Velocity& v) {
+void SequenceReader::setEntry(real time, const std::string& name, const Position& p, const Velocity& v) {
 	if (sequenceTable.find(time) != sequenceTable.end()) {
 		sequenceTable[time] = SequenceEntry();
 	}
@@ -432,9 +433,9 @@ void SequenceReader::setEntry(double time, const std::string& name, const Positi
 void SequenceReader::removeAircraft(const vector<string>& alist) {
 	for (unsigned i = 0; i < alist.size(); i++) {
 		string a = alist[i];
-		vector<double> keys = sequenceKeys();
+		vector<real> keys = sequenceKeys();
 		for (unsigned j = 0; j < keys.size(); i++) {
-			double key = keys[j];
+			real key = keys[j];
 			if (sequenceTable[key].find(a) != sequenceTable[key].end()) {
 				sequenceTable[key].erase(a);
 			}
@@ -454,17 +455,17 @@ void SequenceReader::removeAircraft(const vector<string>& alist) {
  * Updates a ParameterData with new parameters based on user columns for a given aircraft at a given time.
  *
  */
-bool SequenceReader::hasExtraColumnData(double time, const std::string& acName, const std::string& colname) const {
+bool SequenceReader::hasExtraColumnData(real time, const std::string& acName, const std::string& colname) const {
 	int colnum = input.findHeading(colname);
-	return allExtracolumnValues.find(Triple<double,std::string,int>(time, acName, colnum)) != allExtracolumnValues.end();
+	return allExtracolumnValues.find(Triple<real,std::string,int>(time, acName, colnum)) != allExtracolumnValues.end();
 }
 
 /**
  * Returns the column value associated with a given aircraft at a given time, interpreted as a double, or NaN if there is no info
  */
-double SequenceReader::getExtraColumnValue(double time, const std::string& acName, const std::string& colname) const {
+real SequenceReader::getExtraColumnValue(real time, const std::string& acName, const std::string& colname) const {
 	int colnum = input.findHeading(colname);
-	Triple<double,std::string,int> key(time, acName, colnum);
+	Triple<real,std::string,int> key(time, acName, colnum);
 	allExtraTblType::const_iterator it = allExtracolumnValues.find(key);
 	if (it != allExtracolumnValues.end()) {
 		return it->second.first;
@@ -476,9 +477,9 @@ double SequenceReader::getExtraColumnValue(double time, const std::string& acNam
 /**
  * Returns the column value associated with a given aircraft at a given time, interpreted as a boolean, or false if there is no info
  */
-bool SequenceReader::getExtraColumnBool(double time, const std::string& acName, const std::string& colname) const {
+bool SequenceReader::getExtraColumnBool(real time, const std::string& acName, const std::string& colname) const {
 	int colnum = input.findHeading(colname);
-	Triple<double,std::string,int> key(time, acName, colnum);
+	Triple<real,std::string,int> key(time, acName, colnum);
 	allExtraTblType::const_iterator it = allExtracolumnValues.find(key);
 	if (it != allExtracolumnValues.end()) {
 		return it->second.second;
@@ -490,9 +491,9 @@ bool SequenceReader::getExtraColumnBool(double time, const std::string& acName, 
 /**
  * Returns the column value associated with a given aircraft at a given time, interpreted as a string, or the empty string if there is no info
  */
-std::string SequenceReader::getExtraColumnString(double time, const std::string& acName, const std::string& colname) const {
+std::string SequenceReader::getExtraColumnString(real time, const std::string& acName, const std::string& colname) const {
 	int colnum = input.findHeading(colname);
-	Triple<double,std::string,int> key(time, acName, colnum);
+	Triple<real,std::string,int> key(time, acName, colnum);
 	allExtraTblType::const_iterator it = allExtracolumnValues.find(key);
 	if (it != allExtracolumnValues.end()) {
 		return it->second.third;

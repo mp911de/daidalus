@@ -12,6 +12,7 @@
 
 #ifndef CRITERIACORE_H_
 #define CRITERIACORE_H_
+#include "Real.h"
 
 #include "Velocity.h"
 #include "CDCylinder.h"
@@ -72,7 +73,7 @@ public:
    *  -1 corresponds to reducing current vertical speed,
    *  +1 corresponds to increasing current vertical speed
    */
-  static int verticalCoordination(const Vect3& s, const Vect3& vo, const Vect3& vi,double D, double H, const std::string& ownship, const std::string& traffic);
+  static int verticalCoordination(const Vect3& s, const Vect3& vo, const Vect3& vi,real D, real H, const std::string& ownship, const std::string& traffic);
 
   /** The fundamental horizontal criterion (Conflict Case)
    * @param sp  relative position           assumed to be horizontally separated    (Sp_vect2  : TYPE = (horizontal_sep?))
@@ -80,7 +81,7 @@ public:
    * @param D   protection zone diameter
    * @param epsh +1 or -1
    */
-  static bool horizontal_criterion(const Vect2& sp, const  Vect2& v, double D, int epsh);
+  static bool horizontal_criterion(const Vect2& sp, const  Vect2& v, real D, int epsh);
 
   /** vertical criterion  (Conflict Case) (currently only used in VisualCriteriaCore)
    * @param epsv  vertical coordination parameter
@@ -90,7 +91,7 @@ public:
    * @param D   protection zone diameter
    * @param H   protection zone height
    */
-  static bool vertical_criterion(int eps, const Vect3& s, const Vect3& v, const Vect3& nv, double D, double H);
+  static bool vertical_criterion(int eps, const Vect3& s, const Vect3& v, const Vect3& nv, real D, real H);
 
   /**
    * Checks whether a horizontal solution is repulsive or divergent in the turn direction indicated by nvo
@@ -123,7 +124,7 @@ public:
    * @param epsv      vertical coordination parameter
    */
   static bool verticalRepulsiveCriterion(const Vect3& s, const Vect3& vo, const Vect3& vi, const Vect3& nvo,
-      double H, double minrelvs, int epsv);
+      real H, real minrelvs, int epsv);
 
   /**
    *  true iff the velocity vector nvo satisfies the implicit coordination criteria
@@ -137,11 +138,11 @@ public:
    *
    */
   static bool criteria(const Vect3& s, const Velocity&  vo, const Velocity&  vi, const Velocity& nvo,
-      double minRelVs, double D, double H, int epsh, int epsv);
+      real minRelVs, real D, real H, int epsh, int epsv);
 
-  static Vect2 incr_trk_vect(const Vect2& vo, double step, int dir);
+  static Vect2 incr_trk_vect(const Vect2& vo, real step, int dir);
 
-  static int losr_trk_iter_dir(const Vect2& s, const Vect2& vo, const Vect2& vi, double step, int eps);
+  static int losr_trk_iter_dir(const Vect2& s, const Vect2& vo, const Vect2& vi, real step, int eps);
 
 
   /** Return an absolute repulsive track search direction (or none)
@@ -152,11 +153,11 @@ public:
 
   // Compute a new ground speed only vector that is one step to the dir of vo
   // dir = 1 is increasing. Velocity vo is non-zero.
-  static Vect2 incr_gs_vect(const Vect2& vo, double step, int dir);
+  static Vect2 incr_gs_vect(const Vect2& vo, real step, int dir);
 
   // Compute an absolute repulsive ground speed direction (or none)
   // dir = 1 is increasing. Velocity vo is non-zero.
-  static int losr_gs_iter_dir(const Vect2& s, const Vect2& vo, const Vect2& vi, double mings, double maxgs, double step, int eps);
+  static int losr_gs_iter_dir(const Vect2& s, const Vect2& vo, const Vect2& vi, real mings, real maxgs, real step, int eps);
 
   /** Return an absolute repulsive ground speed search direction (or none)
    *  Assumes Velocity vo is non-zero.
@@ -179,7 +180,7 @@ public:
    * @param trackRate     trackRate of traffic
    * @return horizontal epsilon
    */
-  static int dataVsRateEpsilon(int epsv, double vsRate);
+  static int dataVsRateEpsilon(int epsv, real vsRate);
 
 
   /** Return the horizontal epsilon that corresponds to the direction the traffic aircraft is currently turning indicated by sign of trackRate
@@ -191,7 +192,7 @@ public:
    * @param trackRate     trackRate of traffic
    * @return horizontal epsilon
    */
-  static int dataTurnEpsilon(const Vect3& s, const Velocity& vo, const Velocity& vi, int epsh, double trackRate);
+  static int dataTurnEpsilon(const Vect3& s, const Velocity& vo, const Velocity& vi, int epsh, real trackRate);
 
 
   /**
@@ -242,23 +243,23 @@ public:
 
 private:
 
-  static bool horizontal_criterion_0(const Vect2& sp, int eps, const Vect2& v, double D);
+  static bool horizontal_criterion_0(const Vect2& sp, int eps, const Vect2& v, real D);
 
-  static int verticalCoordinationConflict(const Vect3& s, const Vect3& v, double D, const std::string& ownship, const std::string& traffic);
+  static int verticalCoordinationConflict(const Vect3& s, const Vect3& v, real D, const std::string& ownship, const std::string& traffic);
 
-  static bool criterion_3D(const Vect3& sp, const Velocity&  v, int epsH, int epsV, const Velocity&  nv, double D, double H);
+  static bool criterion_3D(const Vect3& sp, const Velocity&  v, int epsH, int epsV, const Velocity&  nv, real D, real H);
 
   // caD and caH are the diameter and height of a collision avoidance zone, e.g., 350ft x 100 ft
-  static Vect3 vertical_decision_vect(const Vect3& s, const Vect3& vo, const Vect3& vi, double caD, double caH);
+  static Vect3 vertical_decision_vect(const Vect3& s, const Vect3& vo, const Vect3& vi, real caD, real caH);
 
   // Compute an absolute repulsive vertical direction
-  static int losr_vs_dir(const Vect3& s, const Vect3& vo, const Vect3& vi, double caD, double caH,  const std::string& ownship, const std::string& traffic);
+  static int losr_vs_dir(const Vect3& s, const Vect3& vo, const Vect3& vi, real caD, real caH,  const std::string& ownship, const std::string& traffic);
 
   static bool vs_bound_crit(const Vect3& v, const Vect3& nv, int eps);
 
-  static double min_rel_vert_speed(double vz, int eps, double minrelvs);
+  static real min_rel_vert_speed(real vz, int eps, real minrelvs);
 
-  static bool vertical_los_criterion(const Vect3& s, const Vect3& v, const Vect3& nv, int eps, double H, double minrelvs);
+  static bool vertical_los_criterion(const Vect3& s, const Vect3& v, const Vect3& nv, int eps, real H, real minrelvs);
 
   /** Perform a symmetry calculation */
   static int breakSymmetry(const Vect3& s, const std::string& ownship, const std::string& traffic);

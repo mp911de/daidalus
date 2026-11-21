@@ -5,14 +5,15 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "StateVector.h"
 
 namespace larcfm {
 
-   StateVector::StateVector(const Vect3& xx, const Velocity& yy, const double zz) : ss(xx), vv(yy), tt(zz) {
+   StateVector::StateVector(const Vect3& xx, const Velocity& yy, const real zz) : ss(xx), vv(yy), tt(zz) {
    }
 
-   StateVector::StateVector(const std::pair<Vect3,Velocity>& sv, double t ) : ss(sv.first), vv(sv.second), tt(t) {
+   StateVector::StateVector(const std::pair<Vect3,Velocity>& sv, real t ) : ss(sv.first), vv(sv.second), tt(t) {
    }
 
    std::pair<Vect3,Velocity> StateVector::pair() const {
@@ -27,7 +28,7 @@ namespace larcfm {
        return vv;
    }
 
-   double StateVector::t() const {
+   real StateVector::t() const {
        return tt;
    }
 

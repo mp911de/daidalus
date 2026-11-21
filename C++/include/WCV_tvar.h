@@ -6,6 +6,7 @@
  */
 #ifndef WCV_TVAR_H_
 #define WCV_TVAR_H_
+#include "Real.h"
 
 #include "Detection3D.h"
 #include "Vect3.h"
@@ -49,44 +50,44 @@ public:
    **/
   void setWCVTable(const WCVTable& tables);
 
-  double getDTHR() const;
-  double getDTHR(const std::string& u) const;
+  real getDTHR() const;
+  real getDTHR(const std::string& u) const;
 
-  double getZTHR() const;
-  double getZTHR(const std::string& u) const;
+  real getZTHR() const;
+  real getZTHR(const std::string& u) const;
 
-  double getTTHR() const;
-  double getTTHR(const std::string& u) const;
+  real getTTHR() const;
+  real getTTHR(const std::string& u) const;
 
-  double getTCOA() const;
-  double getTCOA(const std::string& u) const;
+  real getTCOA() const;
+  real getTCOA(const std::string& u) const;
 
-  void setDTHR(double val);
-  void setDTHR(double val, const std::string& u);
+  void setDTHR(real val);
+  void setDTHR(real val, const std::string& u);
 
-  void setZTHR(double val);
-  void setZTHR(double val, const std::string& u);
+  void setZTHR(real val);
+  void setZTHR(real val, const std::string& u);
 
-  void setTTHR(double val);
-  void setTTHR(double val, const std::string& u);
+  void setTTHR(real val);
+  void setTTHR(real val, const std::string& u);
 
-  void setTCOA(double val);
-  void setTCOA(double val, const std::string& u);
+  void setTCOA(real val);
+  void setTCOA(real val, const std::string& u);
 
-  virtual double horizontal_tvar(const Vect2& s, const Vect2& v) const = 0;
+  virtual real horizontal_tvar(const Vect2& s, const Vect2& v) const = 0;
 
-  virtual LossData horizontal_WCV_interval(double T, const Vect2& s, const Vect2& v) const = 0;
+  virtual LossData horizontal_WCV_interval(real T, const Vect2& s, const Vect2& v) const = 0;
 
   bool horizontal_WCV(const Vect2& s, const Vect2& v) const;
 
   // The methods violation and conflict are inherited from Detection3DSum. This enable a uniform
   // treatment of border cases in the generic bands algorithms
 
-  virtual ConflictData conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const;
+  virtual ConflictData conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const;
 
-  LossData WCV3D(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const;
+  LossData WCV3D(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const;
 
-  LossData WCV_interval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const;
+  LossData WCV_interval(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const;
 
   bool containsTable(const WCV_tvar& wcv) const;
 
@@ -108,10 +109,10 @@ public:
   virtual void setIdentifier(const std::string& s);
 
   virtual void horizontalHazardZone(std::vector<Position>& haz, const TrafficState& ownship, const TrafficState& intruder,
-      double T) const;
+      real T) const;
 
   virtual void hazard_zone_far_end(std::vector<Position>& haz,
-      const Position& po, const Velocity& v, const Vect3& pu, double T) const {}
+      const Position& po, const Velocity& v, const Vect3& pu, real T) const {}
 
   virtual bool equals(const Detection3D& o) const;
 

@@ -10,6 +10,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "IntervalSet.h"
 #include "Units.h"
 #include "format.h"
@@ -66,7 +67,7 @@ bool IntervalSet::isEmpty() const {
 	return size()==0;
 }
 
-bool IntervalSet::in(double x) const {
+bool IntervalSet::in(real x) const {
 	return order(x) >= 0;
 }
 
@@ -78,7 +79,7 @@ void IntervalSet::unions(const Interval& rn) {
 	int iLow = order(rn.low);
 	int iHigh = order(rn.up);
 
-	double low, high;
+	real low, high;
 	int start, end;
 
 	if (iLow < 0) {
@@ -124,7 +125,7 @@ void IntervalSet::almost_unions(const IntervalSet& n, INT64FM maxUlps) {
  * interval in the set, then the intervals are merged.
  * This method uses "almost" inequalities to compute the addition.
  */
-void IntervalSet::almost_add(double l, double u) {
+void IntervalSet::almost_add(real l, real u) {
 	almost_add(l,u,PRECISION_DEFAULT);
 }
 
@@ -133,7 +134,7 @@ void IntervalSet::almost_add(double l, double u) {
  * interval in the set, then the intervals are merged.
  * This method uses "almost" inequalities to compute the addition.
  */
-void IntervalSet::almost_add(double l, double u, INT64FM maxUlps) {
+void IntervalSet::almost_add(real l, real u, INT64FM maxUlps) {
 	if (Util::almost_less(l,u,maxUlps)) {
 		IntervalSet m = IntervalSet(*this);
 		clear();
@@ -221,7 +222,7 @@ void IntervalSet::diff(const Interval& rn) {
 	int iHigh = order(rn.up);
 
 	if (iLow >= 0 && iLow == iHigh) {
-		double r_iHigh_up = r[iHigh].up;
+		real r_iHigh_up = r[iHigh].up;
 		r[iLow] = Interval(r[iLow].low, rn.low);
 		insert(iLow+1, Interval(rn.up, r_iHigh_up));
 
@@ -253,18 +254,18 @@ void IntervalSet::diff(const IntervalSet& n) {
 	}
 }
 
-void IntervalSet::removeSingle(double x, double width) {
+void IntervalSet::removeSingle(real x, real width) {
 	int i = order(x);
 	if (i >= 0 && r[i].isSingle(width)) {
 		remove(i);
 	}
 }
 
-void IntervalSet::removeSingle(double x) {
-	removeSingle(x, 0.0);
+void IntervalSet::removeSingle(real x) {
+	removeSingle(x, real(0.0));
 }
 
-void IntervalSet::sweepSingle(double width) {
+void IntervalSet::sweepSingle(real width) {
 	int i = 0;
 	while (i < length) {
 		if (r[i].isSingle(width)) {
@@ -276,10 +277,10 @@ void IntervalSet::sweepSingle(double width) {
 }
 
 void IntervalSet::sweepSingle() {
-	sweepSingle(0.0);
+	sweepSingle(real(0.0));
 }
 
-void IntervalSet::sweepBreaks(double width) {
+void IntervalSet::sweepBreaks(real width) {
 	int i = 0;
 	while (i < length-1) {
 		if (r[i].up+width > r[i+1].low) {
@@ -367,7 +368,7 @@ void IntervalSet::remove(int i, int len) {
  * the index of the interval after x.
  *
  */
-int IntervalSet::order(double x) const {
+int IntervalSet::order(real x) const {
 	for (int i = 0; i < length; i++) {
 		if (r[i].in(x)) {
 			return i;

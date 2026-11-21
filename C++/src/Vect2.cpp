@@ -12,6 +12,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "Vect2.h"
 #include "Units.h"
 #include <limits>
@@ -22,10 +23,10 @@
 
 namespace larcfm {
 
-Vect2::Vect2(const double xx, const double yy) : x(xx), y(yy) {}
+Vect2::Vect2(const real xx, const real yy) : x(xx), y(yy) {}
 
 bool Vect2::isZero() const {
-	return x == 0.0 && y == 0.0;
+	return x == real(0.0) && y == real(0.0);
 }
 
 bool Vect2::almostEquals(const Vect2& v) const {
@@ -48,11 +49,11 @@ Vect2 Vect2::operator - () const {
 	return Vect2(-x,-y);
 }
 
-Vect2 Vect2::operator * (const double k) const {
+Vect2 Vect2::operator * (const real k) const {
 	return this->Scal(k);
 }
 
-double Vect2::operator * (const Vect2& v) const { // Dot product
+real Vect2::operator * (const Vect2& v) const { // Dot product
 	return dot(v.x,v.y);
 }
 
@@ -68,8 +69,8 @@ Vect2 Vect2::Hat() const {
 	//Vect2 v = new Vect2(this);
 	//v.hat();
 	//return v;
-	double n = norm();
-	if ( n == 0.0) { // this is only checking the divide by zero case, so an exact comparison is correct.
+	real n = norm();
+	if ( n == real(0.0)) { // this is only checking the divide by zero case, so an exact comparison is correct.
 		return ZERO();
 	}
 	return Vect2(x/n, y/n);
@@ -100,14 +101,14 @@ Vect2 Vect2::Neg() const {
 	return Vect2(-x,-y);
 }
 
-Vect2 Vect2::Scal(double k) const {
+Vect2 Vect2::Scal(real k) const {
 	//    Vect2 u = new Vect2(x,y);
 	//    u.scal(k);
 	//    return u;
 	return Vect2(k*x,k*y);
 }
 
-Vect2 Vect2::ScalAdd(const double k, const Vect2& v) const {
+Vect2 Vect2::ScalAdd(const real k, const Vect2& v) const {
 	//    Vect2 u = new Vect2(x,y);
 	//    u.scal(k);
 	//    u.add(v);
@@ -115,7 +116,7 @@ Vect2 Vect2::ScalAdd(const double k, const Vect2& v) const {
 	return Vect2(k*x+v.x,k*y+v.y);
 }
 
-Vect2 Vect2::AddScal(double k, const Vect2& v) const {
+Vect2 Vect2::AddScal(real k, const Vect2& v) const {
 	//Vect2 u = new Vect2(x,y);
 	//    Vect2 vv = new Vect2(v.x,v.y);
 	//    vv.scal(k);
@@ -148,31 +149,31 @@ Vect2 Vect2::PerpL() const {
  * @param t    time
  * @return the new position
  */
-Vect2 Vect2::linear(const Vect2& v, double t) const{
+Vect2 Vect2::linear(const Vect2& v, real t) const{
 	return Vect2(x + v.x*t,y + v.y*t);
 }
 
-double Vect2::distance(const Vect2& s) const {
+real Vect2::distance(const Vect2& s) const {
 	return Util::sqrt_safe(Util::sq(s.x - x) + Util::sq(s.y - y));
 }
 
-double Vect2::dot(const double x, const double y) const {
+real Vect2::dot(const real x, const real y) const {
 	return this->x*x + this->y*y;
 }
 
-double Vect2::dot(const Vect2& v) const {
+real Vect2::dot(const Vect2& v) const {
 	return dot(v.x,v.y);
 }
 
-double Vect2::det(const Vect2& v) const {
+real Vect2::det(const Vect2& v) const {
 	return det(v.x,v.y);
 }
 
-double Vect2::det(const double x, const double y) const {
+real Vect2::det(const real x, const real y) const {
 	return this->x*y - this->y*x;
 }
 
-double Vect2::sqv() const {
+real Vect2::sqv() const {
 	//This implementation
 	//return dot(x,y);
 	//was replaced by this implementation
@@ -180,36 +181,36 @@ double Vect2::sqv() const {
 	// for performance reasons.
 }
 
-double Vect2::norm() const {
+real Vect2::norm() const {
 	return sqrt_safe(sqv());
 }
 
 // Angle in (-pi,pi]
-double Vect2::angle() const {
+real Vect2::angle() const {
 	return atan2_safe(y,x);
 }
 
 // Track is clockwise angle in (-pi,pi] wrt north,
 // i.e., track = pi/2 - angle()
-double Vect2::trk() const {
+real Vect2::trk() const {
 	return atan2_safe(x,y);
 }
 
 // Compass angle = track in [0,2pi)
-double Vect2::compassAngle() const {
+real Vect2::compassAngle() const {
 	return to_2pi(trk());
 }
 
 // Compass angle = track in [0,2pi)
-double Vect2::compassAngle(const Vect2& v2) const {
+real Vect2::compassAngle(const Vect2& v2) const {
 	return (v2-*this).compassAngle();
 }
 
-Vect2 Vect2::mkTrkGs(double trk, double gs) {
-	return Vect2(gs*sin(trk),gs*cos(trk));
+Vect2 Vect2::mkTrkGs(real trk, real gs) {
+	return Vect2(gs*std::sin(trk),gs*std::cos(trk));
 }
 
-double Vect2::sqRel(const Vect2& v) const {
+real Vect2::sqRel(const Vect2& v) const {
 	return sq(x-v.x) + sq(y-v.y);
 }
 
@@ -257,11 +258,11 @@ std::string Vect2::toPVS(int precision) const {
 /**
  * Return actual time of closest point approach (return negative infinity if parallel)
  */
-double Vect2::actual_tcpa (const Vect2& so, const Vect2& vo, const Vect2& si,  const Vect2& vi){
-	double rtn;
+real Vect2::actual_tcpa (const Vect2& so, const Vect2& vo, const Vect2& si,  const Vect2& vi){
+	real rtn;
 	Vect2 s = so - si;
 	Vect2 v = vo - vi;
-	double nv = v.norm();
+	real nv = v.norm();
 	if (nv > 0) {
 		rtn = -s.dot(v)/(nv*nv);
 	} else {
@@ -274,13 +275,13 @@ double Vect2::actual_tcpa (const Vect2& so, const Vect2& vo, const Vect2& si,  c
  * Return time to closest point approach
  * if time is negative or velocities are parallel returns 0
  */
-double Vect2::tcpa (const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi){
-	double t;
+real Vect2::tcpa (const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi){
+	real t;
 	Vect2 s = so.Sub(si);
 	Vect2 v = vo.Sub(vi);
-	double nv = v.sqv();
+	real nv = v.sqv();
 	if (nv > 0)
-		t = Util::max(0.0,-s.dot(v)/nv);
+		t = Util::max(real(0.0),-s.dot(v)/nv);
 	else
 		t = 0;
 	return t;
@@ -289,8 +290,8 @@ double Vect2::tcpa (const Vect2& so, const Vect2& vo, const Vect2& si, const Vec
 /**
  * Return distance at time of closest point of approach
  **/
-double Vect2::dcpa(const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi) {
-	double t = tcpa(so,vo,si,vi);
+real Vect2::dcpa(const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi) {
+	real t = tcpa(so,vo,si,vi);
 	Vect2 s = so.Sub(si);
 	Vect2 v = vo.Sub(vi);
 	Vect2 st = s.AddScal(t,v);
@@ -303,8 +304,8 @@ double Vect2::dcpa(const Vect2& so, const Vect2& vo, const Vect2& si, const Vect
  * @param v
  * @param q
  */
-double Vect2::distPerp(const Vect2& s, const Vect2& v, const Vect2& q) {
-	double tp = q.Sub(s).dot(v)/v.sqv();
+real Vect2::distPerp(const Vect2& s, const Vect2& v, const Vect2& q) {
+	real tp = q.Sub(s).dot(v)/v.sqv();
 	return s.Add(v.Scal(tp)).Sub(q).norm();
 
 }
@@ -315,25 +316,25 @@ double Vect2::distPerp(const Vect2& s, const Vect2& v, const Vect2& q) {
  * @param v
  * @param q
  */
-double Vect2::distAlong(const Vect2& s, const Vect2& v, const Vect2& q) {
-	double tp = q.Sub(s).dot(v)/v.sqv();
+real Vect2::distAlong(const Vect2& s, const Vect2& v, const Vect2& q) {
+	real tp = q.Sub(s).dot(v)/v.sqv();
 	//f.pln(" $$$ distAlong: tp = "+tp);
 	return Util::sign(tp)*v.Scal(tp).norm();
 
 }
 
 Vect2 Vect2::intersect_pt(const Vect2& s0, const Vect2& v0, const Vect2& s1, const Vect2& v1) {
-	if (Util::almost_equals(v0.det(v1),0.0)) {
+	if (Util::almost_equals(v0.det(v1),real(0.0))) {
 		//fpln(" $$$$$$$$ ERROR $$$$$$$$$");
 		return Vect2::INVALID();
 	} else {
 		Vect2 delta = s1.Sub(s0);
-		double ss = delta.det(v1)/v0.det(v1);
+		real ss = delta.det(v1)/v0.det(v1);
 		return s0.Add(v0.Scal(ss));
 	}
 }
 
-bool Vect2::within_epsilon(const Vect2& v2, double epsilon) const {
+bool Vect2::within_epsilon(const Vect2& v2, real epsilon) const {
 	if (std::abs(x - v2.x) > epsilon) return false;
 	if (std::abs(y - v2.y) > epsilon) return false;
 	return true;
@@ -341,7 +342,7 @@ bool Vect2::within_epsilon(const Vect2& v2, double epsilon) const {
 
 
 const Vect2& Vect2::ZERO() {
-	const static Vect2 v(0.0,0.0);
+	const static Vect2 v(real(0.0),real(0.0));
 	return v;
 }
 

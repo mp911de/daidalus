@@ -14,6 +14,7 @@
 
 #ifndef VECT2_H_
 #define VECT2_H_
+#include "Real.h"
 
 #include "Util.h"
 #include <string>
@@ -40,9 +41,9 @@ public:
 	// these members.
 
 	/** The x-component */
-	double x;
+	real x;
 	/** The y-component */
-	double y;
+	real y;
 
 	/**
 	 * Creates a new vector with coordinates (<code>x</code>,<code>y</code>).
@@ -50,7 +51,7 @@ public:
 	 * @param xx Real value
 	 * @param yy Real value
 	 */
-	explicit Vect2(const double xx=0.0, const double yy=0.0);
+	explicit Vect2(const real xx=real(0.0), const real yy=real(0.0));
 
 	/** Destructor */
 	virtual ~Vect2() { }
@@ -111,7 +112,7 @@ public:
 	 *
 	 * @return the vector scalar multiplication of <code>this</code> vector and <code>k</code>.
 	 */
-	Vect2  operator * (const double k) const;
+	Vect2  operator * (const real k) const;
 	/**
 	 * Dot product.
 	 *
@@ -119,7 +120,7 @@ public:
 	 *
 	 * @return the dot product of <code>this</code> vector and <code>v</code>.
 	 */
-	double operator * (const Vect2& v) const; // Dot product
+	real operator * (const Vect2& v) const; // Dot product
 
 	/** Exact equality */
 	bool operator == (const Vect2& v) const;
@@ -164,7 +165,7 @@ public:
 	 *
 	 * @return the vector scalar multiplication of <code>this</code> vector and <code>k</code>.
 	 */
-	Vect2  Scal(double k) const;
+	Vect2  Scal(real k) const;
 
 	/**
 	 * Scalar and addition multiplication.  Compute: k*<code>this</code> + v
@@ -175,7 +176,7 @@ public:
 	 * @return the scalar multiplication <code>this</code> vector and <code>k</code>, followed by an
 	 * addition to vector <code>v</code>.
 	 */
-	Vect2  ScalAdd(const double k, const Vect2& v) const;
+	Vect2  ScalAdd(const real k, const Vect2& v) const;
 
 	/**
 	 * Addition and scalar multiplication.  Compute: this + k*<code>v</code>;
@@ -185,7 +186,7 @@ public:
 	 *
 	 * @return the addition of <code>this</code> vector to <code>v</code> scaled by <code>k</code>.
 	 */
-	Vect2 AddScal(double k, const Vect2& v) const;
+	Vect2 AddScal(real k, const Vect2& v) const;
 
 
 
@@ -210,9 +211,9 @@ public:
 	 * @param t    time
 	 * @return the new position
 	 */
-	Vect2 linear(const Vect2& v, double t) const;
+	Vect2 linear(const Vect2& v, real t) const;
 
-	double distance(const Vect2& s) const;
+	real distance(const Vect2& s) const;
 
 	/**
 	 * Dot product.
@@ -222,7 +223,7 @@ public:
 	 *
 	 * @return the dot product of <code>this</code> vector and (<code>x</code>,<code>y</code>).
 	 */
-	double dot(const double x, const double y) const;
+	real dot(const real x, const real y) const;
 	/**
 	 * Dot product.
 	 *
@@ -230,7 +231,7 @@ public:
 	 *
 	 * @return the dot product of <code>this</code> vector and <code>v</code>.
 	 */
-	double dot(const Vect2& v) const;
+	real dot(const Vect2& v) const;
 	/**
 	 * Determinant.
 	 *
@@ -239,7 +240,7 @@ public:
 	 *
 	 * @return the determinant of <code>this</code> vector and (<code>x</code>,<code>y</code>).
 	 */
-	double det(const double x, const double y) const;
+	real det(const real x, const real y) const;
 	/**
 	 * Determinant.
 	 *
@@ -247,19 +248,19 @@ public:
 	 *
 	 * @return the determinant of <code>this</code> vector and <code>v</code>.
 	 */
-	double det(const Vect2& v) const;
+	real det(const Vect2& v) const;
 	/**
 	 * Square.
 	 *
 	 * @return the dot product of <code>this</code> vector with itself.
 	 */
-	double sqv() const;
+	real sqv() const;
 	/**
 	 * Norm.
 	 *
 	 * @return the norm of of <code>this</code> vector.
 	 */
-	double norm() const;
+	real norm() const;
 
 	/**
 	 * Angle.
@@ -268,7 +269,7 @@ public:
 	 * (-<code>pi</code>, <code>pi</code>]. Convention is counter-clockwise
 	 * with respect to east.
 	 */
-	double angle() const;
+	real angle() const;
 
   /**
    * Track angle.
@@ -277,7 +278,7 @@ public:
    * (-<code>pi</code>, <code>pi</code>]. The track angle is the clockwise angle
    * with respect to north, i.e., <code>v.track() = pi/2 - v.angle()</code>.
    */
-	double trk() const;
+	real trk() const;
 
 	/**
 	 * Compass angle.
@@ -285,7 +286,7 @@ public:
 	 * @return the track angle of <code>this</code> vector in the range
 	 * [<code>0</code>, <code>2*pi</code>). Convention is clockwise with respect to north.
 	 */
-	double compassAngle() const;
+	real compassAngle() const;
 
 
   /**
@@ -295,7 +296,7 @@ public:
    * @return the track angle of <code>v2-this</code> vector in the range 
    * [<code>0</code>, <code>2*Math.PI</code>). Convention is clockwise with respect to north.
    */
-	double compassAngle(const Vect2& v2) const;
+	real compassAngle(const Vect2& v2) const;
 
 
   /**
@@ -307,7 +308,7 @@ public:
    * @return a vector in with the given length and with the direction of track angle
    *
    */
-	static Vect2 mkTrkGs(double trk, double gs);
+	static Vect2 mkTrkGs(real trk, real gs);
 
 	/**
 	 * Relative less or equal.
@@ -351,12 +352,12 @@ public:
 	/**
 	 * Return actual time of closest point approach (return negative infinity if parallel)
 	 */
-	static double actual_tcpa (const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
+	static real actual_tcpa (const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
 
 	/** time to closest point of approach
 	 * if time is negative or velocities are parallel returns 0
 	 */
-	static double tcpa (const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
+	static real tcpa (const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
 
   /** distance at time of closest point of approach
    * 
@@ -366,7 +367,7 @@ public:
    * @param vi velocity of intruder
    * @return distance at time of closest point of approach
    */
-	static double dcpa(const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
+	static real dcpa(const Vect2& so, const Vect2& vo, const Vect2& si, const Vect2& vi);
 
   /**
    * returns the perpendicular distance between line defined by s,v and point q.
@@ -375,7 +376,7 @@ public:
    * @param q a point not on the line
    * @return perpendicular distance
    */
-	static double distPerp(const Vect2& s, const Vect2& v, const Vect2& q);
+	static real distPerp(const Vect2& s, const Vect2& v, const Vect2& q);
 
   /**
    * returns the longitudinal distance between line defined by s,v and point q.
@@ -384,7 +385,7 @@ public:
    * @param q a point not on the line
    * @return longitudinal distance
    */
-	static double distAlong(const Vect2& s, const Vect2& v, const Vect2& q);
+	static real distAlong(const Vect2& s, const Vect2& v, const Vect2& q);
 
 
 	/**
@@ -414,11 +415,11 @@ public:
    * @param epsilon bound
    * @return true if vector is within bounds
    */
-	bool within_epsilon(const Vect2& v2, double epsilon) const;
+	bool within_epsilon(const Vect2& v2, real epsilon) const;
 
 
 private:
-	double sqRel(const Vect2& v) const;
+	real sqRel(const Vect2& v) const;
 
 };
 

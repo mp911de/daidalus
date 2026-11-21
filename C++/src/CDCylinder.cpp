@@ -12,6 +12,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "CDCylinder.h"
 #include "LossData.h"
 #include "LossData.h"
@@ -28,8 +29,8 @@ namespace larcfm {
  * Instantiates a new CD3D object.
  */
 CDCylinder::CDCylinder(const std::string& s) : 
-            D_(Units::from("nmi", 5.0)),
-            H_(Units::from("ft", 1000.0)),
+            D_(Units::from("nmi", real(5.0))),
+            H_(Units::from("ft", real(1000.0))),
             id(s) {
   units_["D"] = "nmi";
   units_["H"] = "ft";
@@ -41,7 +42,7 @@ CDCylinder::CDCylinder(const CDCylinder& cdc) :
             units_(cdc.units_), 
             id(cdc.id) {}
 
-CDCylinder::CDCylinder(double d, double h) : 
+CDCylinder::CDCylinder(real d, real h) :
             D_(std::abs(d)), 
             H_(std::abs(h)),
             id("") {
@@ -49,7 +50,7 @@ CDCylinder::CDCylinder(double d, double h) :
   units_["H"] = "m";
 }
 
-CDCylinder::CDCylinder(double d, const std::string& dunit, double h, const std::string& hunit) :   
+CDCylinder::CDCylinder(real d, const std::string& dunit, real h, const std::string& hunit) :
             D_(Units::from(dunit,std::abs(d))),
             H_(Units::from(hunit,std::abs(h))),
             id("") {
@@ -57,11 +58,11 @@ CDCylinder::CDCylinder(double d, const std::string& dunit, double h, const std::
   units_["H"] = hunit;
 }
 
-CDCylinder CDCylinder::make(double distance, const std::string& dUnits, double height, const std::string& hUnits) {
+CDCylinder CDCylinder::make(real distance, const std::string& dUnits, real height, const std::string& hUnits) {
   return CDCylinder(distance,dUnits,height,hUnits);
 }
 
-CDCylinder CDCylinder::mk(double distance, double height) {
+CDCylinder CDCylinder::mk(real distance, real height) {
   return CDCylinder(distance,height);
 }
 
@@ -88,70 +89,70 @@ std::string CDCylinder::getUnits(const std::string& key) const {
   return DaidalusParameters::get_overriden_unit(got->second);
 }
 
-double CDCylinder::getHorizontalSeparation() const {
+real CDCylinder::getHorizontalSeparation() const {
   return D_;
 }
 
-void CDCylinder::setHorizontalSeparation(double d) {
+void CDCylinder::setHorizontalSeparation(real d) {
   D_ = std::abs(d);
 }
 
-double CDCylinder::getVerticalSeparation() const {
+real CDCylinder::getVerticalSeparation() const {
   return H_;
 }
 
-void CDCylinder::setVerticalSeparation(double h) {
+void CDCylinder::setVerticalSeparation(real h) {
   H_ = std::abs(h);
 }
 
-double CDCylinder::getHorizontalSeparation(const std::string& u) const {
+real CDCylinder::getHorizontalSeparation(const std::string& u) const {
   return Units::to(u, D_);
 }
 
-void CDCylinder::setHorizontalSeparation(double d, const std::string& u) {
+void CDCylinder::setHorizontalSeparation(real d, const std::string& u) {
   setHorizontalSeparation(Units::from(u,d));
   units_["D"]=u;
 }
 
-double CDCylinder::getVerticalSeparation(const std::string& u) const {
+real CDCylinder::getVerticalSeparation(const std::string& u) const {
   return Units::to(u, H_);
 }
 
-void CDCylinder::setVerticalSeparation(double h, const std::string& u) {
+void CDCylinder::setVerticalSeparation(real h, const std::string& u) {
   setVerticalSeparation(Units::from(u,h));
   units_["H"]=u;
 }
 
-LossData CDCylinder::detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H, const double B, const double T) const {
+LossData CDCylinder::detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H, const real B, const real T) const {
   return CD3D::detection(s,vo,vi,D,H,B,T);
 }
 
-LossData CDCylinder::detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H, const double T) const {
-  return detection(s,vo,vi,D,H,0.0,T);
+LossData CDCylinder::detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H, const real T) const {
+  return detection(s,vo,vi,D,H,real(0.0),T);
 }
 
-LossData CDCylinder::detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H) const {
-  return detection(s,vo,vi,D,H,0.0,PINFINITY);
+LossData CDCylinder::detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H) const {
+  return detection(s,vo,vi,D,H,real(0.0),PINFINITY);
 }
 
-ConflictData CDCylinder::conflict_detection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double D, double H, double B, double T) {
+ConflictData CDCylinder::conflict_detection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real D, real H, real B, real T) {
   Vect3 s = so.Sub(si);
   Vect3 v = vo.Sub(vi);
-  double t_tca = CD3D::tccpa(s, vo, vi, D, H, B, T);
-  double dist_tca = s.linear(v,t_tca).cyl_norm(D, H);
+  real t_tca = CD3D::tccpa(s, vo, vi, D, H, B, T);
+  real dist_tca = s.linear(v,t_tca).cyl_norm(D, H);
   LossData ld = CD3D::detection(s,vo,vi,D,H,B,T);
   return ConflictData(ld,t_tca,dist_tca,s,v);
 }
 
-ConflictData CDCylinder::conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const {
+ConflictData CDCylinder::conflictDetection(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
   return conflict_detection(so,vo,si,vi,D_,H_,B,T);
 }
 
-double CDCylinder::time_of_closest_approach(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double D, double H, double B, double T) {
+real CDCylinder::time_of_closest_approach(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real D, real H, real B, real T) {
   return CD3D::tccpa(so.Sub(si),vo,vi,D,H,B,T);
 }
 
-double CDCylinder::timeOfClosestApproach(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, double B, double T) const {
+real CDCylinder::timeOfClosestApproach(const Vect3& so, const Vect3& vo, const Vect3& si, const Vect3& vi, real B, real T) const {
   return time_of_closest_approach(so,vo,si,vi,D_,H_,B,T);
 }
 
@@ -233,12 +234,12 @@ bool CDCylinder::contains(const Detection3D& det) const {
  * in [0,2*pi].
  */
 void CDCylinder::circular_arc(std::vector<Position>& arc, const Position& pc, const Velocity& v,
-    double alpha, bool include_last) {
+    real alpha, bool include_last) {
   alpha = Util::almost_equals(alpha,2*Pi,DaidalusParameters::ALMOST_) ? alpha :  Util::to_2pi(alpha);
-  double step = Pi/180;
+  real step = Pi/180;
   arc.push_back(pc.linear(v,1));
-  double current_trk = v.trk();
-  for (double a = step; Util::almost_less(a,alpha,DaidalusParameters::ALMOST_); a += step) {
+  real current_trk = v.trk();
+  for (real a = step; Util::almost_less(a,alpha,DaidalusParameters::ALMOST_); a += step) {
     arc.push_back(pc.linear(v.mkTrk(current_trk-a),1));
   }
   if (include_last) {
@@ -247,7 +248,7 @@ void CDCylinder::circular_arc(std::vector<Position>& arc, const Position& pc, co
 }
 
 void CDCylinder::horizontalHazardZone(std::vector<Position>& haz,
-    const TrafficState& ownship, const TrafficState& intruder, double T) const {
+    const TrafficState& ownship, const TrafficState& intruder, real T) const {
   haz.clear();
   const Position& po = ownship.getPosition();
   Velocity v = ownship.getAirVelocity().Sub(intruder.getAirVelocity().vect3());

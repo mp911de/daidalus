@@ -14,6 +14,7 @@
 
 #ifndef HORIZONTAL_H_
 #define HORIZONTAL_H_
+#include "Real.h"
 
 #include "TangentLine.h"
 #include "Vect3.h"
@@ -32,13 +33,13 @@ public:
   explicit Horizontal(const Vect2& v);
 
   /** Construct a horizontal solution */
-  Horizontal(double kk, const Vect2& v);
+  Horizontal(real kk, const Vect2& v);
 
   /** Is this solution undefined? */
   bool undef() const;
 
   /** parameter */
-  double  k;
+  real  k;
 
   /** "Solution" indicating no solution */
   static const Horizontal& NoHorizontalSolution();
@@ -54,7 +55,7 @@ public:
    * @return the time of horizontal closest point of approach between <code>this</code> point and the line defined
    * by the vector <code>v</code>. 
    */
-  static double tcpa(const Vect2& s, const Vect2& v);
+  static real tcpa(const Vect2& s, const Vect2& v);
 
   /**
    * Distance closest point of approach.
@@ -64,10 +65,10 @@ public:
    * @return the horizontal distance at closest point of approach between <code>this</code> point and the line defined
    * by the vector <code>v</code>.
    */
-  static double dcpa(const Vect2& s, const Vect2& v);
+  static real dcpa(const Vect2& s, const Vect2& v);
 
   /* Horizontal miss distance within lookahead time */
-  static double hmd(const Vect2& s, const Vect2& v, double T);
+  static real hmd(const Vect2& s, const Vect2& v, real T);
 
   /**
    * Compute nv2 such that relative position s (= s1-s2) is the horizontal closest point of approach for s, v1, nv2 
@@ -87,8 +88,8 @@ public:
    * intersects the circle of radius <code>D</code>. If <code>eps == -1</code> the returned time is 
    * the entry time; if <code>eps == 1</code> the  returned time is the exit time.
    */
-  static double Theta_D(const Vect2& s, const Vect2& v,
-      const int eps, const double D);
+  static real Theta_D(const Vect2& s, const Vect2& v,
+      const int eps, const real D);
   /**
    * Discriminant of intersection between line and circle.
    * 
@@ -101,15 +102,15 @@ public:
    * if it is <code>0</code> the line is tangent to the circle; otherwise, the line
    * intersects the circle in two different points. 
    */
-  static double Delta(const Vect2& s, const Vect2& v, const double D);
+  static real Delta(const Vect2& s, const Vect2& v, const real D);
   /** */
-  static bool   almost_horizontal_los(const Vect2& s, const double D);
+  static bool   almost_horizontal_los(const Vect2& s, const real D);
   /** */
-  static bool   horizontal_sep(const Vect2& s, const double D);
+  static bool   horizontal_sep(const Vect2& s, const real D);
   /** */
   static bool horizontal_dir(const Vect2& s, const Vect2& v, const int dir);
   /** */
-  static bool horizontal_dir_at(const Vect2& s, const Vect2& v, const double t,
+  static bool horizontal_dir_at(const Vect2& s, const Vect2& v, const real t,
       const int dir);
 
   static bool horizontal_entry(const Vect2& s, const Vect2& v);
@@ -117,7 +118,7 @@ public:
   /** */
   static Vect2 Vdir(const Vect2& s, const Vect2& v);
   /** */
-  static Vect2 W0(const Vect2& s, const double j);
+  static Vect2 W0(const Vect2& s, const real j);
 
   /** Solve the following equation on k and l:
    *   k*nv = l*vo-vi.
@@ -129,28 +130,28 @@ public:
 
   /** */
   static Horizontal gs_only_dot(const Vect2& u,const Vect2& vo,const Vect2& vi,
-      const double j);
+      const real j);
 
   /** */
   static Horizontal gs_only_vertical(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double th, const int dir, const double D);
+      const real th, const int dir, const real D);
 
   /** */
   static Horizontal gs_vertical(const Vect3& s, const Vect3& vo, const Vect3& vi,
       const TangentLine& l, const int epsv,
-      const double D, const double H);
+      const real D, const real H);
 
   /** */
   static Horizontal gs_only(const TangentLine& nv,const Vect3& s,const Vect3& vo,const Vect3& vi,const int epsv,
-      const double D, const double H);
+      const real D, const real H);
 
   /** */
   static Horizontal gs_only_circle(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double t, const int dir, const int irt, const double D);
+      const real t, const int dir, const int irt, const real D);
 
   /** */
   static Horizontal gs_circle(const Vect3& s, const Vect3& vo, const Vect3& vi,
-      const int dir, const int irt, const double D, const double H);
+      const int dir, const int irt, const real D, const real H);
 
   /** Solve the following equation on k:
    * || k*nv + vi || = || vo ||.
@@ -170,37 +171,37 @@ public:
 
   /** */
   static Horizontal trk_only_dot(const Vect2& u,const Vect2& vo,const Vect2& vi,
-      const double j,const int irt);
+      const real j,const int irt);
 
   /** */
   static Horizontal trk_only_vertical(const Vect2& s,const Vect2& vo,const Vect2& vi,
-      const double th,const int dir,const int irt,const double D);
+      const real th,const int dir,const int irt,const real D);
 
   /** */
   static Horizontal trk_vertical_irt(const Vect3& s,const Vect3& vo,const Vect3& vi,const TangentLine& l,
-      const int epsv,const int irt,const double D,const double H);
+      const int epsv,const int irt,const real D,const real H);
 
 
 
-  static Horizontal repulsiveTrk(const Vect3& s, const Vect3& vo, const Vect3& vi, double minRelSpeed);
+  static Horizontal repulsiveTrk(const Vect3& s, const Vect3& vo, const Vect3& vi, real minRelSpeed);
 
-  static Horizontal repulsiveGs(const Vect3& s, const Vect3& vo, const Vect3& vi, double minRelSpeed, double minGs, double maxGs);
+  static Horizontal repulsiveGs(const Vect3& s, const Vect3& vo, const Vect3& vi, real minRelSpeed, real minGs, real maxGs);
 
   /** */
   static Horizontal trk_vertical(const Vect3& s,const Vect3& vo,const Vect3& vi,const TangentLine& l,
-      const int epsv,const double D,const double H);
+      const int epsv,const real D,const real H);
 
   /** */
   static Horizontal trk_only(const TangentLine& nv,const Vect3& s,const Vect3& vo,const Vect3& vi,
-      const int epsv,const double D, const double H);
+      const int epsv,const real D, const real H);
 
   /** */
   static Horizontal trk_only_circle(const Vect2& s, const Vect2& vo, const Vect2& vi,
-      const double t, const int dir, const int irt, const double D);
+      const real t, const int dir, const int irt, const real D);
 
   /** */
   static Horizontal trk_circle(const Vect3& s, const Vect3& vo, const Vect3& vi,
-      const int dir, const int irt, const double D, const double H);
+      const int dir, const int irt, const real D, const real H);
 
   /**
    * Solve the following equation on k and l:
@@ -213,19 +214,19 @@ public:
 
   /** */
   static Horizontal opt_trk_gs(const TangentLine& nv,const Vect3& s,const Vect3& vo,const Vect3& vi,
-      const int epsv,const double D,const double H);
+      const int epsv,const real D,const real H);
 
   /** */
   static Horizontal opt_trk_gs_dot(const Vect2& u,const Vect2& vo,const Vect2& vi,
-      const double j);
+      const real j);
 
   /** */
   static Horizontal opt_trk_gs_vertical(const Vect2& s,const Vect2& vo,const Vect2& vi,
-      const double th,const int dir,const double D);
+      const real th,const int dir,const real D);
 
   /** */
   static Horizontal opt_vertical(const Vect3& s,const Vect3& vo,const Vect3& vi,const TangentLine& l,
-      const int epsv,const double D,const double H);
+      const int epsv,const real D,const real H);
 
   /*
    * Unit left perpendicular vector to v

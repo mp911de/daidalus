@@ -11,6 +11,7 @@
 
 #ifndef DAIDALUSFILEWALKER_H_
 #define DAIDALUSFILEWALKER_H_
+#include "Real.h"
 
 #include "SequenceReader.h"
 #include "ParameterData.h"
@@ -25,7 +26,7 @@ private:
   std::string filename_; // Empty filename is stdin
   SequenceReader sr_;
   ParameterData p_;
-  std::vector<double> times_;
+  std::vector<real> times_;
   int index_;
   std::string ownship_; // Set ownship to a given value
   std::vector<std::string> traffic_; // Only consider the traffic aircraft
@@ -42,7 +43,7 @@ public:
 private:
   void init();
 
-  ParameterData extraColumnsToParameters(double time, const std::string& ac_name);
+  ParameterData extraColumnsToParameters(real time, const std::string& ac_name);
 
   void readExtraColumns(Daidalus& daa, int ac_idx, bool read_wind);
 
@@ -107,19 +108,19 @@ public:
 	 */
 	void resetWind();
 
-  double firstTime() const;
+  real firstTime() const;
 
-  double lastTime() const;
+  real lastTime() const;
 
   int getIndex() const;
 
-  double getTime() const;
+  real getTime() const;
 
   bool atBeginning() const;
 
   bool atEnd() const;
 
-  bool goToTime(double t);
+  bool goToTime(real t);
 
   bool goToTimeStep(int i);
 
@@ -131,7 +132,7 @@ public:
 
   void goPrev();
 
-  int indexOfTime(double t) const;
+  int indexOfTime(real t) const;
 
   void setDAAFormat(DAAFormatter& formatter) const;
 

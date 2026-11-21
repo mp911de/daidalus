@@ -48,6 +48,7 @@
 
 #ifndef CD3D_H_
 #define CD3D_H_
+#include "Real.h"
 
 #include "CD2D.h"
 #include "Vertical.h"
@@ -70,7 +71,7 @@ public:
    *
    * @return true, if aircraft are in loss of separation
    */
-  static bool LoS(const Vect3& s, const double D, const double H);
+  static bool LoS(const Vect3& s, const real D, const real H);
 
   /**
    * Returns true is aircraft are in loss of separation at time 0.
@@ -82,7 +83,7 @@ public:
    *
    * @return true, if aircraft are in loss of separation
    */
-  static bool lossOfSep(const Vect3& so, const Vect3& si, const double D, const double H);
+  static bool lossOfSep(const Vect3& so, const Vect3& si, const real D, const real H);
 
 
   /**
@@ -100,7 +101,7 @@ public:
    * The returned t_in and t_out values are truncated to be within [B,T]
    *
    */
-  static LossData detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H, const double B, const double T);
+  static LossData detection(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H, const real B, const real T);
 
   /**
    * Computes the actual conflict times 
@@ -113,7 +114,7 @@ public:
    * 
    * @return true, if there is a conflict time interval (t_in,t_out)
    */
-  static LossData detectionActual(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H);
+  static LossData detectionActual(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H);
 
   /**
    * Determines if there is a conflict in the time interval [B,T]
@@ -128,7 +129,7 @@ public:
    * 
    * @return true, if there is a conflict in the time interval [B,T].
    */
-  static bool cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H, const double B, const double T);
+  static bool cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H, const real B, const real T);
 
   /**
    * Determines if there is a conflict in the time interval [0,T]
@@ -142,7 +143,7 @@ public:
    * 
    * @return true, if there is a conflict in the time interval [0,T].
    */
-  static bool cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H, const double T);
+  static bool cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H, const real T);
 
   /**
    * Determines if there is a conflict in the time interval [0,...)
@@ -155,7 +156,7 @@ public:
    *
    * @return true, if there is a conflict in the time interval [0,...)
    */
-  static bool cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi, const double D, const double H);
+  static bool cd3d(const Vect3& s, const Vect3& vo, const Vect3& vi, const real D, const real H);
 
 
   /**
@@ -169,8 +170,8 @@ public:
    * 
    * @return the time to cylindrical closest point of approach for the interval [0,...).
    */
-  static double tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
-      const double D, const double H);
+  static real tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
+      const real D, const real H);
 
   /**
    * Computes the time to cylindrical closest point of approach for the interval [B,T].
@@ -185,8 +186,8 @@ public:
    *
    * @return the time to cylindrical closest point of approach for the interval [B,T].
    */
-  static double tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
-      const double D, const double H, const double B, const double T);
+  static real tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
+      const real D, const real H, const real B, const real T);
 
   /**
    * Computes the time to cylindrical closest point of approach for the interval [0,T].
@@ -200,8 +201,8 @@ public:
    *
    * @return the time to cylindrical closest point of approach for the interval [0,T].
    */
-  static double tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
-      const double D, const double H, const double T);
+  static real tccpa(const Vect3& s, const Vect3& vo, const Vect3& vi,
+      const real D, const real H, const real T);
 
 
   };

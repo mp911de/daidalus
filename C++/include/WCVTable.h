@@ -7,6 +7,7 @@
 
 #ifndef WCVTABLE_H_
 #define WCVTABLE_H_
+#include "Real.h"
 
 #include "Units.h"
 #include "ParameterTable.h"
@@ -22,21 +23,21 @@ private:
   std::map<std::string,std::string> units_;
 
 public:
-  double DTHR; // Distance threshold
-  double ZTHR; // Vertical threshold
-  double TTHR; // Time threshold
-  double TCOA; // Time to co-altitude threshold
+  real DTHR; // Distance threshold
+  real ZTHR; // Vertical threshold
+  real TTHR; // Time threshold
+  real TCOA; // Time to co-altitude threshold
 
   /**
    * Table containing specified values (internal units)
    */
-  WCVTable(double dthr, double zthr, double tthr, double tcoa);
+  WCVTable(real dthr, real zthr, real tthr, real tcoa);
 
   /**
    * Table containing specified values (specified units)
    */
-  WCVTable(double dthr, const std::string& udthr, double zthr, const std::string& uzthr,
-      double tthr, const std::string& utthr, double tcoa, const std::string& utcoa);
+  WCVTable(real dthr, const std::string& udthr, real zthr, const std::string& uzthr,
+      real tthr, const std::string& utthr, real tcoa, const std::string& utcoa);
 
   /**
    * WCV table SARP concept
@@ -84,44 +85,44 @@ public:
   /**
    * Return horizontal distance threshold DTHR in internal units
    */
-  double getDTHR() const;
+  real getDTHR() const;
   /**
    * Return horizontal distance threshold DTHR in u units
    */
-  double getDTHR(const std::string& u) const;
+  real getDTHR(const std::string& u) const;
 
   /**
    * Return vertical distance threshold ZTHR in internal units
    */
-  double getZTHR() const;
+  real getZTHR() const;
   /**
    * Return vertical distance threshold ZTHR in u units
    */
-  double getZTHR(const std::string& u) const;
+  real getZTHR(const std::string& u) const;
 
   /**
    * Return horizontal time threshold TTHR in seconds
    */
-  double getTTHR() const;
-  double getTTHR(const std::string& u) const;
+  real getTTHR() const;
+  real getTTHR(const std::string& u) const;
 
   /**
    * Return vertical time threshold TCOA in seconds
    */
-  double getTCOA() const;
-  double getTCOA(const std::string& u) const;
+  real getTCOA() const;
+  real getTCOA(const std::string& u) const;
 
-  void setDTHR(double val);
-  void setDTHR(double val, const std::string& u);
+  void setDTHR(real val);
+  void setDTHR(real val, const std::string& u);
 
-  void setZTHR(double val);
-  void setZTHR(double val, const std::string& u);
+  void setZTHR(real val);
+  void setZTHR(real val, const std::string& u);
 
-  void setTTHR(double val);
-  void setTTHR(double val, const std::string& u);
+  void setTTHR(real val);
+  void setTTHR(real val, const std::string& u);
 
-  void setTCOA(double val);
-  void setTCOA(double val, const std::string& u);
+  void setTCOA(real val);
+  void setTCOA(real val, const std::string& u);
 
   ParameterData getParameters() const;
   void updateParameterData(ParameterData& p) const;

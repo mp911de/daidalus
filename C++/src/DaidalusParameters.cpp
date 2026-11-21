@@ -5,6 +5,7 @@
  * Rights Reserved.
  */
 
+#include "Real.h"
 #include "DaidalusParameters.h"
 #include "ParameterData.h"
 #include "StateReader.h"
@@ -69,91 +70,91 @@ std::string DaidalusParameters:: get_overriden_unit(const std::string& units) {
 DaidalusParameters::DaidalusParameters() : error("DaidalusParameters") {
 
   // Bands Parameters
-  lookahead_time_ = 180.0; // [s]
+  lookahead_time_ = real(180.0); // [s]
   units_["lookahead_time"] = "s";
 
-  distance_filter_ = 0.0; // Zero means no filter
+  distance_filter_ = real(0.0); // Zero means no filter
   units_["distance_filter"] = "nmi";
 
-  altitude_filter_ = 0.0; // Zero means no filter
+  altitude_filter_ = real(0.0); // Zero means no filter
   units_["altitude_filter"] = "ft";
 
-  left_hdir_  = Units::from("deg",180.0);
+  left_hdir_  = Units::from("deg",real(180.0));
   units_["left_hdir"] = "deg";
 
-  right_hdir_ = Units::from("deg",180.0);
+  right_hdir_ = Units::from("deg",real(180.0));
   units_["right_hdir"] = "deg";
 
-  min_hs_  = Units::from("knot",10.0);
+  min_hs_  = Units::from("knot",real(10.0));
   units_["min_hs"] = "knot";
 
-  max_hs_  = Units::from("knot",700.0);
+  max_hs_  = Units::from("knot",real(700.0));
   units_["max_hs"] = "knot";
 
-  min_vs_  = Units::from("fpm",-6000.0);
+  min_vs_  = Units::from("fpm",-real(6000.0));
   units_["min_vs"] = "fpm";
 
-  max_vs_  = Units::from("fpm",6000.0);
+  max_vs_  = Units::from("fpm",real(6000.0));
   units_["max_vs"] = "fpm";
 
-  min_alt_ = Units::from("ft",100.0);
+  min_alt_ = Units::from("ft",real(100.0));
   units_["min_alt"] = "ft";
 
-  max_alt_ = Units::from("ft",50000.0);
+  max_alt_ = Units::from("ft",real(50000.0));
   units_["max_alt"] = "ft";
 
   // Relative Bands
-  below_relative_hs_ = 0.0;
+  below_relative_hs_ = real(0.0);
   units_["below_relative_hs"] = "knot";
 
-  above_relative_hs_ = 0.0;
+  above_relative_hs_ = real(0.0);
   units_["above_relative_hs"] = "knot";
 
-  below_relative_vs_ = 0.0;
+  below_relative_vs_ = real(0.0);
   units_["below_relative_vs"] = "fpm";
 
-  above_relative_vs_ = 0.0;
+  above_relative_vs_ = real(0.0);
   units_["above_relative_vs"] = "fpm";
 
-  below_relative_alt_ = 0.0;
+  below_relative_alt_ = real(0.0);
   units_["below_relative_alt"] = "ft";
 
-  above_relative_alt_ = 0.0;
+  above_relative_alt_ = real(0.0);
   units_["above_relative_alt"] = "ft";
 
   // Kinematic Parameters
-  step_hdir_ = Units::from("deg",1.0);
+  step_hdir_ = Units::from("deg",real(1.0));
   units_["step_hdir"] = "deg";
 
-  step_hs_ = Units::from("knot",5.0);
+  step_hs_ = Units::from("knot",real(5.0));
   units_["step_hs"] = "knot";
 
-  step_vs_ = Units::from("fpm",100.0);
+  step_vs_ = Units::from("fpm",real(100.0));
   units_["step_vs"] = "fpm";
 
-  step_alt_ = Units::from("ft", 100.0);
+  step_alt_ = Units::from("ft", real(100.0));
   units_["step_alt"] = "ft";
 
-  horizontal_accel_ = Units::from("m/s^2",2.0);
+  horizontal_accel_ = Units::from("m/s^2",real(2.0));
   units_["horizontal_accel"] = "m/s^2";
 
-  vertical_accel_ = Units::from("G",0.25);    // Section 1.2.3, DAA MOPS V3.6
+  vertical_accel_ = Units::from("G",real(0.25));    // Section 1.2.3, DAA MOPS V3.6
   units_["vertical_accel"] = "G";
 
-  turn_rate_ = Units::from("deg/s",3.0); // Section 1.2.3, DAA MOPS V3.6
+  turn_rate_ = Units::from("deg/s",real(3.0)); // Section 1.2.3, DAA MOPS V3.6
   units_["turn_rate"] = "deg/s";
 
-  bank_angle_ = 0.0;
+  bank_angle_ = real(0.0);
   units_["bank_angle"] = "deg";
 
-  vertical_rate_ = Units::from("fpm",500.0);   // Section 1.2.3, DAA MOPS V3.6
+  vertical_rate_ = Units::from("fpm",real(500.0));   // Section 1.2.3, DAA MOPS V3.6
   units_["vertical_rate"] = "fpm";
 
   // Recovery Bands Parameters
-  min_horizontal_recovery_ = 0.0;
+  min_horizontal_recovery_ = real(0.0);
   units_["min_horizontal_recovery"] = "nmi";
 
-  min_vertical_recovery_ = 0.0;
+  min_vertical_recovery_ = real(0.0);
   units_["min_vertical_recovery"] = "ft";
 
   recovery_hdir_ = true;
@@ -167,7 +168,7 @@ DaidalusParameters::DaidalusParameters() : error("DaidalusParameters") {
   // Collision Avoidance Bands Parameters
   ca_bands_ = false;
 
-  ca_factor_ = 0.1;
+  ca_factor_ = real(0.1);
 
   horizontal_nmac_ = ACCoRDConfig::NMAC_D;      // Defined in RTCA SC-147
   units_["horizontal_nmac"] = "ft";
@@ -176,27 +177,27 @@ DaidalusParameters::DaidalusParameters() : error("DaidalusParameters") {
   units_["vertical_nmac"] = "ft";
 
   // Hysteresis and persistence parameters
-  recovery_stability_time_ = 3.0; // [s]
+  recovery_stability_time_ = real(3.0); // [s]
   units_["recovery_stability_time"] = "s";
 
-  hysteresis_time_ = 0.0; // [s]
+  hysteresis_time_ = real(0.0); // [s]
   units_["hysteresis_time"] = "s";
 
-  persistence_time_ = 0.0; // [s]
+  persistence_time_ = real(0.0); // [s]
   units_["persistence_time"] = "s";
 
   bands_persistence_ = false;
 
-  persistence_preferred_hdir_ = Units::from("deg",0.0);
+  persistence_preferred_hdir_ = Units::from("deg",real(0.0));
   units_["persistence_preferred_hdir"] = "deg";
 
-  persistence_preferred_hs_ = Units::from("knot",0.0);
+  persistence_preferred_hs_ = Units::from("knot",real(0.0));
   units_["persistence_preferred_hs"] = "knot";
 
-  persistence_preferred_vs_ = Units::from("fpm",0.0);
+  persistence_preferred_vs_ = Units::from("fpm",real(0.0));
   units_["persistence_preferred_vs"] = "fpm";
 
-  persistence_preferred_alt_ = Units::from("ft",0.0);
+  persistence_preferred_alt_ = Units::from("ft",real(0.0));
   units_["persistence_preferred_alt"] = "ft";
 
   alerting_m_ = 0;
@@ -207,37 +208,37 @@ DaidalusParameters::DaidalusParameters() : error("DaidalusParameters") {
   recovery_crit_ = false;
 
   // SUM parameters
-  h_pos_z_score_ = 0.0;
+  h_pos_z_score_ = real(0.0);
 
-  h_vel_z_score_min_ = 0.0;
+  h_vel_z_score_min_ = real(0.0);
 
-  h_vel_z_score_max_ = 0.0;
+  h_vel_z_score_max_ = real(0.0);
 
-  h_vel_z_distance_ = 0.0;
+  h_vel_z_distance_ = real(0.0);
   units_["h_vel_z_distance"] = "nmi";
 
-  v_pos_z_score_ = 0.0;
+  v_pos_z_score_ = real(0.0);
 
-  v_vel_z_score_ = 0.0;
+  v_vel_z_score_ = real(0.0);
 
   // Horizontal Contour Threshold
-  contour_thr_ = Units::from("deg",180.0);
+  contour_thr_ = Units::from("deg",real(180.0));
   units_["contour_thr"] = "deg";
 
   // DAA Terminal Area (DTA)
   dta_logic_ = 0;
-  dta_latitude_ = 0.0;
+  dta_latitude_ = real(0.0);
   units_["dta_latitude"] = "deg";
-  dta_longitude_ = 0.0;
+  dta_longitude_ = real(0.0);
   units_["dta_longitude"] = "deg";
-  dta_radius_ = 0.0;
+  dta_radius_ = real(0.0);
   units_["dta_radius"] = "nmi";
-  dta_height_ = 0.0;
+  dta_height_ = real(0.0);
   units_["dta_height"] = "ft";
   dta_alerter_  = 0;
 
  	// Horizontal Direction Bands Logic When Speed Below Airspeed Threshold
-  airspeed_thr_  = Units::from("knot",0.0);  
+  airspeed_thr_  = Units::from("knot",real(0.0));
 	units_["airspeed_thr"] = "knot";
   hdir_bands_below_as_thr_ = 0;
 
@@ -302,14 +303,14 @@ void DaidalusParameters::set_DO_365A(bool type, bool sum) {
   setCorrectiveRegion(BandsRegion::MID);
   setKinematicBands(type);
   setCollisionAvoidanceBands(true);
-  setCollisionAvoidanceBandsFactor(0.1);
-  setMinHorizontalRecovery(0.66,"nmi");
+  setCollisionAvoidanceBandsFactor(real(0.1));
+  setMinHorizontalRecovery(real(0.66),"nmi");
   setMinVerticalRecovery(450,"ft");
   //setVerticalRate(1000,"fpm");
   setIntruderCentricAlertingLogic();
   /** Set hysteresis parameters **/
-  setHysteresisTime(5.0);
-  setPersistenceTime(4.0);
+  setHysteresisTime(real(5.0));
+  setPersistenceTime(real(4.0));
   setBandsPersistence(true);
   setPersistencePreferredHorizontalDirectionResolution(15,"deg");
   setPersistencePreferredHorizontalSpeedResolution(100,"knot");
@@ -317,14 +318,14 @@ void DaidalusParameters::set_DO_365A(bool type, bool sum) {
   setPersistencePreferredAltitudeResolution(250,"ft");
   setAlertingMofN(2,4);
   /** Set SUM parameters **/
-  setHorizontalPositionZScore(1.5);
-  setHorizontalVelocityZScoreMin(0.5);
-  setHorizontalVelocityZScoreMax(1.0);
+  setHorizontalPositionZScore(real(1.5));
+  setHorizontalVelocityZScoreMin(real(0.5));
+  setHorizontalVelocityZScoreMax(real(1.0));
   setHorizontalVelocityZDistance(5,"nmi");
-  setVerticalPositionZScore(0.75);
-  setVerticalSpeedZScore(1.5);
+  setVerticalPositionZScore(real(0.75));
+  setVerticalSpeedZScore(real(1.5));
   /** Set DTA parameters **/
-  setDTARadius(4.2,"nmi");
+  setDTARadius(real(4.2),"nmi");
   setDTAHeight(2000,"ft");
   setDTAAlerter(2);
 }
@@ -361,8 +362,8 @@ void DaidalusParameters::set_Buffered_WC_DO_365(bool type) {
   setCorrectiveRegion(BandsRegion::MID);
   setKinematicBands(type);
   setCollisionAvoidanceBands(true);
-  setCollisionAvoidanceBandsFactor(0.1);
-  setMinHorizontalRecovery(1.0,"nmi");
+  setCollisionAvoidanceBandsFactor(real(0.1));
+  setMinHorizontalRecovery(real(1.0),"nmi");
   setMinVerticalRecovery(450,"ft");
 }
 
@@ -378,8 +379,8 @@ void DaidalusParameters::set_CD3D() {
   setCorrectiveRegion(BandsRegion::NEAR);
   setInstantaneousBands();
   setCollisionAvoidanceBands(true);
-  setCollisionAvoidanceBandsFactor(0.1);
-  setMinHorizontalRecovery(5.0,"nmi");
+  setCollisionAvoidanceBandsFactor(real(0.1));
+  setMinHorizontalRecovery(real(5.0),"nmi");
   setMinVerticalRecovery(1000,"ft");
 }
 
@@ -393,7 +394,7 @@ void DaidalusParameters::set_TCASII() {
   setKinematicBands(true);
   setVerticalRate(1500,"fpm");
   setCollisionAvoidanceBands(true);
-  setCollisionAvoidanceBandsFactor(0.1);
+  setCollisionAvoidanceBandsFactor(real(0.1));
   setMinHorizontalRecovery(0);
   setMinVerticalRecovery(0);
 }
@@ -460,332 +461,332 @@ void DaidalusParameters::set_alerters_with_SUM_parameters() {
   }
 }
 
-double DaidalusParameters::getLookaheadTime() const {
+real DaidalusParameters::getLookaheadTime() const {
   return lookahead_time_;
 }
 
-double DaidalusParameters::getLookaheadTime(const std::string& u) const {
+real DaidalusParameters::getLookaheadTime(const std::string& u) const {
   return Units::to(u,getLookaheadTime());
 }
 
 /** 
  * @return distance filter in meters.
  */
-double DaidalusParameters::getDistanceFilter() const {
+real DaidalusParameters::getDistanceFilter() const {
   return distance_filter_;
 }
 
 /** 
  * @return distance filter in specified units [u].
  */
-double DaidalusParameters::getDistanceFilter(const std::string& u) const {
+real DaidalusParameters::getDistanceFilter(const std::string& u) const {
   return Units::to(u,getDistanceFilter());
 }
 
 /** 
  * @return altitude filter in meters.
  */
-double DaidalusParameters::getAltitudeFilter() const {
+real DaidalusParameters::getAltitudeFilter() const {
   return altitude_filter_;
 }
 
 /** 
  * @return altitude filter in specified units [u].
  */
-double DaidalusParameters::getAltitudeFilter(const std::string& u) const {
+real DaidalusParameters::getAltitudeFilter(const std::string& u) const {
   return Units::to(u,getAltitudeFilter());
 }
 
-double DaidalusParameters::getLeftHorizontalDirection() const {
+real DaidalusParameters::getLeftHorizontalDirection() const {
   return left_hdir_;
 }
 
-double DaidalusParameters::getLeftHorizontalDirection(const std::string& u) const {
+real DaidalusParameters::getLeftHorizontalDirection(const std::string& u) const {
   return Units::to(u,getLeftHorizontalDirection());
 }
 
 
-double DaidalusParameters::getRightHorizontalDirection() const {
+real DaidalusParameters::getRightHorizontalDirection() const {
   return right_hdir_;
 }
 
 
-double DaidalusParameters::getRightHorizontalDirection(const std::string& u) const {
+real DaidalusParameters::getRightHorizontalDirection(const std::string& u) const {
   return Units::to(u,getRightHorizontalDirection());
 }
  
 /** 
  * @return airspeed threshold in internal units [m/s]. 
  */
-double DaidalusParameters::getAirspeedThreshold() const {
+real DaidalusParameters::getAirspeedThreshold() const {
 			return airspeed_thr_;
 }
 
 /** 
  * @return airspeed threshold in specified units [u].
  */
-double DaidalusParameters::getAirspeedThreshold(const std::string& u) const {
+real DaidalusParameters::getAirspeedThreshold(const std::string& u) const {
 		return Units::to(u,getAirspeedThreshold());
 }
 
-double DaidalusParameters::getMinHorizontalSpeed() const {
+real DaidalusParameters::getMinHorizontalSpeed() const {
   return min_hs_;
 }
 
 
-double DaidalusParameters::getMinHorizontalSpeed(const std::string& u) const {
+real DaidalusParameters::getMinHorizontalSpeed(const std::string& u) const {
   return Units::to(u,getMinHorizontalSpeed());
 }
 
 
-double DaidalusParameters::getMaxHorizontalSpeed() const {
+real DaidalusParameters::getMaxHorizontalSpeed() const {
   return max_hs_;
 }
 
 
-double DaidalusParameters::getMaxHorizontalSpeed(const std::string& u) const {
+real DaidalusParameters::getMaxHorizontalSpeed(const std::string& u) const {
   return Units::to(u,getMaxHorizontalSpeed());
 }
 
 
-double DaidalusParameters::getMinVerticalSpeed() const {
+real DaidalusParameters::getMinVerticalSpeed() const {
   return min_vs_;
 }
 
 
-double DaidalusParameters::getMinVerticalSpeed(const std::string& u) const {
+real DaidalusParameters::getMinVerticalSpeed(const std::string& u) const {
   return Units::to(u,getMinVerticalSpeed());
 }
 
 
-double DaidalusParameters::getMaxVerticalSpeed() const {
+real DaidalusParameters::getMaxVerticalSpeed() const {
   return max_vs_;
 }
 
 
-double DaidalusParameters::getMaxVerticalSpeed(const std::string& u) const {
+real DaidalusParameters::getMaxVerticalSpeed(const std::string& u) const {
   return Units::to(u,getMaxVerticalSpeed());
 }
 
 
-double DaidalusParameters::getMinAltitude() const {
+real DaidalusParameters::getMinAltitude() const {
   return min_alt_;
 }
 
 
-double DaidalusParameters::getMinAltitude(const std::string& u) const {
+real DaidalusParameters::getMinAltitude(const std::string& u) const {
   return Units::to(u,getMinAltitude());
 }
 
 
-double DaidalusParameters::getMaxAltitude() const {
+real DaidalusParameters::getMaxAltitude() const {
   return max_alt_;
 }
 
 
-double DaidalusParameters::getMaxAltitude(const std::string& u) const {
+real DaidalusParameters::getMaxAltitude(const std::string& u) const {
   return Units::to(u,getMaxAltitude());
 }
 
 
-double DaidalusParameters::getBelowRelativeHorizontalSpeed() const {
+real DaidalusParameters::getBelowRelativeHorizontalSpeed() const {
   return below_relative_hs_;
 }
 
 
-double DaidalusParameters::getBelowRelativeHorizontalSpeed(const std::string& u) const {
+real DaidalusParameters::getBelowRelativeHorizontalSpeed(const std::string& u) const {
   return Units::to(u,getBelowRelativeHorizontalSpeed());
 }
 
 
-double DaidalusParameters::getAboveRelativeHorizontalSpeed() const {
+real DaidalusParameters::getAboveRelativeHorizontalSpeed() const {
   return above_relative_hs_;
 }
 
 
-double DaidalusParameters::getAboveRelativeHorizontalSpeed(const std::string& u) const {
+real DaidalusParameters::getAboveRelativeHorizontalSpeed(const std::string& u) const {
   return Units::to(u,getAboveRelativeHorizontalSpeed());
 }
 
 
-double DaidalusParameters::getBelowRelativeVerticalSpeed() const {
+real DaidalusParameters::getBelowRelativeVerticalSpeed() const {
   return below_relative_vs_;
 }
 
 
-double DaidalusParameters::getBelowRelativeVerticalSpeed(const std::string& u) const {
+real DaidalusParameters::getBelowRelativeVerticalSpeed(const std::string& u) const {
   return Units::to(u,getBelowRelativeVerticalSpeed());
 }
 
 
-double DaidalusParameters::getAboveRelativeVerticalSpeed() const {
+real DaidalusParameters::getAboveRelativeVerticalSpeed() const {
   return above_relative_vs_;
 }
 
 
-double DaidalusParameters::getAboveRelativeVerticalSpeed(const std::string& u) const {
+real DaidalusParameters::getAboveRelativeVerticalSpeed(const std::string& u) const {
   return Units::to(u,getAboveRelativeVerticalSpeed());
 }
 
 
-double DaidalusParameters::getBelowRelativeAltitude() const {
+real DaidalusParameters::getBelowRelativeAltitude() const {
   return below_relative_alt_;
 }
 
 
-double DaidalusParameters::getBelowRelativeAltitude(const std::string& u) const {
+real DaidalusParameters::getBelowRelativeAltitude(const std::string& u) const {
   return Units::to(u,getBelowRelativeAltitude());
 }
 
 
-double DaidalusParameters::getAboveRelativeAltitude() const {
+real DaidalusParameters::getAboveRelativeAltitude() const {
   return above_relative_alt_;
 }
 
 
-double DaidalusParameters::getAboveRelativeAltitude(const std::string& u) const {
+real DaidalusParameters::getAboveRelativeAltitude(const std::string& u) const {
   return Units::to(u,getAboveRelativeAltitude());
 }
 
 
-double DaidalusParameters::getHorizontalDirectionStep() const {
+real DaidalusParameters::getHorizontalDirectionStep() const {
   return step_hdir_;
 }
 
 
-double DaidalusParameters::getHorizontalDirectionStep(const std::string& u) const {
+real DaidalusParameters::getHorizontalDirectionStep(const std::string& u) const {
   return Units::to(u,getHorizontalDirectionStep());
 }
 
 
-double DaidalusParameters::getHorizontalSpeedStep() const {
+real DaidalusParameters::getHorizontalSpeedStep() const {
   return step_hs_;
 }
 
 
-double DaidalusParameters::getHorizontalSpeedStep(const std::string& u) const {
+real DaidalusParameters::getHorizontalSpeedStep(const std::string& u) const {
   return Units::to(u,getHorizontalSpeedStep());
 }
 
 
-double DaidalusParameters::getVerticalSpeedStep() const {
+real DaidalusParameters::getVerticalSpeedStep() const {
   return step_vs_;
 }
 
 
-double DaidalusParameters::getVerticalSpeedStep(const std::string& u) const {
+real DaidalusParameters::getVerticalSpeedStep(const std::string& u) const {
   return Units::to(u,getVerticalSpeedStep());
 }
 
 
-double DaidalusParameters::getAltitudeStep() const {
+real DaidalusParameters::getAltitudeStep() const {
   return step_alt_;
 }
 
 
-double DaidalusParameters::getAltitudeStep(const std::string& u) const {
+real DaidalusParameters::getAltitudeStep(const std::string& u) const {
   return Units::to(u,getAltitudeStep());
 }
 
 
-double DaidalusParameters::getHorizontalAcceleration() const {
+real DaidalusParameters::getHorizontalAcceleration() const {
   return horizontal_accel_;
 }
 
 
-double DaidalusParameters::getHorizontalAcceleration(const std::string& u) const {
+real DaidalusParameters::getHorizontalAcceleration(const std::string& u) const {
   return Units::to(u,getHorizontalAcceleration());
 }
 
 
-double DaidalusParameters::getVerticalAcceleration() const {
+real DaidalusParameters::getVerticalAcceleration() const {
   return vertical_accel_;
 }
 
 
-double DaidalusParameters::getVerticalAcceleration(const std::string& u) const {
+real DaidalusParameters::getVerticalAcceleration(const std::string& u) const {
   return Units::to(u,getVerticalAcceleration());
 }
 
 
-double DaidalusParameters::getTurnRate() const {
+real DaidalusParameters::getTurnRate() const {
   return turn_rate_;
 }
 
 
-double DaidalusParameters::getTurnRate(const std::string& u) const {
+real DaidalusParameters::getTurnRate(const std::string& u) const {
   return Units::to(u,getTurnRate());
 }
 
 
-double DaidalusParameters::getBankAngle() const {
+real DaidalusParameters::getBankAngle() const {
   return bank_angle_;
 }
 
 
-double DaidalusParameters::getBankAngle(const std::string& u) const {
+real DaidalusParameters::getBankAngle(const std::string& u) const {
   return Units::to(u,getBankAngle());
 }
 
 
-double DaidalusParameters::getVerticalRate() const {
+real DaidalusParameters::getVerticalRate() const {
   return vertical_rate_;
 }
 
 
-double DaidalusParameters::getVerticalRate(const std::string& u) const {
+real DaidalusParameters::getVerticalRate(const std::string& u) const {
   return Units::to(u,getVerticalRate());
 }
 
 
-double DaidalusParameters::getHorizontalNMAC() const {
+real DaidalusParameters::getHorizontalNMAC() const {
   return horizontal_nmac_;
 }
 
 
-double DaidalusParameters::getHorizontalNMAC(const std::string& u) const {
+real DaidalusParameters::getHorizontalNMAC(const std::string& u) const {
   return Units::to(u,getHorizontalNMAC());
 }
 
 
-double DaidalusParameters::getVerticalNMAC() const {
+real DaidalusParameters::getVerticalNMAC() const {
   return vertical_nmac_;
 }
 
 
-double DaidalusParameters::getVerticalNMAC(const std::string& u) const {
+real DaidalusParameters::getVerticalNMAC(const std::string& u) const {
   return Units::to(u,getVerticalNMAC());
 }
 
 
-double DaidalusParameters::getRecoveryStabilityTime() const {
+real DaidalusParameters::getRecoveryStabilityTime() const {
   return recovery_stability_time_;
 }
 
 
-double DaidalusParameters::getRecoveryStabilityTime(const std::string& u) const {
+real DaidalusParameters::getRecoveryStabilityTime(const std::string& u) const {
   return Units::to(u,getRecoveryStabilityTime());
 }
 
 /**
  * @return hysteresis time in seconds.
  */
-double DaidalusParameters::getHysteresisTime() const {
+real DaidalusParameters::getHysteresisTime() const {
   return hysteresis_time_;
 }
 
 /**
  * @return hysteresis time in specified units [u]
  */
-double DaidalusParameters::getHysteresisTime(const std::string& u) const {
+real DaidalusParameters::getHysteresisTime(const std::string& u) const {
   return Units::to(u,getHysteresisTime());
 }
 
-double DaidalusParameters::getPersistenceTime() const {
+real DaidalusParameters::getPersistenceTime() const {
   return persistence_time_;
 }
 
-double DaidalusParameters::getPersistenceTime(const std::string& u) const {
+real DaidalusParameters::getPersistenceTime(const std::string& u) const {
   return Units::to(u,getPersistenceTime());
 }
 
@@ -817,42 +818,42 @@ void DaidalusParameters::disableBandsPersistence() {
   setBandsPersistence(false);
 }
 
-double DaidalusParameters::getPersistencePreferredHorizontalDirectionResolution() const {
+real DaidalusParameters::getPersistencePreferredHorizontalDirectionResolution() const {
   return persistence_preferred_hdir_;
 }
 
 
-double DaidalusParameters::getPersistencePreferredHorizontalDirectionResolution(const std::string& u) const {
+real DaidalusParameters::getPersistencePreferredHorizontalDirectionResolution(const std::string& u) const {
   return Units::to(u,getPersistencePreferredHorizontalDirectionResolution());
 }
 
 
-double DaidalusParameters::getPersistencePreferredHorizontalSpeedResolution() const {
+real DaidalusParameters::getPersistencePreferredHorizontalSpeedResolution() const {
   return persistence_preferred_hs_;
 }
 
 
-double DaidalusParameters::getPersistencePreferredHorizontalSpeedResolution(const std::string& u) const {
+real DaidalusParameters::getPersistencePreferredHorizontalSpeedResolution(const std::string& u) const {
   return Units::to(u,getPersistencePreferredHorizontalSpeedResolution());
 }
 
 
-double DaidalusParameters::getPersistencePreferredVerticalSpeedResolution() const {
+real DaidalusParameters::getPersistencePreferredVerticalSpeedResolution() const {
   return persistence_preferred_vs_;
 }
 
 
-double DaidalusParameters::getPersistencePreferredVerticalSpeedResolution(const std::string& u) const {
+real DaidalusParameters::getPersistencePreferredVerticalSpeedResolution(const std::string& u) const {
   return Units::to(u,getPersistencePreferredVerticalSpeedResolution());
 }
 
 
-double DaidalusParameters::getPersistencePreferredAltitudeResolution() const {
+real DaidalusParameters::getPersistencePreferredAltitudeResolution() const {
   return persistence_preferred_alt_;
 }
 
 
-double DaidalusParameters::getPersistencePreferredAltitudeResolution(const std::string& u) const {
+real DaidalusParameters::getPersistencePreferredAltitudeResolution(const std::string& u) const {
   return Units::to(u,getPersistencePreferredAltitudeResolution());
 }
 
@@ -870,27 +871,27 @@ int DaidalusParameters::getAlertingParameterN() const {
   return alerting_n_;
 }
 
-double DaidalusParameters::getMinHorizontalRecovery() const {
+real DaidalusParameters::getMinHorizontalRecovery() const {
   return min_horizontal_recovery_;
 }
 
 
-double DaidalusParameters::getMinHorizontalRecovery(const std::string& u) const {
+real DaidalusParameters::getMinHorizontalRecovery(const std::string& u) const {
   return Units::to(u,getMinHorizontalRecovery());
 }
 
 
-double DaidalusParameters::getMinVerticalRecovery() const {
+real DaidalusParameters::getMinVerticalRecovery() const {
   return min_vertical_recovery_;
 }
 
 
-double DaidalusParameters::getMinVerticalRecovery(const std::string& u) const {
+real DaidalusParameters::getMinVerticalRecovery(const std::string& u) const {
   return Units::to(u,getMinVerticalRecovery());
 }
 
 
-bool DaidalusParameters::setLookaheadTime(double val) {
+bool DaidalusParameters::setLookaheadTime(real val) {
   if (error.isPositive("setLookaheadTime",val)) {
     lookahead_time_ = val;
     return true;
@@ -899,7 +900,7 @@ bool DaidalusParameters::setLookaheadTime(double val) {
 }
 
 
-bool DaidalusParameters::setLookaheadTime(double val, const std::string& u) {
+bool DaidalusParameters::setLookaheadTime(real val, const std::string& u) {
   if (setLookaheadTime(Units::from(u,val))) {
     units_["lookahead_time"] = u;
     return true;
@@ -910,7 +911,7 @@ bool DaidalusParameters::setLookaheadTime(double val, const std::string& u) {
 /** 
  * Set distance filter to value in meters.
  */
-bool DaidalusParameters::setDistanceFilter(double val) {
+bool DaidalusParameters::setDistanceFilter(real val) {
   if (error.isNonNegative("setDistanceFilter",val)) {
     distance_filter_ = val;	
     return true;
@@ -921,7 +922,7 @@ bool DaidalusParameters::setDistanceFilter(double val) {
 /** 
  * Set distance filter to value in specified units [u].
  */
-bool DaidalusParameters::setDistanceFilter(double val, const std::string& u) {
+bool DaidalusParameters::setDistanceFilter(real val, const std::string& u) {
   if (setDistanceFilter(Units::from(u,val))) {
     units_["distance_filter"] = u;
     return true;
@@ -932,7 +933,7 @@ bool DaidalusParameters::setDistanceFilter(double val, const std::string& u) {
 /** 
  * Set altitude filter to value in meters.
  */
-bool DaidalusParameters::setAltitudeFilter(double val) {
+bool DaidalusParameters::setAltitudeFilter(real val) {
   if (error.isNonNegative("setAltitudeFilter",val)) {
     altitude_filter_ = val;	
     return true;
@@ -943,7 +944,7 @@ bool DaidalusParameters::setAltitudeFilter(double val) {
 /** 
  * Set altitude filter to value in specified units [u].
  */
-bool DaidalusParameters::setAltitudeFilter(double val, const std::string& u) {
+bool DaidalusParameters::setAltitudeFilter(real val, const std::string& u) {
   if (setAltitudeFilter(Units::from(u,val))) {
     units_["altitude_filter"] = u;
     return true;
@@ -951,24 +952,24 @@ bool DaidalusParameters::setAltitudeFilter(double val, const std::string& u) {
   return false;
 }
 
-bool DaidalusParameters::setLeftHorizontalDirection(double val) {
+bool DaidalusParameters::setLeftHorizontalDirection(real val) {
   left_hdir_ = std::abs(Util::to_pi(val));
   return true;
 }
 
-bool DaidalusParameters::setLeftHorizontalDirection(double val, const std::string& u) {
+bool DaidalusParameters::setLeftHorizontalDirection(real val, const std::string& u) {
   units_["left_hdir"] = u;
   return setLeftHorizontalDirection(Units::from(u,val));
 }
 
 
-bool DaidalusParameters::setRightHorizontalDirection(double val) {
+bool DaidalusParameters::setRightHorizontalDirection(real val) {
   right_hdir_ = std::abs(Util::to_pi(val));
   return true;
 }
 
 
-bool DaidalusParameters::setRightHorizontalDirection(double val, const std::string& u) {
+bool DaidalusParameters::setRightHorizontalDirection(real val, const std::string& u) {
   units_["right_hdir"] = u;
   return setRightHorizontalDirection(Units::from(u,val));
 }
@@ -976,7 +977,7 @@ bool DaidalusParameters::setRightHorizontalDirection(double val, const std::stri
 /** 
  * Set airspeed threshold to value in internal units [m/s].
  */
-bool DaidalusParameters::setAirspeedThreshold(double val) {
+bool DaidalusParameters::setAirspeedThreshold(real val) {
 	if (error.isNonNegative("setAirspeedThreshold",val)) {
 		airspeed_thr_ = val;
 		return true;
@@ -987,7 +988,7 @@ bool DaidalusParameters::setAirspeedThreshold(double val) {
 /** 
  * Set airspeed threshold to value in specified units [u].
  */
-bool DaidalusParameters::setAirspeedThreshold(double val, const std::string& u) {
+bool DaidalusParameters::setAirspeedThreshold(real val, const std::string& u) {
 	if (setAirspeedThreshold(Units::from(u,val))) {
 		units_["airspeed_thr"] = u;
 		return true;
@@ -999,7 +1000,7 @@ bool DaidalusParameters::setAirspeedThreshold(double val, const std::string& u) 
  * Set minimum horizontal speed to value in internal units [m/s].
  * Minimum horizontal speed must be non-negative.
  */
-bool DaidalusParameters::setMinHorizontalSpeed(double val) {
+bool DaidalusParameters::setMinHorizontalSpeed(real val) {
   if (error.isNonNegative("setMinHorizontalSpeed",val)) {
     min_hs_ = val;
     return true;
@@ -1011,7 +1012,7 @@ bool DaidalusParameters::setMinHorizontalSpeed(double val) {
  * Set minimum horizontal speed to value in specified units.
  * Minimum horizontal speed must be non-negative.
  */
-bool DaidalusParameters::setMinHorizontalSpeed(double val, const std::string& u) {
+bool DaidalusParameters::setMinHorizontalSpeed(real val, const std::string& u) {
   if (setMinHorizontalSpeed(Units::from(u,val))) {
     units_["min_hs"] = u;
     return true;
@@ -1020,7 +1021,7 @@ bool DaidalusParameters::setMinHorizontalSpeed(double val, const std::string& u)
 }
 
 
-bool DaidalusParameters::setMaxHorizontalSpeed(double val) {
+bool DaidalusParameters::setMaxHorizontalSpeed(real val) {
   if (error.isNonNegative("setMaxHorizontalSpeed",val)) {
     max_hs_ = val;
     return true;
@@ -1029,7 +1030,7 @@ bool DaidalusParameters::setMaxHorizontalSpeed(double val) {
 }
 
 
-bool DaidalusParameters::setMaxHorizontalSpeed(double val, const std::string& u) {
+bool DaidalusParameters::setMaxHorizontalSpeed(real val, const std::string& u) {
   if (setMaxHorizontalSpeed(Units::from(u,val))) {
     units_["max_hs"] = u;
     return true;
@@ -1038,31 +1039,31 @@ bool DaidalusParameters::setMaxHorizontalSpeed(double val, const std::string& u)
 }
 
 
-bool DaidalusParameters::setMinVerticalSpeed(double val) {
+bool DaidalusParameters::setMinVerticalSpeed(real val) {
   min_vs_ = val;
   return true;
 }
 
 
-bool DaidalusParameters::setMinVerticalSpeed(double val, const std::string& u) {
+bool DaidalusParameters::setMinVerticalSpeed(real val, const std::string& u) {
   units_["min_vs"] = u;
   return setMinVerticalSpeed(Units::from(u,val));
 }
 
 
-bool DaidalusParameters::setMaxVerticalSpeed(double val) {
+bool DaidalusParameters::setMaxVerticalSpeed(real val) {
   max_vs_ = val;
   return true;
 }
 
 
-bool DaidalusParameters::setMaxVerticalSpeed(double val, const std::string& u) {
+bool DaidalusParameters::setMaxVerticalSpeed(real val, const std::string& u) {
   units_["max_vs"] = u;
   return setMaxVerticalSpeed(Units::from(u,val));
 }
 
 
-bool DaidalusParameters::setMinAltitude(double val) {
+bool DaidalusParameters::setMinAltitude(real val) {
   if (error.isNonNegative("setMinAltitude",val)) {
     min_alt_ = val;
     return true;
@@ -1071,7 +1072,7 @@ bool DaidalusParameters::setMinAltitude(double val) {
 }
 
 
-bool DaidalusParameters::setMinAltitude(double val, const std::string& u) {
+bool DaidalusParameters::setMinAltitude(real val, const std::string& u) {
   if (setMinAltitude(Units::from(u,val))) {
     units_["min_alt"] = u;
     return true;
@@ -1080,7 +1081,7 @@ bool DaidalusParameters::setMinAltitude(double val, const std::string& u) {
 }
 
 
-bool DaidalusParameters::setMaxAltitude(double val) {
+bool DaidalusParameters::setMaxAltitude(real val) {
   if (error.isPositive("setMaxAltitude",val)) {
     max_alt_ = val;
     return true;
@@ -1089,7 +1090,7 @@ bool DaidalusParameters::setMaxAltitude(double val) {
 }
 
 
-bool DaidalusParameters::setMaxAltitude(double val, const std::string& u) {
+bool DaidalusParameters::setMaxAltitude(real val, const std::string& u) {
   if (setMaxAltitude(Units::from(u,val))) {
     units_["max_alt"] = u;
     return true;
@@ -1098,73 +1099,73 @@ bool DaidalusParameters::setMaxAltitude(double val, const std::string& u) {
 }
 
 
-bool DaidalusParameters::setBelowRelativeHorizontalSpeed(double val) {
+bool DaidalusParameters::setBelowRelativeHorizontalSpeed(real val) {
   below_relative_hs_ = val;
   return true;
 }
 
 
-bool DaidalusParameters::setBelowRelativeHorizontalSpeed(double val,const std::string& u) {
+bool DaidalusParameters::setBelowRelativeHorizontalSpeed(real val,const std::string& u) {
   units_["below_relative_hs"] = u;
   return setBelowRelativeHorizontalSpeed(Units::from(u, val));
 }
 
 
-bool DaidalusParameters::setAboveRelativeHorizontalSpeed(double val) {
+bool DaidalusParameters::setAboveRelativeHorizontalSpeed(real val) {
   above_relative_hs_ = val;
   return true;
 }
 
 
-bool DaidalusParameters::setAboveRelativeHorizontalSpeed(double val, const std::string& u) {
+bool DaidalusParameters::setAboveRelativeHorizontalSpeed(real val, const std::string& u) {
   units_["above_relative_hs"] = u;
   return setAboveRelativeHorizontalSpeed(Units::from(u, val));
 }
 
 
-bool DaidalusParameters::setBelowRelativeVerticalSpeed(double val) {
+bool DaidalusParameters::setBelowRelativeVerticalSpeed(real val) {
   below_relative_vs_ = val;
   return true;
 }
 
 
-bool DaidalusParameters::setBelowRelativeVerticalSpeed(double val, const std::string& u) {
+bool DaidalusParameters::setBelowRelativeVerticalSpeed(real val, const std::string& u) {
   units_["below_relative_vs"] = u;
   return setBelowRelativeVerticalSpeed(Units::from(u, val));
 }
 
 
-bool DaidalusParameters::setAboveRelativeVerticalSpeed(double val) {
+bool DaidalusParameters::setAboveRelativeVerticalSpeed(real val) {
   above_relative_vs_ = val;
   return true;
 }
 
 
-bool DaidalusParameters::setAboveRelativeVerticalSpeed(double val, const std::string& u) {
+bool DaidalusParameters::setAboveRelativeVerticalSpeed(real val, const std::string& u) {
   units_["above_relative_vs"] = u;
   return setAboveRelativeVerticalSpeed(Units::from(u, val));
 }
 
 
-bool DaidalusParameters::setBelowRelativeAltitude(double val) {
+bool DaidalusParameters::setBelowRelativeAltitude(real val) {
   below_relative_alt_ = val;
   return true;
 }
 
 
-bool DaidalusParameters::setBelowRelativeAltitude(double val, const std::string& u) {
+bool DaidalusParameters::setBelowRelativeAltitude(real val, const std::string& u) {
   units_["below_relative_alt"] = u;
   return setBelowRelativeAltitude(Units::from(u, val));
 }
 
 
-bool DaidalusParameters::setAboveRelativeAltitude(double val) {
+bool DaidalusParameters::setAboveRelativeAltitude(real val) {
   above_relative_alt_ = val;
   return true;
 }
 
 
-bool DaidalusParameters::setAboveRelativeAltitude(double val, const std::string& u) {
+bool DaidalusParameters::setAboveRelativeAltitude(real val, const std::string& u) {
   units_["above_relative_alt"] = u;
   return setAboveRelativeAltitude(Units::from(u, val));
 }
@@ -1218,7 +1219,7 @@ void DaidalusParameters::disableRelativeAltitude() {
 }
 
 
-bool DaidalusParameters::setHorizontalDirectionStep(double val) {
+bool DaidalusParameters::setHorizontalDirectionStep(real val) {
   if (error.isPositive("setDirectionStep",val) &&
       error.isLessThan("setDirectionStep",val,Pi)) {
     step_hdir_ = val;
@@ -1228,7 +1229,7 @@ bool DaidalusParameters::setHorizontalDirectionStep(double val) {
 }
 
 
-bool DaidalusParameters::setHorizontalDirectionStep(double val, const std::string& u) {
+bool DaidalusParameters::setHorizontalDirectionStep(real val, const std::string& u) {
   if (setHorizontalDirectionStep(Units::from(u,val))) {
     units_["step_hdir"] = u;
     return true;
@@ -1237,7 +1238,7 @@ bool DaidalusParameters::setHorizontalDirectionStep(double val, const std::strin
 }
 
 
-bool DaidalusParameters::setHorizontalSpeedStep(double val) {
+bool DaidalusParameters::setHorizontalSpeedStep(real val) {
   if (error.isPositive("setHorizontalSpeedStep",val)) {
     step_hs_ = val;
     return true;
@@ -1246,7 +1247,7 @@ bool DaidalusParameters::setHorizontalSpeedStep(double val) {
 }
 
 
-bool DaidalusParameters::setHorizontalSpeedStep(double val, const std::string& u) {
+bool DaidalusParameters::setHorizontalSpeedStep(real val, const std::string& u) {
   if (setHorizontalSpeedStep(Units::from(u,val))) {
     units_["step_hs"] = u;
     return true;
@@ -1255,7 +1256,7 @@ bool DaidalusParameters::setHorizontalSpeedStep(double val, const std::string& u
 }
 
 
-bool DaidalusParameters::setVerticalSpeedStep(double val) {
+bool DaidalusParameters::setVerticalSpeedStep(real val) {
   if (error.isPositive("setVerticalSpeedStep",val)) {
     step_vs_ = val;
     return true;
@@ -1264,7 +1265,7 @@ bool DaidalusParameters::setVerticalSpeedStep(double val) {
 }
 
 
-bool DaidalusParameters::setVerticalSpeedStep(double val, const std::string& u) {
+bool DaidalusParameters::setVerticalSpeedStep(real val, const std::string& u) {
   if (setVerticalSpeedStep(Units::from(u,val))) {
     units_["step_vs"] = u;
     return true;
@@ -1273,7 +1274,7 @@ bool DaidalusParameters::setVerticalSpeedStep(double val, const std::string& u) 
 }
 
 
-bool DaidalusParameters::setAltitudeStep(double val) {
+bool DaidalusParameters::setAltitudeStep(real val) {
   if (error.isPositive("setAltitudeStep",val)) {
     step_alt_ = val;
     return true;
@@ -1282,7 +1283,7 @@ bool DaidalusParameters::setAltitudeStep(double val) {
 }
 
 
-bool DaidalusParameters::setAltitudeStep(double val, const std::string& u) {
+bool DaidalusParameters::setAltitudeStep(real val, const std::string& u) {
   if (setAltitudeStep(Units::from(u,val))) {
     units_["step_alt"] = u;
     return true;
@@ -1291,7 +1292,7 @@ bool DaidalusParameters::setAltitudeStep(double val, const std::string& u) {
 }
 
 
-bool DaidalusParameters::setHorizontalAcceleration(double val) {
+bool DaidalusParameters::setHorizontalAcceleration(real val) {
   if (error.isNonNegative("setHorizontalAcceleration",val)) {
     horizontal_accel_ = val;
     return true;
@@ -1300,7 +1301,7 @@ bool DaidalusParameters::setHorizontalAcceleration(double val) {
 }
 
 
-bool DaidalusParameters::setHorizontalAcceleration(double val, const std::string& u) {
+bool DaidalusParameters::setHorizontalAcceleration(real val, const std::string& u) {
   if (setHorizontalAcceleration(Units::from(u,val))) {
     units_["horizontal_accel"] = u;
     return true;
@@ -1309,7 +1310,7 @@ bool DaidalusParameters::setHorizontalAcceleration(double val, const std::string
 }
 
 
-bool DaidalusParameters::setVerticalAcceleration(double val) {
+bool DaidalusParameters::setVerticalAcceleration(real val) {
   if (error.isNonNegative("setVerticalAcceleration",val)) {
     vertical_accel_ = val;
     return true;
@@ -1318,7 +1319,7 @@ bool DaidalusParameters::setVerticalAcceleration(double val) {
 }
 
 
-bool DaidalusParameters::setVerticalAcceleration(double val, const std::string& u) {
+bool DaidalusParameters::setVerticalAcceleration(real val, const std::string& u) {
   if (setVerticalAcceleration(Units::from(u,val))) {
     units_["vertical_accel"] = u;
     return true;
@@ -1326,7 +1327,7 @@ bool DaidalusParameters::setVerticalAcceleration(double val, const std::string& 
   return false;
 }
 
-bool DaidalusParameters::set_turn_rate(double val) {
+bool DaidalusParameters::set_turn_rate(real val) {
   if (error.isNonNegative("setTurnRate",val)) {
     turn_rate_ = val;
     return true;
@@ -1334,7 +1335,7 @@ bool DaidalusParameters::set_turn_rate(double val) {
   return false;
 }
 
-bool DaidalusParameters::set_bank_angle(double val) {
+bool DaidalusParameters::set_bank_angle(real val) {
   if (error.isNonNegative("setBankAngle",val)) {
     bank_angle_ = val;
     return true;
@@ -1343,16 +1344,16 @@ bool DaidalusParameters::set_bank_angle(double val) {
 }
 
 
-bool DaidalusParameters::setTurnRate(double val) {
+bool DaidalusParameters::setTurnRate(real val) {
   if (set_turn_rate(val)) {
-    set_bank_angle(0.0);
+    set_bank_angle(real(0.0));
     return true;
   }
   return false;
 }
 
 
-bool DaidalusParameters::setTurnRate(double val, const std::string& u) {
+bool DaidalusParameters::setTurnRate(real val, const std::string& u) {
   if (setTurnRate(Units::from(u,val))) {
     units_["turn_rate"] = u;
     return true;
@@ -1360,16 +1361,16 @@ bool DaidalusParameters::setTurnRate(double val, const std::string& u) {
   return false;
 }
 
-bool DaidalusParameters::setBankAngle(double val) {
+bool DaidalusParameters::setBankAngle(real val) {
   if (set_bank_angle(val)) {
-    set_turn_rate(0.0);
+    set_turn_rate(real(0.0));
     return true;
   }
   return false;
 }
 
 
-bool DaidalusParameters::setBankAngle(double val, const std::string& u) {
+bool DaidalusParameters::setBankAngle(real val, const std::string& u) {
   if (setBankAngle(Units::from(u,val))) {
     units_["bank_angle"] = u;
     return true;
@@ -1378,7 +1379,7 @@ bool DaidalusParameters::setBankAngle(double val, const std::string& u) {
 }
 
 
-bool DaidalusParameters::setVerticalRate(double val) {
+bool DaidalusParameters::setVerticalRate(real val) {
   if (error.isNonNegative("setVerticalRate",val)) {
     vertical_rate_ = val;
     return true;
@@ -1387,7 +1388,7 @@ bool DaidalusParameters::setVerticalRate(double val) {
 }
 
 
-bool DaidalusParameters::setVerticalRate(double val, const std::string& u) {
+bool DaidalusParameters::setVerticalRate(real val, const std::string& u) {
   if (setVerticalRate(Units::from(u,val))) {
     units_["vertical_rate"] = u;
     return true;
@@ -1396,7 +1397,7 @@ bool DaidalusParameters::setVerticalRate(double val, const std::string& u) {
 }
 
 
-bool DaidalusParameters::setHorizontalNMAC(double val) {
+bool DaidalusParameters::setHorizontalNMAC(real val) {
   if (error.isNonNegative("setHorizontalNMAC",val)) {
     horizontal_nmac_ = val;
     return true;
@@ -1405,7 +1406,7 @@ bool DaidalusParameters::setHorizontalNMAC(double val) {
 }
 
 
-bool DaidalusParameters::setHorizontalNMAC(double val, const std::string& u) {
+bool DaidalusParameters::setHorizontalNMAC(real val, const std::string& u) {
   if (setHorizontalNMAC(Units::from(u,val))) {
     units_["horizontal_nmac"] = u;
     return true;
@@ -1414,7 +1415,7 @@ bool DaidalusParameters::setHorizontalNMAC(double val, const std::string& u) {
 }
 
 
-bool DaidalusParameters::setVerticalNMAC(double val) {
+bool DaidalusParameters::setVerticalNMAC(real val) {
   if (error.isNonNegative("setVerticalNMAC",val)) {
     vertical_nmac_ = val;
     return true;
@@ -1423,7 +1424,7 @@ bool DaidalusParameters::setVerticalNMAC(double val) {
 }
 
 
-bool DaidalusParameters::setVerticalNMAC(double val, const std::string& u) {
+bool DaidalusParameters::setVerticalNMAC(real val, const std::string& u) {
   if (setVerticalNMAC(Units::from(u,val))) {
     units_["vertical_nmac"] = u;
     return true;
@@ -1432,7 +1433,7 @@ bool DaidalusParameters::setVerticalNMAC(double val, const std::string& u) {
 }
 
 
-bool DaidalusParameters::setRecoveryStabilityTime(double val) {
+bool DaidalusParameters::setRecoveryStabilityTime(real val) {
   if (error.isNonNegative("setRecoveryStabilityTime",val)) {
     recovery_stability_time_ = val;
     return true;
@@ -1441,7 +1442,7 @@ bool DaidalusParameters::setRecoveryStabilityTime(double val) {
 }
 
 
-bool DaidalusParameters::setRecoveryStabilityTime(double val, const std::string& u) {
+bool DaidalusParameters::setRecoveryStabilityTime(real val, const std::string& u) {
   if (setRecoveryStabilityTime(Units::from(u,val))) {
     units_["recovery_stability_time"] = u;
     return true;
@@ -1450,7 +1451,7 @@ bool DaidalusParameters::setRecoveryStabilityTime(double val, const std::string&
 }
 
 
-bool DaidalusParameters::setHysteresisTime(double val) {
+bool DaidalusParameters::setHysteresisTime(real val) {
   if (error.isNonNegative("setHysteresisTime",val)) {
     hysteresis_time_ = val;
     return true;
@@ -1458,7 +1459,7 @@ bool DaidalusParameters::setHysteresisTime(double val) {
   return false;
 }
 
-bool DaidalusParameters::setHysteresisTime(double val, const std::string& u) {
+bool DaidalusParameters::setHysteresisTime(real val, const std::string& u) {
   if (setHysteresisTime(Units::from(u,val))) {
     units_["hysteresis_time"] = u;
     return true;
@@ -1466,7 +1467,7 @@ bool DaidalusParameters::setHysteresisTime(double val, const std::string& u) {
   return false;
 }
 
-bool DaidalusParameters::setPersistenceTime(double val) {
+bool DaidalusParameters::setPersistenceTime(real val) {
   if (error.isNonNegative("setPersistenceTime",val)) {
     persistence_time_ = val;
     return true;
@@ -1474,7 +1475,7 @@ bool DaidalusParameters::setPersistenceTime(double val) {
   return false;
 }
 
-bool DaidalusParameters::setPersistenceTime(double val, const std::string& u) {
+bool DaidalusParameters::setPersistenceTime(real val, const std::string& u) {
   if (setPersistenceTime(Units::from(u,val))) {
     units_["persistence_time"] = u;
     return true;
@@ -1482,7 +1483,7 @@ bool DaidalusParameters::setPersistenceTime(double val, const std::string& u) {
   return false;
 }
 
-bool DaidalusParameters::setPersistencePreferredHorizontalDirectionResolution(double val) {
+bool DaidalusParameters::setPersistencePreferredHorizontalDirectionResolution(real val) {
   if (error.isNonNegative("persistence_preferred_hdir",val)) {
     persistence_preferred_hdir_ = val;
     return true;
@@ -1491,7 +1492,7 @@ bool DaidalusParameters::setPersistencePreferredHorizontalDirectionResolution(do
 }
 
 
-bool DaidalusParameters::setPersistencePreferredHorizontalDirectionResolution(double val, const std::string& u) {
+bool DaidalusParameters::setPersistencePreferredHorizontalDirectionResolution(real val, const std::string& u) {
   if (setPersistencePreferredHorizontalDirectionResolution(Units::from(u,val))) {
     units_["persistence_preferred_hdir"] = u;
     return true;
@@ -1500,7 +1501,7 @@ bool DaidalusParameters::setPersistencePreferredHorizontalDirectionResolution(do
 }
 
 
-bool DaidalusParameters::setPersistencePreferredHorizontalSpeedResolution(double val) {
+bool DaidalusParameters::setPersistencePreferredHorizontalSpeedResolution(real val) {
   if (error.isNonNegative("persistence_preferred_hs",val)) {
     persistence_preferred_hs_ = val;
     return true;
@@ -1509,7 +1510,7 @@ bool DaidalusParameters::setPersistencePreferredHorizontalSpeedResolution(double
 }
 
 
-bool DaidalusParameters::setPersistencePreferredHorizontalSpeedResolution(double val, const std::string& u) {
+bool DaidalusParameters::setPersistencePreferredHorizontalSpeedResolution(real val, const std::string& u) {
   if (setPersistencePreferredHorizontalSpeedResolution(Units::from(u,val))){
     units_["persistence_preferred_hs"] = u;
     return true;
@@ -1518,7 +1519,7 @@ bool DaidalusParameters::setPersistencePreferredHorizontalSpeedResolution(double
 }
 
 
-bool DaidalusParameters::setPersistencePreferredVerticalSpeedResolution(double val) {
+bool DaidalusParameters::setPersistencePreferredVerticalSpeedResolution(real val) {
   if (error.isNonNegative("persistence_preferred_vs",val)) {
     persistence_preferred_vs_ = val;
     return true;
@@ -1527,7 +1528,7 @@ bool DaidalusParameters::setPersistencePreferredVerticalSpeedResolution(double v
 }
 
 
-bool DaidalusParameters::setPersistencePreferredVerticalSpeedResolution(double val, const std::string& u) {
+bool DaidalusParameters::setPersistencePreferredVerticalSpeedResolution(real val, const std::string& u) {
   if (setPersistencePreferredVerticalSpeedResolution(Units::from(u,val))) {
     units_["persistence_preferred_vs"] = u;
     return true;
@@ -1536,7 +1537,7 @@ bool DaidalusParameters::setPersistencePreferredVerticalSpeedResolution(double v
 }
 
 
-bool DaidalusParameters::setPersistencePreferredAltitudeResolution(double val) {
+bool DaidalusParameters::setPersistencePreferredAltitudeResolution(real val) {
   if (error.isNonNegative("persistence_preferred_alt",val)) {
     persistence_preferred_alt_ = val;
     return true;
@@ -1545,7 +1546,7 @@ bool DaidalusParameters::setPersistencePreferredAltitudeResolution(double val) {
 }
 
 
-bool DaidalusParameters::setPersistencePreferredAltitudeResolution(double val, const std::string& u) {
+bool DaidalusParameters::setPersistencePreferredAltitudeResolution(real val, const std::string& u) {
   if (setPersistencePreferredAltitudeResolution(Units::from(u,val))) {
     units_["persistence_preferred_alt"] = u;
     return true;
@@ -1589,7 +1590,7 @@ bool DaidalusParameters::set_alerting_parameterN(int n) {
 }
 
 
-bool DaidalusParameters::setMinHorizontalRecovery(double val) {
+bool DaidalusParameters::setMinHorizontalRecovery(real val) {
   if (error.isNonNegative("setMinHorizontalRecovery",val)) {
     min_horizontal_recovery_ = val;
     return true;
@@ -1598,7 +1599,7 @@ bool DaidalusParameters::setMinHorizontalRecovery(double val) {
 }
 
 
-bool DaidalusParameters::setMinHorizontalRecovery(double val, const std::string& u) {
+bool DaidalusParameters::setMinHorizontalRecovery(real val, const std::string& u) {
   if (setMinHorizontalRecovery(Units::from(u,val))) {
     units_["min_horizontal_recovery"] = u;
     return true;
@@ -1607,7 +1608,7 @@ bool DaidalusParameters::setMinHorizontalRecovery(double val, const std::string&
 }
 
 
-bool DaidalusParameters::setMinVerticalRecovery(double val) {
+bool DaidalusParameters::setMinVerticalRecovery(real val) {
   if (error.isNonNegative("setMinVerticalRecovery",val)) {
     min_vertical_recovery_ = val;
     return true;
@@ -1616,7 +1617,7 @@ bool DaidalusParameters::setMinVerticalRecovery(double val) {
 }
 
 
-bool DaidalusParameters::setMinVerticalRecovery(double val, const std::string& u) {
+bool DaidalusParameters::setMinVerticalRecovery(real val, const std::string& u) {
   if (setMinVerticalRecovery(Units::from(u,val))) {
     units_["min_vertical_recovery"] = u;
     return true;
@@ -1767,12 +1768,12 @@ void DaidalusParameters::disableCollisionAvoidanceBands() {
 }
 
 
-double DaidalusParameters::getCollisionAvoidanceBandsFactor() const {
+real DaidalusParameters::getCollisionAvoidanceBandsFactor() const {
   return ca_factor_;
 }
 
 
-bool DaidalusParameters::setCollisionAvoidanceBandsFactor(double val) {
+bool DaidalusParameters::setCollisionAvoidanceBandsFactor(real val) {
   if (error.isNonNegative("setCollisionAvoidanceBandsFactor",val) &&
       error.isLessThan("setCollisionAvoidanceBandsFactor", val,1)) {
     ca_factor_ = val;
@@ -1782,12 +1783,12 @@ bool DaidalusParameters::setCollisionAvoidanceBandsFactor(double val) {
 }
 
 
-double DaidalusParameters::getHorizontalPositionZScore() const {
+real DaidalusParameters::getHorizontalPositionZScore() const {
   return h_pos_z_score_;
 }
 
 
-bool DaidalusParameters::setHorizontalPositionZScore(double val) {
+bool DaidalusParameters::setHorizontalPositionZScore(real val) {
   if (error.isNonNegative("setHorizontalPositionZScore",val)) {
     h_pos_z_score_ = val;
     set_alerters_with_SUM_parameters();
@@ -1797,12 +1798,12 @@ bool DaidalusParameters::setHorizontalPositionZScore(double val) {
 }
 
 
-double DaidalusParameters::getHorizontalVelocityZScoreMin() const {
+real DaidalusParameters::getHorizontalVelocityZScoreMin() const {
   return h_vel_z_score_min_;
 }
 
 
-bool DaidalusParameters::setHorizontalVelocityZScoreMin(double val) {
+bool DaidalusParameters::setHorizontalVelocityZScoreMin(real val) {
   if (error.isNonNegative("setHorizontalVelocityZScoreMin",val)) {
     h_vel_z_score_min_ = val;
     set_alerters_with_SUM_parameters();
@@ -1812,12 +1813,12 @@ bool DaidalusParameters::setHorizontalVelocityZScoreMin(double val) {
 }
 
 
-double DaidalusParameters::getHorizontalVelocityZScoreMax() const {
+real DaidalusParameters::getHorizontalVelocityZScoreMax() const {
   return h_vel_z_score_max_;
 }
 
 
-bool DaidalusParameters::setHorizontalVelocityZScoreMax(double val) {
+bool DaidalusParameters::setHorizontalVelocityZScoreMax(real val) {
   if (error.isNonNegative("setHorizontalVelocityZScoreMax",val)) {
     h_vel_z_score_max_ = val;
     set_alerters_with_SUM_parameters();
@@ -1827,12 +1828,12 @@ bool DaidalusParameters::setHorizontalVelocityZScoreMax(double val) {
 }
 
 
-double DaidalusParameters::getHorizontalVelocityZDistance() const {
+real DaidalusParameters::getHorizontalVelocityZDistance() const {
   return h_vel_z_distance_;
 }
 
 
-bool DaidalusParameters::setHorizontalVelocityZDistance(double val) {
+bool DaidalusParameters::setHorizontalVelocityZDistance(real val) {
   if (error.isNonNegative("setHorizontalVelocityZDistance",val)) {
     h_vel_z_distance_ = val;
     set_alerters_with_SUM_parameters();
@@ -1842,12 +1843,12 @@ bool DaidalusParameters::setHorizontalVelocityZDistance(double val) {
 }
 
 
-double DaidalusParameters::getHorizontalVelocityZDistance(const std::string& u) const {
+real DaidalusParameters::getHorizontalVelocityZDistance(const std::string& u) const {
   return Units::to(u,h_vel_z_distance_);
 }
 
 
-bool DaidalusParameters::setHorizontalVelocityZDistance(double val, const std::string& u) {
+bool DaidalusParameters::setHorizontalVelocityZDistance(real val, const std::string& u) {
   if (setHorizontalVelocityZDistance(Units::from(u,val))) {
     units_["h_vel_z_distance"] = u;
     return true;
@@ -1856,12 +1857,12 @@ bool DaidalusParameters::setHorizontalVelocityZDistance(double val, const std::s
 }
 
 
-double DaidalusParameters::getVerticalPositionZScore() const {
+real DaidalusParameters::getVerticalPositionZScore() const {
   return v_pos_z_score_;
 }
 
 
-bool DaidalusParameters::setVerticalPositionZScore(double val) {
+bool DaidalusParameters::setVerticalPositionZScore(real val) {
   if (error.isNonNegative("setVerticalPositionZScore",val)) {
     v_pos_z_score_ = val;
     set_alerters_with_SUM_parameters();
@@ -1871,12 +1872,12 @@ bool DaidalusParameters::setVerticalPositionZScore(double val) {
 }
 
 
-double DaidalusParameters::getVerticalSpeedZScore() const {
+real DaidalusParameters::getVerticalSpeedZScore() const {
   return v_vel_z_score_;
 }
 
 
-bool DaidalusParameters::setVerticalSpeedZScore(double val) {
+bool DaidalusParameters::setVerticalSpeedZScore(real val) {
   if (error.isNonNegative("setVerticalSpeedZScore",val)) {
     v_vel_z_score_ = val;
     set_alerters_with_SUM_parameters();
@@ -1886,23 +1887,23 @@ bool DaidalusParameters::setVerticalSpeedZScore(double val) {
 }
 
 
-double DaidalusParameters::getHorizontalContourThreshold() const {
+real DaidalusParameters::getHorizontalContourThreshold() const {
   return contour_thr_;
 }
 
 
-double DaidalusParameters::getHorizontalContourThreshold(const std::string& u) const {
+real DaidalusParameters::getHorizontalContourThreshold(const std::string& u) const {
   return Units::to(u,getHorizontalContourThreshold());
 }
 
 
-bool DaidalusParameters::setHorizontalContourThreshold(double val) {
+bool DaidalusParameters::setHorizontalContourThreshold(real val) {
   contour_thr_ = std::abs(Util::to_pi(val));
   return error.isBetween("setHorizontalContourThreshold",val,0,Pi);
 }
 
 
-bool DaidalusParameters::setHorizontalContourThreshold(double val, const std::string& u) {
+bool DaidalusParameters::setHorizontalContourThreshold(real val, const std::string& u) {
   units_["contour_thr"] = u;
   return setHorizontalContourThreshold(Units::from(u,val));
 }
@@ -1950,9 +1951,9 @@ const Position& DaidalusParameters::getDTAPosition() const {
     std::string ulon = getUnitsOf("dta_longitude");
     if (Units::isCompatible(ulat,ulon)) {
       if (Units::isCompatible("m",ulat)) {
-        dta_position = Position::mkXYZ(dta_longitude_,dta_latitude_,0.0);
+        dta_position = Position::mkXYZ(dta_longitude_,dta_latitude_,real(0.0));
       } else if (Units::isCompatible("deg",ulat)) {
-        dta_position = Position::mkLatLonAlt(dta_latitude_,dta_longitude_,0.0);
+        dta_position = Position::mkLatLonAlt(dta_latitude_,dta_longitude_,real(0.0));
       } else {
         dta_position = Position::INVALID();
       }
@@ -1966,7 +1967,7 @@ const Position& DaidalusParameters::getDTAPosition() const {
 /**
  * Set DAA Terminal Area (DTA) latitude (internal units)
  */
-bool DaidalusParameters::setDTALatitude(double lat) {
+bool DaidalusParameters::setDTALatitude(real lat) {
   dta_latitude_ = lat;
   return true;
 }
@@ -1974,7 +1975,7 @@ bool DaidalusParameters::setDTALatitude(double lat) {
 /**
  * Set DAA Terminal Area (DTA) latitude in given units
  */
-bool DaidalusParameters::setDTALatitude(double lat, const std::string& ulat) {
+bool DaidalusParameters::setDTALatitude(real lat, const std::string& ulat) {
   units_["dta_latitude"] =  ulat;
   return setDTALatitude(Units::from(ulat,lat));
 }
@@ -1982,7 +1983,7 @@ bool DaidalusParameters::setDTALatitude(double lat, const std::string& ulat) {
 /**
  * Set DAA Terminal Area (DTA) longitude (internal units)
  */
-bool DaidalusParameters::setDTALongitude(double lon) {
+bool DaidalusParameters::setDTALongitude(real lon) {
   dta_longitude_ = lon;
   return true;
 }
@@ -1990,7 +1991,7 @@ bool DaidalusParameters::setDTALongitude(double lon) {
 /**
  * Set DAA Terminal Area (DTA) longitude in given units
  */
-bool DaidalusParameters::setDTALongitude(double lon, const std::string& ulon) {
+bool DaidalusParameters::setDTALongitude(real lon, const std::string& ulon) {
   units_["dta_longitude"] = ulon;
   return setDTALongitude(Units::from(ulon,lon));
 }
@@ -1998,21 +1999,21 @@ bool DaidalusParameters::setDTALongitude(double lon, const std::string& ulon) {
 /**
  * Get DAA Terminal Area (DTA) radius (internal units)
  */
-double DaidalusParameters::getDTARadius() const {
+real DaidalusParameters::getDTARadius() const {
   return dta_radius_;
 }
 
 /**
  * Get DAA Terminal Area (DTA) radius in given units
  */
-double DaidalusParameters::getDTARadius(const std::string& u) const {
+real DaidalusParameters::getDTARadius(const std::string& u) const {
   return Units::to(u,dta_radius_);
 }
 
 /**
  * Set DAA Terminal Area (DTA) radius (internal units)
  */
-bool DaidalusParameters::setDTARadius(double val) {
+bool DaidalusParameters::setDTARadius(real val) {
   if (error.isNonNegative("setDTARadius",val)) {
     dta_radius_ = val;
     return true;
@@ -2023,7 +2024,7 @@ bool DaidalusParameters::setDTARadius(double val) {
 /**
  * Set DAA Terminal Area (DTA) radius in given units
  */
-bool DaidalusParameters::setDTARadius(double val, const std::string& u) {
+bool DaidalusParameters::setDTARadius(real val, const std::string& u) {
   if (setDTARadius(Units::from(u,val))) {
     units_["dta_radius"] = u;
     return true;
@@ -2034,21 +2035,21 @@ bool DaidalusParameters::setDTARadius(double val, const std::string& u) {
 /**
  * Get DAA Terminal Area (DTA) height (internal units)
  */
-double DaidalusParameters::getDTAHeight() const {
+real DaidalusParameters::getDTAHeight() const {
   return dta_height_;
 }
 
 /**
  * Get DAA Terminal Area (DTA) height in given units
  */
-double DaidalusParameters::getDTAHeight(const std::string& u) const {
+real DaidalusParameters::getDTAHeight(const std::string& u) const {
   return Units::to(u,dta_height_);
 }
 
 /**
  * Set DAA Terminal Area (DTA) height (internal units)
  */
-bool DaidalusParameters::setDTAHeight(double val) {
+bool DaidalusParameters::setDTAHeight(real val) {
   if (error.isNonNegative("setDTAHeight",val)) {
     dta_height_ = val;
     return true;
@@ -2059,7 +2060,7 @@ bool DaidalusParameters::setDTAHeight(double val) {
 /**
  * Set DAA Terminal Area (DTA) height in given units
  */
-bool DaidalusParameters::setDTAHeight(double val, const std::string& u) {
+bool DaidalusParameters::setDTAHeight(real val, const std::string& u) {
   if (setDTAHeight(Units::from(u,val))) {
     units_["dta_height"] = u;
     return true;
@@ -2200,11 +2201,11 @@ int DaidalusParameters::maxNumberOfAlertLevels() const {
  * Set instantaneous bands.
  */
 void DaidalusParameters::setInstantaneousBands() {
-  set_turn_rate(0.0);
-  set_bank_angle(0.0);
-  setHorizontalAcceleration(0.0);
-  setVerticalAcceleration(0.0);
-  setVerticalRate(0.0);
+  set_turn_rate(real(0.0));
+  set_bank_angle(real(0.0));
+  setHorizontalAcceleration(real(0.0));
+  setVerticalAcceleration(real(0.0));
+  setVerticalRate(real(0.0));
 }
 
 /**
@@ -2214,21 +2215,21 @@ void DaidalusParameters::setInstantaneousBands() {
  */
 void DaidalusParameters::setKinematicBands(bool type) {
   // Section 1.2.3 in RTCA DO-365
-  setTurnRate(type ? 3.0 : 1.5,"deg/s");
-  setHorizontalAcceleration(2.0,"m/s^2");
-  setVerticalAcceleration(0.25,"G");
-  setVerticalRate(500.0,"fpm");
+  setTurnRate(type ? real(3.0) : real(1.5),"deg/s");
+  setHorizontalAcceleration(real(2.0),"m/s^2");
+  setVerticalAcceleration(real(0.25),"G");
+  setVerticalRate(real(500.0),"fpm");
 }
 
 
 void DaidalusParameters::disableHysteresis() {
-  setHysteresisTime(0.0);
+  setHysteresisTime(real(0.0));
   disableBandsPersistence();
-  setPersistencePreferredHorizontalDirectionResolution(0.0);
-  setPersistencePreferredHorizontalSpeedResolution(0.0);
-  setPersistencePreferredVerticalSpeedResolution(0.0);
-  setPersistencePreferredAltitudeResolution(0.0);
-  setPersistenceTime(0.0);
+  setPersistencePreferredHorizontalDirectionResolution(real(0.0));
+  setPersistencePreferredHorizontalSpeedResolution(real(0.0));
+  setPersistencePreferredVerticalSpeedResolution(real(0.0));
+  setPersistencePreferredAltitudeResolution(real(0.0));
+  setPersistenceTime(real(0.0));
   setAlertingMofN(0,0);
 }
 
@@ -2503,16 +2504,16 @@ std::string DaidalusParameters::getUnit(const ParameterData& p,const std::string
   return parameter_data<std::string>(p,key,f);
 }
 
-double DaidalusParameters::getValue(const ParameterData& p,const std::string& key) {
-  class GetValue : public Function<const std::string&,double> {
+real DaidalusParameters::getValue(const ParameterData& p,const std::string& key) {
+  class GetValue : public Function<const std::string&,real> {
   private:
     const ParameterData& p_;
   public:
     explicit GetValue(const ParameterData& p) : p_(p) {}
-    double apply(const std::string& key) { return p_.getValue(key); }
+    real apply(const std::string& key) { return p_.getValue(key); }
   };
   GetValue f(p);
-  return parameter_data<double>(p,key,f);
+  return parameter_data<real>(p,key,f);
 }
 
 bool DaidalusParameters::getBool(const ParameterData& p,const std::string& key) {

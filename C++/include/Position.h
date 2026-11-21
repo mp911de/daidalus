@@ -14,6 +14,7 @@
 
 #ifndef POSITION_H_
 #define POSITION_H_
+#include "Real.h"
 
 #include "Vect3.h"
 #include "Velocity.h"
@@ -43,7 +44,7 @@ private:
 	LatLonAlt ll;           // only valid if latlon = true
 	Vect3 s3;               // only valid if latlon = false
 
-	Position(const double x, const double y, const double z);
+	Position(const real x, const real y, const real z);
 
 public:
 	/** Create an empty Position object */
@@ -71,7 +72,7 @@ public:
 	 * @param alt altitude [ft]
 	 * @return new position
 	 */
-	static Position makeLatLonAlt(double lat, double lon, double alt);
+	static Position makeLatLonAlt(real lat, real lon, real alt);
 
 	/**
 	 * Creates a new lat/lon position with coordinates (<code>lat</code>,<code>lon</code>,<code>alt</code>).
@@ -84,7 +85,7 @@ public:
 	 * @param alt_unit units of altitude
 	 * @return new position
 	 */
-	static Position makeLatLonAlt(double lat, const std::string& lat_unit, double lon, const std::string& lon_unit, double alt, const std::string& alt_unit);
+	static Position makeLatLonAlt(real lat, const std::string& lat_unit, real lon, const std::string& lon_unit, real alt, const std::string& alt_unit);
 
 	/**
 	 * Creates a new lat/lon position with coordinates (<code>lat</code>,<code>lon</code>,<code>alt</code>).
@@ -94,7 +95,7 @@ public:
 	 * @param alt altitude [m]
 	 * @return new position
 	 */
-	static Position mkLatLonAlt(double lat, double lon, double alt);
+	static Position mkLatLonAlt(real lat, real lon, real alt);
 
 	/**
 	 * Creates a new Euclidean position with coordinates (<code>x</code>,<code>y</code>,<code>z</code>).
@@ -104,7 +105,7 @@ public:
 	 * @param z altitude [m]
 	 * @return new position
 	 */
-	static Position mkXYZ(double x, double y, double z);
+	static Position mkXYZ(real x, real y, real z);
 
 
 	/**
@@ -118,7 +119,7 @@ public:
 	 * @param z_unit units of z coordinate
 	 * @return new position
 	 */
-	static Position makeXYZ(double x, const std::string& x_unit, double y, const std::string& y_unit, double z, const std::string& z_unit);
+	static Position makeXYZ(real x, const std::string& x_unit, real y, const std::string& y_unit, real z, const std::string& z_unit);
 
 	/** Construct a new Position object from a LatLonAlt object. The position will be a Lat/Lon position. 
 	 * 
@@ -163,7 +164,7 @@ public:
 	 * @return <code>true</code>, if <code>this</code> Position is almost equal
 	 * to <code>v</code>.
 	 */
-	bool almostEquals(const Position& pp, double epsilon_horiz, double epsilon_vert) const;
+	bool almostEquals(const Position& pp, real epsilon_horiz, real epsilon_vert) const;
 
 	/**
 	 * 
@@ -171,7 +172,7 @@ public:
 	 * @param epsilon_horiz max distance in meters
 	 * @return
 	 */
-	bool almostEquals2D(const Position& pp, double epsilon_horiz) const;
+	bool almostEquals2D(const Position& pp, real epsilon_horiz) const;
 
 	/** Are these two positions equal? */
 	bool operator == (const Position& v) const;
@@ -195,51 +196,51 @@ public:
 	/** Return the x coordinate
 	 * @return x coordinate
 	 * */
-	double x() const;
+	real x() const;
 	/** Return the y coordinate
 	 * @return y coordinate
 	 * */
-	double y() const;
+	real y() const;
 	/** Return the z coordinate
 	 * @return z coordinate
 	 * */
-	double z() const;
+	real z() const;
 	/** Return the latitude
 	 * @return latitude [internal]
 	 * */
-	double lat() const;
+	real lat() const;
 	/** Return the longitude
 	 * @return longitude [internal]
 	 * */
-	double lon() const;
+	real lon() const;
 	/** Return the altitude
 	 * @return altitude [internal] */
-	double alt() const;
+	real alt() const;
 
 	/** Return the latitude in specified units north 
 	 * @return latitude [u]
 	 */
-	double latitude(const std::string& units) const;
+	real latitude(const std::string& units) const;
 	/** Return the longitude in specified units east 
 	 * @return longitude [u]
 	 */
-	double longitude(const std::string& units) const;
+	real longitude(const std::string& units) const;
 	/** Return the altitude in specified units 
 	 * @return altitude [u]
 	 */
-	double altitude(const std::string& units) const;
+	real altitude(const std::string& units) const;
 	/** Return the x coordinate in specified units
 	 * @return x coordinate [u]
 	 */ 
-	double xCoordinate(const std::string& units) const;
+	real xCoordinate(const std::string& units) const;
 	/** Return the y coordinate in specified units
 	 * @return y coordinate [u]
 	 */
-	double yCoordinate(const std::string& units) const;
+	real yCoordinate(const std::string& units) const;
 	/** Return the z coordinate in specified units
 	 * @return z coordinate [u]
 	 */
-	double zCoordinate(const std::string& units) const;
+	real zCoordinate(const std::string& units) const;
 
 	/** Return if this Position is a latitude or longitude
 	 * @return true if latitude/longitude
@@ -247,26 +248,26 @@ public:
 	bool isLatLon() const;
 
 	/** Make a new Position from the current one with the X coordinate changed */
-	const Position mkX(const double xx) const;
+	const Position mkX(const real xx) const;
 	/** Make a new Position from the current one with the longitude changed
 	 * @param lon new longitude value
 	 * @return a new Position
 	 */
-	const Position mkLon(const double lon) const;
+	const Position mkLon(const real lon) const;
 	/** Make a new Position from the current one with the Y coordinate changed */
-	const Position mkY(const double yy) const;
+	const Position mkY(const real yy) const;
 	/** Make a new Position from the current one with the latitude changed
 	 * @param lat new latitude value
 	 * @return a new Position
 	 */
-	const Position mkLat(const double lat) const;
+	const Position mkLat(const real lat) const;
 	/** Make a new Position from the current one with the Z coordinate changed */
-	const Position mkZ(const double zz) const;
+	const Position mkZ(const real zz) const;
 	/** Make a new Position from the current one with the altitude changed (internal units)
 	 * @param alt new altitude value
 	 * @return a new Position
 	 */
-	const Position mkAlt(const double alt) const;
+	const Position mkAlt(const real alt) const;
 
 	/** Make a new Position from the current one with an altitude of zero
 	 * @return a new Position
@@ -277,16 +278,16 @@ public:
 	 * @param p another position
 	 * @return horizontal distance
 	 * */
-	double distanceH(const Position& p) const;
+	real distanceH(const Position& p) const;
 
 	/** Return the vertical distance between the current Position and the given Position.
 	 *
 	 * @param p another position
 	 * @return vertical distance (absolute distance)
 	 */
-	double distanceV(const Position& p) const;
+	real distanceV(const Position& p) const;
 
-	double distanceChordH(const Position& p) const;
+	real distanceChordH(const Position& p) const;
 
 
 	/**
@@ -302,7 +303,7 @@ public:
 	 *  Note: using a negative time value is the same a velocity moving in the opposite direction (along the great circle, if appropriate)
 	 * @return linear projection of the position
 	 */
-	const Position linear(const Velocity& v, double time) const;
+	const Position linear(const Velocity& v, real time) const;
 
 	/**
 	 * Calculate a new position that is offset from the current position by (dn,de)
@@ -310,7 +311,7 @@ public:
 	 * @param de  offset in east direction  (m)
 	 * @return linear projection of the position
 	 */
-	const Position linearEst(double dn, double de) const;
+	const Position linearEst(real dn, real de) const;
 
 
 	/**
@@ -320,11 +321,11 @@ public:
 	 * @param time the time from the current point
 	 * @return linear projection of the position
 	 */
-	const Position linearEst(const Velocity& vo, double time) const;
+	const Position linearEst(const Velocity& vo, real time) const;
 
 	//	const std::pair<Position,Velocity> linearDist2D(const Velocity& v, double d) const;
 
-	const std::pair<Position,Velocity> linearDist2D(double track, double d, double gsAt_d) const;
+	const std::pair<Position,Velocity> linearDist2D(real track, real d, real gsAt_d) const;
 
 	/**
 	 * Returns a new position in the given direction at the given distance from this point 
@@ -334,7 +335,7 @@ public:
 	 * @param d       distance
 	 * @return        position 
 	 */
-	const  Position linearDist2D(double track, double d) const;
+	const  Position linearDist2D(real track, real d) const;
 
 
 
@@ -351,39 +352,39 @@ public:
 	//	 */
 	//    const Position relativeProjection(const Position& si) const;
 
-	Position interpolate(const Position& p2, double f) const;
+	Position interpolate(const Position& p2, real f) const;
 
 
 	/** Return the track angle of the vector from the current Position to the given Position, based on initial course 
 	 * @param p another position
 	 * @return track angle within [0..2PI]
 	 * */
-	double track(const Position& p) const;
+	real track(const Position& p) const;
 
-	Velocity initialVelocity(const Position& p2, double time) const;
+	Velocity initialVelocity(const Position& p2, real time) const;
 
 	/** return the velocity going from this to p over dt seconds.
 	 * Returns a ZERO velocity if dt <= 0 */
-	Velocity finalVelocity(const Position& p2, double time) const;
+	Velocity finalVelocity(const Position& p2, real time) const;
 
 
 	/** Return the track angle of the vector from the current Position to the given Position, based on representative course
 	 * @param p another position
 	 * @return representative course
 	 * */
-	double representativeTrack(const Position& p) const;
+	real representativeTrack(const Position& p) const;
 
 
 	// returns intersection point and time of intersection relative to position so
 	// a negative time indicates that the intersection occurred in the past (relative to directions of travel of so1)
-	static std::pair<Position,double> intersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi);
+	static std::pair<Position,real> intersection(const Position& so, const Velocity& vo, const Position& si, const Velocity& vi);
 
 
 	/** Returns intersection point and time of intersection relative to the time of position so
 	 *  for time return value, it assumes that an aircraft travels from so1 to so2 in dto seconds and the other aircraft from si to si2
 	 *  a negative time indicates that the intersection occurred in the past (relative to directions of travel of so1)
 	 */
-	static std::pair<Position,double> intersection(const Position& so, const Position& so2, double dto, const Position& si, const Position& si2);
+	static std::pair<Position,real> intersection(const Position& so, const Position& so2, real dto, const Position& si, const Position& si2);
 
 	/** Returns intersection point between two lines defined by the four positions.  If the Postions are LatLonAlt
 	 * then the lines are Great Circle lines, otherwise they are infinite lines in Euclidean space. 
@@ -401,7 +402,7 @@ public:
 	 * @param speed the ground speed going from this Position to the given position
 	 * @return velocity (3D)
 	 */
-	Velocity averageVelocity(const Position& p2, double speed) const;
+	Velocity averageVelocity(const Position& p2, real speed) const;
 
 	/** Return the average velocity between the current position and the given position, with the given delta time dt.
 	 *
@@ -409,7 +410,7 @@ public:
 	 * @param dt delta time
 	 * @return average velocity
 	 */
-	Velocity avgVelocity(const Position& p2, double dt) const;
+	Velocity avgVelocity(const Position& p2, real dt) const;
 
 	/**
 	 * Return true if this point is west of the given point (this.x &lt; a.x)
@@ -426,7 +427,7 @@ public:
 	 * @param H vertical distance to specify loss of separation
 	 * @return true if there is a loss of separation
 	 */
-	bool LoS(const Position& p2, double D, double H);
+	bool LoS(const Position& p2, real D, real H);
 
 	bool collinear(const Position& p1, const Position& p2) const;
 

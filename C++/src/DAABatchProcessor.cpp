@@ -1,3 +1,4 @@
+#include "Real.h"
 #include "DAABatchProcessor.h"
 #include "Position.h"
 #include "SequenceReader.h"
@@ -11,17 +12,17 @@ const int DAABatchProcessor::DEFAULT_PRECISION=6;
 
 DAABatchProcessor::DAABatchProcessor() :
 	sfrom_(1), // From beginning
-	ufrom_(0.0),  // 0 (from beginning)
+	ufrom_(real(0.0)),  // 0 (from beginning)
 	sto_(-1),   // From end
-	uto_(0.0),    // 0 (from end)
+	uto_(real(0.0)),    // 0 (from end)
 	ownship_(""),
 	skip_(true),
 	conf_(""),
 	output_file_(""),
 	do_inst_(false),
 	no_hyst_(false),
-	lat_(0.0),
-	lon_(0.0),
+	lat_(real(0.0)),
+	lon_(real(0.0)),
 	precision_(DEFAULT_PRECISION),
 	trailing_zeros_(false),
 	stdin_(false),
@@ -32,14 +33,14 @@ DAABatchProcessor::DAABatchProcessor() :
 
 Velocity DAABatchProcessor::getWind() const {
 	if (parameters.contains("wind_speed")) {
-		double wind_speed = parameters.getValue("wind_speed");
-		double wind_dir = parameters.getValue("wind_to");
+		real wind_speed = parameters.getValue("wind_speed");
+		real wind_dir = parameters.getValue("wind_to");
 		bool from_dir = false;
 		if (parameters.contains("wind_from")) {
 			wind_dir = parameters.getValue("wind_from");
 			from_dir = true;
 		}
-		Velocity wind = Velocity::mkTrkGsVs(wind_dir,wind_speed,0.0);
+		Velocity wind = Velocity::mkTrkGsVs(wind_dir,wind_speed,real(0.0));
 		if (from_dir) {
 			wind = wind.Neg();
 		}
@@ -49,11 +50,11 @@ Velocity DAABatchProcessor::getWind() const {
 } 
 
 bool DAABatchProcessor::isLocationSet() const {
-	return lat_ != 0.0 || lon_ != 0.0;
+	return lat_ != real(0.0) || lon_ != real(0.0);
 }
 
 EuclideanProjection DAABatchProcessor::getProjection() const {
-	return Projection::createProjection(lat_,lon_,0.0);
+	return Projection::createProjection(lat_,lon_,real(0.0));
 }
 
 bool DAABatchProcessor::disabled_option(const std::string& str) const {
@@ -236,15 +237,15 @@ void DAABatchProcessor::parse_location(const std::string& arga) {
 	}
 }
 
-double DAABatchProcessor::parse_double(const std::string& arga, const std::string& units) {
+real DAABatchProcessor::parse_double(const std::string& arga, const std::string& units) {
 	if (Util::is_double(arga)) {
-		double val = Util::parse_double(arga);
+		real val = Util::parse_double(arga);
 		return units.empty() ? val : Units::from(units,val);
 	} else {
 		std::cerr << "** Error: " << arga << " is not a valid number" << std::endl;
 		exit(1);
 	} 
-	return 0.0;
+	return real(0.0);
 }
 
 int DAABatchProcessor::processOptions(const char* args[], const int argc, const int i) {
@@ -321,8 +322,8 @@ std::string DAABatchProcessor::getConfigurationName() const {
 }
 
 Interval DAABatchProcessor::timeInterval(const DaidalusFileWalker& walker) const {
-	double absolute_from = walker.firstTime();
-	double absolute_to = walker.lastTime();
+	real absolute_from = walker.firstTime();
+	real absolute_to = walker.lastTime();
 	if (sfrom_ == 0) {
 		absolute_from = ufrom_;
 	} else if (sfrom_ > 0) {

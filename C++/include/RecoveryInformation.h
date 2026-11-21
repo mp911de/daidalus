@@ -6,6 +6,7 @@
  */
 #ifndef RECOVERYINFORMATION_H_
 #define RECOVERYINFORMATION_H_
+#include "Real.h"
 
 #include <string>
 
@@ -14,13 +15,13 @@ namespace larcfm {
 class RecoveryInformation {
 
   private:
-  double time_;  // Time to recovery in seconds. NaN: recovery no computed, Negative Infinity: recovery not available
+  real time_;  // Time to recovery in seconds. NaN: recovery no computed, Negative Infinity: recovery not available
   int nfactor_;  // Number of times the recovery volume was reduced
-   double horizontal_distance_; // Minimum horizontal distance in internal units, i.e., [m]
-   double vertical_distance_; // Minimum vertical distance in internal units, i.e., [m]
+   real horizontal_distance_; // Minimum horizontal distance in internal units, i.e., [m]
+   real vertical_distance_; // Minimum vertical distance in internal units, i.e., [m]
 
   public:
-   RecoveryInformation(double t, int nfactor, double hs, double vs);
+   RecoveryInformation(real t, int nfactor, real hs, real vs);
 
   /**
    * @return Number of time the recovery volume was reduced
@@ -31,32 +32,32 @@ class RecoveryInformation {
   /**
    * @return Time to recovery in seconds
    */
-  double timeToRecovery() const;
+  real timeToRecovery() const;
 
   /**
    * @return Time to recovery in given units
    */
-  double timeToRecovery(const std::string& u) const;
+  real timeToRecovery(const std::string& u) const;
 
   /**
    * @return Recovery horizontal distance in internal units, i.e., [m]
    */
-  double recoveryHorizontalDistance() const;
+  real recoveryHorizontalDistance() const;
 
   /**
    * @return Recovery horizontal distance in given units
    */
-   double recoveryHorizontalDistance(const std::string& u) const;
+   real recoveryHorizontalDistance(const std::string& u) const;
 
   /**
    * @return Recovery vertical distance in internal units, i.e., [m]
    */
-   double recoveryVerticalDistance() const;
+   real recoveryVerticalDistance() const;
 
   /**
    * @return Recovery vertical distance in given units
    */
-   double recoveryVerticalDistance(const std::string& u) const;
+   real recoveryVerticalDistance(const std::string& u) const;
 
   /**
    * @return True if recovery bands are computed.

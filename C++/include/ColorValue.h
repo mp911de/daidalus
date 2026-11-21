@@ -7,6 +7,7 @@
 
 #ifndef COLORVALUE_H_
 #define COLORVALUE_H_
+#include "Real.h"
 
 #include "IntervalSet.h"
 #include "BandsRegion.h"
@@ -17,22 +18,22 @@ namespace larcfm {
 
 class ColorValue {
 public:
-  double val;
+  real val;
   BandsRegion::Region color_left;
   BandsRegion::Region color_right;
 
-  ColorValue(BandsRegion::Region l, double v, BandsRegion::Region r);
+  ColorValue(BandsRegion::Region l, real v, BandsRegion::Region r);
   std::string toString(const std::string& u="unitless") const;
   static std::string listToString(const std::vector<ColorValue>& l);
-  static void init(std::vector<ColorValue>& l, double min, double max, BandsRegion::Region int_color);
-  static void init(std::vector<ColorValue>& l, double min, double max, double min_val, double max_val, BandsRegion::Region int_color);
-  static void init_with_mod(std::vector<ColorValue>& l, double mod, BandsRegion::Region int_color);
-  static void init_with_mod(std::vector<ColorValue>& l, double min, double max, double mod, BandsRegion::Region int_color);
-  static void insert(std::vector<ColorValue>& l, double lb, double ub, BandsRegion::Region int_color);
-  static void insert_with_mod(std::vector<ColorValue>& l, double lb, double ub, double mod, BandsRegion::Region int_color);
+  static void init(std::vector<ColorValue>& l, real min, real max, BandsRegion::Region int_color);
+  static void init(std::vector<ColorValue>& l, real min, real max, real min_val, real max_val, BandsRegion::Region int_color);
+  static void init_with_mod(std::vector<ColorValue>& l, real mod, BandsRegion::Region int_color);
+  static void init_with_mod(std::vector<ColorValue>& l, real min, real max, real mod, BandsRegion::Region int_color);
+  static void insert(std::vector<ColorValue>& l, real lb, real ub, BandsRegion::Region int_color);
+  static void insert_with_mod(std::vector<ColorValue>& l, real lb, real ub, real mod, BandsRegion::Region int_color);
   static void insertNoneSetToColorValues(std::vector<ColorValue>& l, const IntervalSet& none_set, BandsRegion::Region bg_color);
   static void insertRecoverySetToColorValues(std::vector<ColorValue>& l, const IntervalSet& recovery_set);
-  static BandsRegion::Region region_of(const std::vector<ColorValue>& l, double val);
+  static BandsRegion::Region region_of(const std::vector<ColorValue>& l, real val);
 
 };
 

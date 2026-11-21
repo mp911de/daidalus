@@ -10,6 +10,7 @@
  *
  */
 
+#include "Real.h"
 #include "Units.h"
 #include "ErrorLog.h"
 #include "ErrorReporter.h"
@@ -153,7 +154,7 @@ void SeparatedInput::setFixedColumn(const string& widths, const string& nameList
 			throw 2;
 		}
 		units_str = vector<string>(fields.size());
-		units_factor = vector<double>(fields.size());
+		units_factor = vector<real>(fields.size());
 		for (unsigned int i = 0; i < fields.size(); i++) {
 			if (Units::isUnit(fields[i])) {
 				units_str[i] = fields[i];
@@ -261,7 +262,7 @@ bool SeparatedInput::getCaseSensitive() const {
 	return caseSensitive;
 }
 
-double SeparatedInput::getUnitFactor(int i) const {
+real SeparatedInput::getUnitFactor(int i) const {
 	if (!bunits || i < 0 || (unsigned int) i >= units_str.size()) {
 		return Units::getFactor("unspecified");
 	}
@@ -284,12 +285,12 @@ string SeparatedInput::getColumnString(int i) const {
 	return line_str[i];
 }
 
-double SeparatedInput::getColumn(int i, double defaultValue, bool verbose) const {
+real SeparatedInput::getColumn(int i, real defaultValue, bool verbose) const {
 	if (i < 0 || (unsigned int) i >= line_str.size()) {
 		if (verbose) error.addWarning("getColumn index " + Fm0(i) + ", line " + Fm0(linenum) + " out of bounds");
 		return defaultValue;
 	}
-	double rtn = defaultValue;
+	real rtn = defaultValue;
 	try {
 		rtn = Units::from(getUnitFactor(i), Util::parse_double(line_str[i]));
 	}
@@ -300,17 +301,17 @@ double SeparatedInput::getColumn(int i, double defaultValue, bool verbose) const
 	return rtn;
 }
 
-double SeparatedInput::getColumn(int i) const {
-	return getColumn(i, 0.0, true);
+real SeparatedInput::getColumn(int i) const {
+	return getColumn(i, real(0.0), true);
 }
 
 
-double SeparatedInput::getColumn(int i, const std::string& default_unit) const {
+real SeparatedInput::getColumn(int i, const std::string& default_unit) const {
 	if (getUnit(i) == "unspecified") {
-		return Units::from(default_unit, getColumn(i, 0.0, true));
+		return Units::from(default_unit, getColumn(i, real(0.0), true));
 	}
 
-	return getColumn(i, 0.0, true);
+	return getColumn(i, real(0.0), true);
 }
 
 bool SeparatedInput::readLine() {
@@ -467,7 +468,7 @@ bool SeparatedInput::process_units(const string& str) {
 			dash++;
 		}
 		std::string u = Units::clean(fstr);
-		double factor = Units::getFactor(u);
+		real factor = Units::getFactor(u);
 		if (equals(u,"unspecified")) {
 			notFound++;
 			units_str.push_back("unspecified");
