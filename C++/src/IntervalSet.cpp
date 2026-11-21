@@ -15,9 +15,9 @@
 #include "Units.h"
 #include "format.h"
 #include "ErrorLog.h"
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
-#include <cstring>
 #include <vector>
 
 using namespace std;
@@ -28,9 +28,15 @@ IntervalSet::IntervalSet() {
 }
 
 IntervalSet::IntervalSet(const IntervalSet& l) {
-	length = l.length;
+	*this = l;
+}
 
-	memcpy(r,l.r,sizeof(Interval)*length);
+IntervalSet& IntervalSet::operator=(const IntervalSet& other) {
+	if (this != &other) {
+		std::copy_n(other.r,other.length,r);
+		length = other.length;
+	}
+	return *this;
 }
 
 IntervalSet::IntervalSet(const std::vector<Interval>& v) {//: error("IntervalSet") {

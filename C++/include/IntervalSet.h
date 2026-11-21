@@ -69,6 +69,7 @@ public:
 	 * @param l IntervalSet to copy
 	 * */ 
 	IntervalSet(const IntervalSet& l);
+	IntervalSet& operator=(const IntervalSet& other);
 
 	/** Build an IntervalSet from the given vector */
 	explicit IntervalSet(const std::vector<Interval>& v);
