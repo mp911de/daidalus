@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 pushd () {
     command pushd "$@" > /dev/null
 }
@@ -239,31 +241,30 @@ do_diff() {
 	    files="${CNFG}/${files}.${ext}"
         elif [ -d ${SCEDIR}/$scenario ]; then
 	    pushd ${GOLDIR}
-	    files=`ls ${CNFG}/${scenario}/*.out`
+	    files=`ls ${CNFG}/${scenario}/*.${ext}`
 	    popd
         fi
 	for file in $files; do
 	    local msg="${lang} ${file}"
-	    if [ ! -f "${GOLDIR}/${file}" ]; then
-		printf "[\033[31mFAIL\e[0m]: Gold file ${GOLDIR}/${file} not found\n"
-	    elif [ ! -f "${moldir}/${file}" ]; then
-		printf "[\033[31mFAIL\e[0m]: Mold file ${moldir}/${file} not found\n"
-	    else
-		local verbose=""
+	    if diff -w -I '#.*' -I '%.*' ${IGNORESTR} "${GOLDIR}/${file}" "${moldir}/${file}"; then
 		if [ "$VERBOSE" ]; then
-		    verbose="[\e[92mOK\e[0m]: ${msg}\n"
+		    printf '[\e[92mOK\e[0m]: %s\n' "${msg}"
 		fi
-		(diff -w -I '#.*' -I '%.*' ${IGNORESTR} ${GOLDIR}/${file} ${moldir}/${file} > /dev/null 2>&1 && printf "${verbose}") || (printf "[\033[31mFAIL\e[0m]: ${msg} -- "; echo "diff -w -I '#.*' -I '%.*' ${IGNORESTR} ${GOLDIR}/${file} ${moldir}/${file}")
+	    else
+		printf '[\033[31mFAIL\e[0m]: %s\n' "${msg}"
+		status=1
 	    fi
 	done
     done
 }
 
+status=0
 start_time=`date +%s`
 langs="${JAVALANG} ${CPPLANG}"
 for scenario in ${SCENARIOS}; do
     if [ ! -e "${SCEDIR}/${scenario}" ]; then
 	echo "Error: DAA scenario ${scenario} not found in ${SCEDIR}"
+	exit 1
     fi
     for lang in ${langs}; do
 	if [ "${TEST}" ]; then
@@ -276,3 +277,4 @@ for scenario in ${SCENARIOS}; do
 done
 end_time=`date +%s`
 echo "Execution time was `expr $end_time - $start_time` s."
+exit "$status"

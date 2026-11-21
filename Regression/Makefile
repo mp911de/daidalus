@@ -42,7 +42,7 @@ diffcpp:
 	@echo "== Begin diff C++ =="
 	../Scripts/strest -d -C $(DIFFOPTIONS) --extension=out:csv -c DO_365B_no_SUM H1.daa $(SCENARIOS)
 	../Scripts/strest -d -C $(DIFFOPTIONS) --extension=out:csv -c DO_365B_SUM H1_SUM.daa
-	-diff -x ".*" -I "^#.*" $(diffoptions) C++/mold/example gold/current/example
+	diff -x ".*" -I "^#.*" $(diffoptions) C++/mold/example gold/current/example
 	@echo "== End diff C++ =="
 	@echo
 
