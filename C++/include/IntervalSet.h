@@ -51,9 +51,11 @@ namespace larcfm {
  * </code></pre><p>
  *
  * Capacity exhaustion throws std::length_error without changing this set.
+ * A failed allocation throws std::bad_alloc and leaves this set valid but unspecified.
  * A failed enclosing Daidalus computation must be discarded and its instance rebuilt.
  *
- * The interval storage does not allocate dynamic (heap) memory.
+ * The intervals are stored in dynamic (heap) memory that the set owns. A set keeps its
+ * storage when it is cleared or changed, so a reused set allocates nothing.
  */
 class IntervalSet {// : ErrorReporter {
 
@@ -70,6 +72,8 @@ public:
 	 * */ 
 	IntervalSet(const IntervalSet& l);
 	IntervalSet& operator=(const IntervalSet& other);
+	IntervalSet(IntervalSet&& other) noexcept = default;
+	IntervalSet& operator=(IntervalSet&& other) noexcept = default;
 
 	/** Build an IntervalSet from the given vector */
 	explicit IntervalSet(const std::vector<Interval>& v);
@@ -228,15 +232,20 @@ private:
 	void insert(int i, const Interval& r);
 	void remove(int i);
 	void remove(int i, int len);
+	IntervalSet result_in_spare();
+	void swap_in(IntervalSet& result);
+	void append_sorted(const Interval& interval);
+
+	/** The number of intervals that the first allocation of a set has room for */
+	static const int initial_capacity = 8;
 
 	static const Interval empty;
-	union Slot {
-		Interval value;
-		Slot() {}
-	};
-	Slot r[max_intervals];
-	void append_sorted(const Interval& interval);
-	int length;
+	std::vector<Interval> r;
+	/**
+	 * An operation builds its result in this storage and then swaps it with r.
+	 * So a repeated operation allocates nothing, and capacity exhaustion leaves r unchanged.
+	 */
+	std::vector<Interval> spare;
 };
 
 }

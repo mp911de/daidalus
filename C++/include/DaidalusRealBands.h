@@ -40,6 +40,12 @@ private:
   struct RunContext {
     const DaidalusIntegerBands* samples = nullptr;
     const IntervalSet* candidates = nullptr;
+    // Working sets of a computation. They keep their storage between computations,
+    // so that a computation allocates none for them.
+    std::vector<IntervalSet> none_sets;
+    IntervalSet intruder_noneset;
+    mutable IntervalSet minmax_noneset;
+    mutable IntervalSet lbub_noneset;
     RunContext() = default;
     RunContext(const RunContext&) {}
     RunContext& operator=(const RunContext&) { return *this; }

@@ -435,7 +435,8 @@ void DaidalusRealBands::compute_none_bands(IntervalSet& none_set_region, const s
     if (1 <= alerter_idx && alerter_idx <= core.parameters.numberOfAlerters()) {
       const Alerter& alerter = core.parameters.getAlerterAt(alerter_idx);
       const Detection3D& detector = (!det.isValid() ? alerter.getLevel(ilt_ptr->level).getCoreDetection() : det);
-      IntervalSet noneset2 = IntervalSet();
+      IntervalSet& noneset2 = run_.intruder_noneset;
+      noneset2.clear();
       real T = ilt_ptr->time_horizon;
       struct RestoreCandidates {
         const IntervalSet*& slot;
@@ -575,10 +576,10 @@ void DaidalusRealBands::compute(DaidalusCore& core) {
   recovery_time_ = NaN;
   recovery_horizontal_distance_ = NaN;
   recovery_vertical_distance_ = NaN;
-  std::vector<IntervalSet> none_sets;
+  std::vector<IntervalSet>& none_sets = run_.none_sets;
   none_sets.resize(BandsRegion::NUMBER_OF_CONFLICT_BANDS); // use resize since we are then using subscript assignment
   for (int conflict_region=0;conflict_region<BandsRegion::NUMBER_OF_CONFLICT_BANDS;++conflict_region) {
-    none_sets[conflict_region] = IntervalSet();
+    none_sets[conflict_region].clear();
   }
   bool recovery = false;
   bool saturated = false;
@@ -738,7 +739,8 @@ void DaidalusRealBands::add_noneset(IntervalSet& noneset, real lb, real ub) cons
   }
   lb = Util::safe_modulo(lb,mod_);
   ub = Util::safe_modulo(ub,mod_);
-  IntervalSet minmax_noneset = IntervalSet();
+  IntervalSet& minmax_noneset = run_.minmax_noneset;
+  minmax_noneset.clear();
   if (circular_) {
   } else if (min_val_ < max_val_) {
     minmax_noneset.almost_add(min_val_,max_val_,DaidalusParameters::ALMOST_);
@@ -746,7 +748,8 @@ void DaidalusRealBands::add_noneset(IntervalSet& noneset, real lb, real ub) cons
     minmax_noneset.almost_add(0,max_val_,DaidalusParameters::ALMOST_);
     minmax_noneset.almost_add(min_val_,mod_,DaidalusParameters::ALMOST_);
   }
-  IntervalSet lbub_noneset = IntervalSet();
+  IntervalSet& lbub_noneset = run_.lbub_noneset;
+  lbub_noneset.clear();
   if (Util::almost_equals(lb,ub,DaidalusParameters::ALMOST_)) {
   } else if (lb < ub) {
     lbub_noneset.almost_add(lb,ub,DaidalusParameters::ALMOST_);
